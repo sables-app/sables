@@ -51,6 +51,8 @@ task("clean", () =>
     exec("rm -rf ./examples/*/tsconfig.tsbuildinfo"),
     exec("rm -rf ./packages/*/dist"),
     exec("rm -rf ./packages/*/tsconfig.tsbuildinfo"),
+    exec("rm -rf ./website/dist"),
+    exec("rm -rf ./website/tsconfig.tsbuildinfo"),
   ])
 );
 
