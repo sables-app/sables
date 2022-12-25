@@ -1,0 +1,52 @@
+{
+  "name": "sables",
+  "version": "0.1.0-alpha.1",
+  "description": "Tooling for generating apps and building artifacts.",
+  "author": "Morris Allison III (https://morris.xyz)",
+  "license": "MIT",
+  "bugs": "https://github.com/sables-app/sables/issues",
+  "homepage": "https://sables.dev/docs/api#cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sables-app/sables.git",
+    "directory": "packages/cli"
+  },
+  "type": "commonjs",
+  "main": "./dist/main.js",
+  "bin": "./bin/sables.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "@vitejs/plugin-react-swc": "^3.0.1",
+    "vite": "^4.0.2"
+  },
+  "dependencies": {
+    "@humanwhocodes/module-importer": "^1.0.1",
+    "@sables/boilerplate": "0.1.0-alpha.1",
+    "@sables/server": "0.1.0-alpha.1",
+    "@sables/vite-plugin-import-tags": "0.1.0-alpha.1",
+    "@types/prompts": "^2.4.2",
+    "@types/yargs": "^17.0.17",
+    "chalk": "^4.1.2",
+    "execa": "^5.1.1",
+    "fs-jetpack": "^5.1.0",
+    "prepend-file": "^2.0.1",
+    "prompts": "^2.4.2",
+    "ts-deferred": "^1.0.4",
+    "yargs": "^17.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "@vitejs/plugin-react-swc": "^3.0.1",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.2"
+  },
+  "files": [
+    "bin",
+    "config",
+    "dist",
+    "lib",
+    "!__tests__"
+  ]
+}

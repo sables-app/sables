@@ -1,0 +1,21 @@
+diff --git a/node_modules/@chakra-ui/react/package.json b/node_modules/@chakra-ui/react/package.json
+index 43db63b..94855dd 100644
+--- a/node_modules/@chakra-ui/react/package.json
++++ b/node_modules/@chakra-ui/react/package.json
+@@ -101,16 +101,7 @@
+     "react-dom": "^18.0.0",
+     "clean-package": "2.1.1"
+   },
+-  "module": "dist/index.esm.js",
+   "types": "dist/index.d.ts",
+-  "exports": {
+-    ".": {
+-      "import": "./dist/index.esm.js",
+-      "require": "./dist/index.cjs.js",
+-      "types": "./dist/index.d.ts"
+-    },
+-    "./package.json": "./package.json"
+-  },
+   "scripts": {
+     "build": "JSX=1 tsup src/index.ts --dts",
+     "dev": "pnpm build:fast -- --watch",

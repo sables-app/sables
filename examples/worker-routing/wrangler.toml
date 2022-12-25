@@ -1,0 +1,11 @@
+name = "my-app"
+main = "dist/worker/entry-worker.js"
+
+compatibility_date = "2022-11-13"
+usage_model = "bundled"
+compatibility_flags = [
+  # `@sables/server` uses the newer streams API
+  "streams_enable_constructors",
+]
+# Enabled, because Redux Toolkit requires that `global` be declared
+node_compat = true

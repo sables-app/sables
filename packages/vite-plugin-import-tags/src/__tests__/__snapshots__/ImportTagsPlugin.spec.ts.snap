@@ -1,0 +1,60 @@
+// Vitest Snapshot v1
+
+exports[`ImportTagsPlugin > plugin > buildEnd > writes a manifest to the build directory 1`] = `
+{
+  "6515d76aa069b88f3b2961aeab57f1e9": {
+    "importPath": "./moduleG",
+    "src": "./myModules/MyModule.tsx",
+  },
+  "677cd3a887eb7012ef48e37ac2cf09cf": {
+    "importPath": "./moduleD",
+    "src": "./myModules/MyModule.tsx",
+  },
+  "857881fb373d96ddb418e2f25557185c": {
+    "importPath": "./moduleF",
+    "src": "./myModules/MyModule.tsx",
+  },
+  "c6964f1e4bad9154b92913eecd5094dd": {
+    "importPath": "./moduleE",
+    "src": "./myModules/MyModule.tsx",
+  },
+  "d1aa1b2ebc20e39160a6e54e1e1cc7dc": {
+    "importPath": "./moduleC",
+    "src": "./myModules/MyModule.tsx",
+  },
+}
+`;
+
+exports[`ImportTagsPlugin > plugin > transform > transforms modules 1`] = `
+"
+import \\"moduleA\\";
+import { value } from \\"moduleB\\";
+
+const foo = \\"bar\\";
+
+function hello() {
+  return ($rollupImportTag(\\"d1aa1b2ebc20e39160a6e54e1e1cc7dc\\"),import(\\"./moduleC\\"));
+}
+
+/** @type {import('my-package')['someProperty']} */
+($rollupImportTag(\\"677cd3a887eb7012ef48e37ac2cf09cf\\"),import(\\"./moduleD\\")).then(console.log);
+($rollupImportTag(\\"857881fb373d96ddb418e2f25557185c\\"),import(\\"./moduleF\\")).catch(console.log);
+($rollupImportTag(\\"6515d76aa069b88f3b2961aeab57f1e9\\"),import(\\"./moduleG\\")).finally(console.log);
+
+/**
+ * import('my-package').someProperty
+ * import('my-package')['someProperty']
+ * \`import('my-package').someProperty\`
+ * \`import('my-package')['someProperty']\`
+ */
+const qux = (await ($rollupImportTag(\\"c6964f1e4bad9154b92913eecd5094dd\\"),import(\\"./moduleE\\"))).default;
+
+/**
+ * Sets focus at a given node. The last focused element will help to determine which element(first or last) should be focused.
+ * HTML markers (see {@link import('./constants').FOCUS_AUTO} constants) can control autofocus
+ * @param topNode
+ * @param lastNode
+ * @param options
+ */
+"
+`;

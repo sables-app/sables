@@ -1,0 +1,20 @@
+{
+  "extends": "@sables-app/scripts/tsconfig.package.json",
+  "include": ["src/**/*", "src/**/*.json"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "outDir": "dist",
+    "preserveSymlinks": true,
+    "rootDir": "src",
+    "target": "ESNext",
+    "useDefineForClassFields": true
+  },
+  "references": [
+    { "path": "../packages/cli" },
+    { "path": "../packages/framework" },
+    { "path": "../packages/server" },
+    { "path": "../packages/ssr" }
+  ]
+}

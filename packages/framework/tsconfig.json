@@ -1,0 +1,16 @@
+{
+  "extends": "@sables-app/scripts/tsconfig.package.json",
+  "include": ["src/**/*", "src/**/*.json"],
+  "exclude": ["__mocks__", "__snapshots__", "dist", "node_modules"],
+  "compilerOptions": {
+    "lib": ["DOM", "ES2022"],
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "references": [
+    { "path": "../core" },
+    { "path": "../router" },
+    { "path": "../utils" }
+  ]
+}

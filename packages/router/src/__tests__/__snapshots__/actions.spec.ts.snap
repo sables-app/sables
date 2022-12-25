@@ -1,0 +1,92 @@
+// Vitest Snapshot v1
+
+exports[`actions > advanceLocation > creates a \`goForward\` action from redux-first-history 1`] = `
+{
+  "error": false,
+  "meta": {
+    Symbol(@sables/lazyMeta): {
+      "observers": Set {},
+      "slices": Set {},
+    },
+  },
+  "payload": {
+    "args": [],
+    "method": "goForward",
+  },
+  "type": "@@router/CALL_HISTORY_METHOD",
+}
+`;
+
+exports[`actions > chooseLocation > creates a \`go\` action from redux-first-history 1`] = `
+{
+  "error": false,
+  "meta": {
+    Symbol(@sables/lazyMeta): {
+      "observers": Set {},
+      "slices": Set {},
+    },
+  },
+  "payload": {
+    "args": [
+      1,
+    ],
+    "method": "go",
+  },
+  "type": "@@router/CALL_HISTORY_METHOD",
+}
+`;
+
+exports[`actions > pushLocation > creates a \`push\` action from redux-first-history 1`] = `
+{
+  "error": false,
+  "meta": {
+    Symbol(@sables/lazyMeta): {
+      "observers": Set {},
+      "slices": Set {},
+    },
+  },
+  "payload": {
+    "args": [
+      "/",
+    ],
+    "method": "push",
+  },
+  "type": "@@router/CALL_HISTORY_METHOD",
+}
+`;
+
+exports[`actions > replaceLocation > creates a \`replace\` action from redux-first-history 1`] = `
+{
+  "error": false,
+  "meta": {
+    Symbol(@sables/lazyMeta): {
+      "observers": Set {},
+      "slices": Set {},
+    },
+  },
+  "payload": {
+    "args": [
+      "/",
+    ],
+    "method": "replace",
+  },
+  "type": "@@router/CALL_HISTORY_METHOD",
+}
+`;
+
+exports[`actions > retreatLocation > creates a \`goBack\` action from redux-first-history 1`] = `
+{
+  "error": false,
+  "meta": {
+    Symbol(@sables/lazyMeta): {
+      "observers": Set {},
+      "slices": Set {},
+    },
+  },
+  "payload": {
+    "args": [],
+    "method": "goBack",
+  },
+  "type": "@@router/CALL_HISTORY_METHOD",
+}
+`;

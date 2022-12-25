@@ -1,0 +1,28 @@
+{
+  "name": "@sables-app/test-utils",
+  "version": "0.1.0",
+  "description": "Sables test utilities.",
+  "author": "Morris Allison III (https://morris.xyz)",
+  "license": "MIT",
+  "bugs": "https://github.com/sables-app/sables/issues",
+  "homepage": "https://github.com/sables-app/sables/tree/main/packages/test-utils",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sables-app/sables.git",
+    "directory": "packages/test-utils"
+  },
+  "type": "module",
+  "main": "./dist/main.js",
+  "dependencies": {
+    "@sables-app/scripts": "0.1.0",
+    "@types/node": "^18.11.9",
+    "vitest": "~0.26.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3"
+  },
+  "files": [
+    "dist",
+    "!__tests__"
+  ]
+}

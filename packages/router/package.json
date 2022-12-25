@@ -1,0 +1,43 @@
+{
+  "name": "@sables/router",
+  "version": "0.1.0-alpha.1",
+  "description": "A Redux-based routing library with distributed routing logic.",
+  "author": "Morris Allison III (https://morris.xyz)",
+  "license": "MIT",
+  "bugs": "https://github.com/sables-app/sables/issues",
+  "homepage": "https://sables.dev/docs/api#router",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sables-app/sables.git",
+    "directory": "packages/router"
+  },
+  "type": "module",
+  "module": "./dist/main.js",
+  "main": "./dist/main.js",
+  "exports": {
+    ".": "./dist/main.js",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.0",
+    "@sables/core": "0.1.0-alpha.1",
+    "@sables/utils": "0.1.0-alpha.1",
+    "@types/react": "^18.0.25",
+    "history": "^5.3.0",
+    "nanoid": "^4.0.0",
+    "path-parser": "^6.1.0",
+    "react": "^18.2.0",
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.0",
+    "redux-first-history": "^5.1.1",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "typescript": "^4.9.3"
+  },
+  "files": [
+    "dist",
+    "!__tests__"
+  ]
+}

@@ -1,0 +1,8 @@
+// Vitest Snapshot v1
+
+exports[`integration > setRoutes 1`] = `
+Set {
+  "aboutRoutesImporter",
+  "aboutRouteEffectsImporter",
+}
+`;

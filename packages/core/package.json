@@ -1,0 +1,44 @@
+{
+  "name": "@sables/core",
+  "version": "0.1.0-alpha.1",
+  "description": "The foundation of Sables, focusing on Redux-based state management.",
+  "author": "Morris Allison III (https://morris.xyz)",
+  "license": "MIT",
+  "bugs": "https://github.com/sables-app/sables/issues",
+  "homepage": "https://sables.dev/docs/api#core",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sables-app/sables.git",
+    "directory": "packages/core"
+  },
+  "type": "module",
+  "module": "./dist/main.js",
+  "main": "./dist/main.js",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.0",
+    "@sables/utils": "0.1.0-alpha.1",
+    "@types/react": "^18.0.26",
+    "nanoid": "^4.0.0",
+    "react": "^18.2.0",
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.0",
+    "reselect": "^4.1.7",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3"
+  },
+  "exports": {
+    ".": "./dist/main.js",
+    "./package.json": "./package.json",
+    "./test": "./dist/__tests__/utils.js"
+  },
+  "files": [
+    "dist",
+    "deps.d.ts",
+    "deps.js",
+    "test.d.ts",
+    "test.js",
+    "!__tests__"
+  ]
+}

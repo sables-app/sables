@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "@sables-app/docs",
+  "version": "0.0.0",
+  "description": "Documentation for Sables.",
+  "author": "Morris Allison III (https://morris.xyz)",
+  "license": "MIT",
+  "bugs": "https://github.com/sables-app/sables/issues",
+  "homepage": "https://sables.dev/docs/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sables-app/sables.git",
+    "directory": "docs"
+  },
+  "type": "commonjs"
+}

@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "@sables-app/boilerplate-node-rendering",
+  "version": "0.0.0",
+  "description": "Server-side rendering SPA on Node.js",
+  "author": "Morris Allison III (https://morris.xyz)",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "sables build",
+    "dev": "vite",
+    "serve": "node ./dist/server/entry-server.js"
+  },
+  "dependencies": {
+    "@sables/framework": "0.1.0-alpha.1",
+    "@sables/server": "0.1.0-alpha.1",
+    "@sables/ssr": "0.1.0-alpha.1",
+    "@types/connect": "^3.4.35",
+    "@types/errorhandler": "^1.5.0",
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.9",
+    "connect": "^3.7.0",
+    "errorhandler": "^1.5.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "sables": "0.1.0-alpha.1",
+    "vite": "^4.0.2"
+  },
+  "exports": {
+    "./index.html": "./dist/client/index.html",
+    "./package.json": "./package.json"
+  },
+  "sablesBoilerplate": true
+}

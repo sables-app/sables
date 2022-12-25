@@ -1,0 +1,188 @@
+// Vitest Snapshot v1
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities > selectBestBook1 1`] = `undefined`;
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities > selectBestBook2 1`] = `
+{
+  "bookId": "1",
+  "title": "Goosebumps: Monster Blood",
+}
+`;
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities > selectFavoriteBook1 1`] = `undefined`;
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities > selectFavoriteBook2 1`] = `
+{
+  "bookId": "3",
+  "title": "Goosebumps: Welcome to Dead House",
+}
+`;
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities > selectWorstBook1 1`] = `undefined`;
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities > selectWorstBook2 1`] = `
+{
+  "bookId": "2",
+  "title": "Goosebumps: Night of the Living Dummy",
+}
+`;
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities 1`] = `[]`;
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities 2`] = `
+{
+  "id": "1",
+  "reason": "It's awesome!",
+}
+`;
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities 3`] = `"2"`;
+
+exports[`Entity > createNotableEntities > creates actions and reducers for notable entities 4`] = `"3"`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 1`] = `
+{
+  "bookId": "3",
+  "title": "Goosebumps: Night of the Living Dummy",
+}
+`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 2`] = `
+[
+  {
+    "bookId": "4",
+    "title": "Goosebumps: Night of the Living Dummy",
+  },
+  {
+    "bookId": "5",
+    "title": "Goosebumps: Welcome to Dead House",
+  },
+]
+`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 3`] = `
+{
+  "bookId": "3",
+  "title": "Goosebumps: Night of the Living Dummy",
+}
+`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 4`] = `
+[
+  {
+    "bookId": "4",
+    "title": "Goosebumps: Night of the Living Dummy",
+  },
+  {
+    "bookId": "5",
+    "title": "Goosebumps: Welcome to Dead House",
+  },
+]
+`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 5`] = `
+[
+  {
+    "bookId": "4",
+    "title": "Goosebumps: Night of the Living Dummy",
+  },
+  {
+    "bookId": "5",
+    "title": "Goosebumps: Welcome to Dead House",
+  },
+]
+`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 6`] = `"2"`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 7`] = `
+[
+  "1",
+  "3",
+]
+`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 8`] = `undefined`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 9`] = `
+{
+  "changes": {
+    "title": "Goosebumps: Night of the Living Dummy",
+  },
+  "id": "3",
+}
+`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 10`] = `
+[
+  {
+    "changes": {
+      "title": "Goosebumps: Night of the Living Dummy",
+    },
+    "id": "3",
+  },
+  {
+    "changes": {
+      "title": "Goosebumps: Welcome to Dead House",
+    },
+    "id": "4",
+  },
+]
+`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 11`] = `
+{
+  "bookId": "3",
+  "title": "Goosebumps: Night of the Living Dummy",
+}
+`;
+
+exports[`Entity > entityAdapterToReducers > renames actions and reducers from entity adapters 12`] = `
+[
+  {
+    "bookId": "3",
+    "title": "Goosebumps: Night of the Living Dummy",
+  },
+  {
+    "bookId": "3",
+    "title": "Goosebumps: Welcome to Dead House",
+  },
+]
+`;
+
+exports[`Entity > entityAdapterToReducers > slice dependency integration 1`] = `
+{
+  "entities": {
+    "1": {
+      "bookId": "1",
+      "title": "Harry Potter",
+    },
+  },
+  "ids": [
+    "1",
+  ],
+}
+`;
+
+exports[`Entity > entityAdapterToReducers > slice dependency integration 2`] = `
+{
+  "entities": {
+    "1": {
+      "bookId": "1",
+      "title": "Harry Potter",
+    },
+  },
+  "ids": [
+    "1",
+  ],
+}
+`;
+
+exports[`Entity > entityAdapterToReducers > slice dependency integration 3`] = `
+[
+  {
+    "bookId": "1",
+    "title": "Harry Potter",
+  },
+]
+`;

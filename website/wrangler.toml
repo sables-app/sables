@@ -1,0 +1,25 @@
+name = "sables-dev"
+main = "dist/worker-transition/entry-worker-transition.js"
+
+compatibility_date = "2022-11-13"
+usage_model = "bundled"
+compatibility_flags = [
+  "streams_enable_constructors",
+]
+
+# Enabled, because Redux Toolkit requires that `global` be available.
+node_compat = true
+
+routes = [
+  { pattern = "sables.dev", custom_domain = true, zone_name = "sables.dev" }
+]
+
+r2_buckets = [
+  { binding = "SABLES_WEBSITE_ASSETS", bucket_name = "sables-dev", preview_bucket_name = "" }
+]
+
+[triggers]
+crons = [ ]
+
+[vars]
+ASSET_PROXY_R2_BUCKET = "SABLES_WEBSITE_ASSETS"

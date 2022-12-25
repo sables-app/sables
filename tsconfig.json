@@ -1,0 +1,18 @@
+{
+  "extends": "@sables-app/scripts/tsconfig.base.json",
+  "include": ["./examples/*/src/**/*"],
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "references": [
+    { "path": "./packages/cli" },
+    { "path": "./packages/core" },
+    { "path": "./packages/framework" },
+    { "path": "./packages/router" },
+    { "path": "./packages/server" },
+    { "path": "./packages/ssr" },
+    { "path": "./packages/test-utils" },
+    { "path": "./packages/utils" },
+    { "path": "./packages/vite-plugin-import-tags" }
+  ]
+}

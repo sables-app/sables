@@ -1,0 +1,34 @@
+{
+  "name": "@sables/utils",
+  "version": "0.1.0-alpha.1",
+  "description": "Common utilities for Sables.",
+  "author": "Morris Allison III (https://morris.xyz)",
+  "license": "MIT",
+  "bugs": "https://github.com/sables-app/sables/issues",
+  "homepage": "https://github.com/sables-app/sables/tree/main/packages/utils",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sables-app/sables.git",
+    "directory": "packages/utils"
+  },
+  "type": "module",
+  "module": "./dist/main.js",
+  "main": "./dist/main.js",
+  "exports": {
+    ".": "./dist/main.js",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.0",
+    "redux": "^4.2.0"
+  },
+  "devDependencies": {
+    "@sables-app/scripts": "0.1.0",
+    "@types/node": "^18.11.9",
+    "typescript": "^4.9.3"
+  },
+  "files": [
+    "dist",
+    "!__tests__"
+  ]
+}

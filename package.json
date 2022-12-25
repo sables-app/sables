@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "name": "@sables-app/sables",
+  "version": "0.0.0",
+  "description": "Application-first Web Framework",
+  "author": "Morris Allison III (https://morris.xyz)",
+  "license": "MIT",
+  "bugs": "https://github.com/sables-app/sables/issues",
+  "homepage": "https://github.com/sables-app/sables",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sables-app/sables.git"
+  },
+  "workspaces": [
+    "docs",
+    "examples/*",
+    "packages/*",
+    "website"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.0",
+    "patch-package": "^6.5.0"
+  },
+  "scripts": {
+    "postinstall": "patch-package",
+    "test": "npx vitest --ui"
+  }
+}

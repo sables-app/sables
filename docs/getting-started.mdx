@@ -1,0 +1,334 @@
+# Getting started
+
+Welcome! This document serves as the initial starting guide for Sables. This guide assumes working knowledge of [Web technologies](https://developer.mozilla.org/en-US/docs/Web) and [React](https://reactjs.org/).
+
+## What is Sables?
+
+Sables is an application-first Web framework focused on distributed routing logic, reactive programming, and serverless solutions. The framework is comprised of several packages built upon established technologies, making integration more cohesive.
+
+### Key features
+
+<div className="key-features">
+
+- Distributed routing logic
+- Route transitions with middleware and listeners
+- Just-in-Time Redux slice insertion
+- Side effect encapsulation via observers
+- Server-side rendering and routing solutions; serverless compatible
+- Application hydration with resume
+- Code splitting, module lazy loading, and module preloading
+- Strictly typed with template literal types and generics
+- Simple and powerful interfaces that're easy to learn and master
+- Project structure agnostic
+
+</div>
+
+### Technologies
+
+<dl>
+
+<div>
+<dt>Frontend</dt>
+<dd>
+
+Composable hooks and components allow for robust
+integration with [React][] for the frontend. Support for
+[Preact][] is under development.
+
+</dd>
+</div>
+
+<div>
+<dt>State management</dt>
+<dd>
+
+Enhanced, API-compatible variants of [Redux Toolkit][]'s
+utilities further ease development, and enable features
+like Just-in-Time [Redux][] slice insertion.
+
+</dd>
+</div>
+
+<div>
+<dt>Side effects</dt>
+<dd>
+
+[RxJS][] Observables are used to create reactive,
+encapsulated side effects. Route transition middleware
+enable distributed routing logic.
+
+</dd>
+</div>
+
+<div>
+<dt>Tooling</dt>
+<dd>
+
+With [Vite][] and [Sables CLI][], tooling is
+available for generating apps, running a
+dev environment, and building artifacts.
+
+</dd>
+</div>
+
+<div>
+<dt>Server-side</dt>
+<dd>
+
+Composable handlers and middleware for server-side
+rendering or routing allow for flexible server-side solutions.
+Primary runtime targets include [Node.js][] & [Cloudflare Workers][].
+
+</dd>
+</div>
+
+</dl>
+
+[cloudflare workers]: https://workers.cloudflare.com/
+[node.js]: https://nodejs.org/en/
+[preact]: https://preactjs.com/
+[react]: https://reactjs.org/
+[redux toolkit]: http://redux-toolkit.js.org/
+[redux]: https://redux.js.org/
+[sables cli]: /docs/api#cli
+[rxjs]: https://rxjs.dev/
+[vite]: https://vitejs.dev/
+
+## Installation
+
+### Using Sables CLI
+
+For new applications, it's recommended to generated an app using the `sables` CLI tool. Several application starters are available to suit different use cases.
+
+To generate an app, run the `create` command, follow the prompts, and an application will be generated in a new directory:
+
+```bash
+npx sables create
+```
+
+> For convenience, the `create` command is also available using `npm create @sables`.
+
+Once the app is generated, dependencies should also be installed. To install dependencies, enter the directory of the app, and run `npm install`:
+
+```bash
+cd my-app
+npm install
+```
+
+Lastly, the [Vite dev server](https://vitejs.dev/guide/cli.html#dev-server) can be started by running the `dev` npm script:
+
+```bash
+npm run dev
+```
+
+Congrats, you should now have a running Web application ready for further development.
+
+Next, [view the API Reference](/docs/api) to learn the details of how to use Sables.
+
+### An existing codebase
+
+Sables can be installed as an npm package in an existing codebase:
+
+```bash
+npm install @sables/framework
+```
+
+To build artifacts, the Sables CLI should also be installed:
+
+```bash
+npm install -D sables
+```
+
+Next, we'll create a simple Hello World application using Sables.
+
+Create a new module with the following contents:
+
+```tsx
+import { Provider } from "@sables/framework";
+
+function HomeScreen() {
+  return <h1>Welcome to Sables!</h1>;
+}
+
+export default function App() {
+  return (
+    <Provider>
+      <HomeScreen />
+    </Provider>
+  );
+}
+```
+
+That's it. The exported `App` function is a React component that's ready to be [mounted to a root](https://reactjs.org/docs/react-dom-client.html).
+Once mounted, you should have a working Sables application in your codebase.
+
+In the code sample above, the following operations occur when the `App` component is mounted:
+
+1. A new `manager` object is created using default options
+1. A Redux store with middleware is setup
+1. A default route is created and transitioned to
+1. A Rxjs observer for dispatched actions is created
+
+Next, [view the API Reference](/docs/api) to learn the details of how to use Sables.
+
+## Examples
+
+Several example apps are available for reference, located in the [`/examples` directory of the GitHub repository.](https://github.com/sables-app/framework/tree/main/examples)
+
+<dl>
+<div>
+<dt>Node Rendering</dt>
+<dd>
+
+Server-side rendering SPA on Node.js.<br />
+[View on GitHub](https://github.com/sables-app/framework/tree/main/examples/node-rendering)
+
+</dd>
+</div>
+<div>
+<dt>Router Only</dt>
+<dd>
+
+Client-only SPA using only Sables Router.<br />
+[View on GitHub](https://github.com/sables-app/framework/tree/main/examples/router-only)
+
+</dd>
+</div>
+<div>
+<dt>Single Page</dt>
+<dd>
+
+Client-only single page application (SPA).<br />
+[View on GitHub](https://github.com/sables-app/framework/tree/main/examples/single-page)
+
+</dd>
+</div>
+<div>
+<dt>Worker Rendering</dt>
+<dd>
+
+Server-side rendering SPA on Cloudflare Workers.<br />
+[View on GitHub](https://github.com/sables-app/framework/tree/main/examples/worker-rendering)
+
+</dd>
+</div>
+<div>
+<dt>Worker Routing</dt>
+<dd>
+
+Server-side routing SPA on Cloudflare Workers.<br />
+[View on GitHub](https://github.com/sables-app/framework/tree/main/examples/worker-routing)
+
+</dd>
+</div>
+</dl>
+
+## Packages
+
+Sables is divided into several packages including:
+
+<dl>
+<div>
+<dt>Sables Core — `@sables/core`</dt>
+<dd>
+
+The foundation of Sables, focusing on Redux-based state management.
+
+- [View API reference](/docs/api#core)
+- [View on GitHub](https://github.com/sables-app/framework/tree/main/packages/core)
+- [View on npm](https://www.npmjs.com/package/@sables/core)
+
+</dd>
+</div>
+
+<div>
+<dt>Sables Router — `@sables/router`</dt>
+<dd>
+
+A Redux-based routing library with distributed routing logic.
+
+- [View API reference](/docs/api#router)
+- [View on GitHub](https://github.com/sables-app/framework/tree/main/packages/router)
+- [View on npm](https://www.npmjs.com/package/@sables/router)
+
+</dd>
+</div>
+
+<div>
+<dt>Sables Framework — `@sables/framework`</dt>
+<dd>
+
+Integrations to enable application-first patterns.
+
+- [View API reference](/docs/api#framework)
+- [View on GitHub](https://github.com/sables-app/framework/tree/main/packages/frameworkrk)
+- [View on npm](https://www.npmjs.com/package/@sables/framework)
+
+</dd>
+</div>
+<div>
+<dt>Sables Server — `@sables/server`</dt>
+<dd>
+
+Composable handlers and middleware for server-side rendering and routing.
+
+- [View API reference](/docs/api#server)
+- [View on GitHub](https://github.com/sables-app/framework/tree/main/packages/server)
+- [View on npm](https://www.npmjs.com/package/@sables/server)
+
+</dd>
+</div>
+
+<div>
+<dt>Sables SSR — `@sables/ssr`</dt>
+<dd>
+
+Client-side integrations for server-side rendering and routing.
+
+- [View API reference](/docs/api#ssr)
+- [View on GitHub](https://github.com/sables-app/framework/tree/main/packages/ssr)
+- [View on npm](https://www.npmjs.com/package/@sables/ssr)
+
+</dd>
+</div>
+
+<div>
+<dt>Sables CLI — `sables`</dt>
+<dd>
+
+Tooling for generating apps and building artifacts.
+
+- [View API reference](/docs/api#cli)
+- [View on GitHub](https://github.com/sables-app/framework/tree/main/packages/cli)
+- [View on npm](https://www.npmjs.com/package/sables)
+
+</dd>
+</div>
+</dl>
+
+## Prerequisites
+
+#### For Sables CLI
+
+- [Node.js](https://nodejs.org/) v18+
+- [npm](https://www.npmjs.com/) v9+
+
+#### For TypeScript
+
+Strict typing is a priority in Sables, so it takes advantage of the later of TypeScript's features.
+It's recommended to use the latest stable version of [TypeScript][] with Sables.
+
+- Sables makes heavy use of [template literal types][] that were introduced in [TypeScript v4.1][].
+- Sables' packages use the [`"exports"` property in `package.json`][package-json-exports] which is supported in [TypeScript v4.7][].
+
+[package-json-exports]: https://nodejs.org/api/packages.html#exports
+[template literal types]: https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html
+[TypeScript]: https://www.typescriptlang.org
+[TypeScript v4.1]: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-1.html#template-literal-types
+[TypeScript v4.7]: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#packagejson-exports-imports-and-self-referencing
+
+#### Cloudflare Workers
+
+To deploy Sables applications to Cloudflare Workers, [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/) is required.
+
+- [Wrangler](https://www.npmjs.com/package/wrangler) v2+

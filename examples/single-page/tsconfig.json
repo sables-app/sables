@@ -1,0 +1,6 @@
+{
+  "extends": "sables/config/tsconfig.base.json",
+  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*"],
+  "compilerOptions": { "rootDir": "src" }
+}

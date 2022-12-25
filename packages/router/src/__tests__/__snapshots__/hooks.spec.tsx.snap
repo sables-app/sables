@@ -1,0 +1,21 @@
+// Vitest Snapshot v1
+
+exports[`hooks > useLink > returns a route link payload 1`] = `
+{
+  "ensureLocation": [Function],
+  "href": "/",
+  "pushLocation": [Function],
+  "replaceLocation": [Function],
+}
+`;
+
+exports[`hooks > useLinkProps > returns a link props payload 1`] = `
+{
+  "handleClick": [Function],
+  "href": "/",
+  "props": {
+    "href": "/",
+    "onClick": [Function],
+  },
+}
+`;

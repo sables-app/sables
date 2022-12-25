@@ -1,0 +1,2194 @@
+# API Reference
+
+This document serves as an API reference for Sables. This guide assumes working knowledge of [Web technologies](https://developer.mozilla.org/en-US/docs/Web) and [React](https://reactjs.org/).
+
+## Core
+
+Sables Core contains the foundation of Sables. The focus of the package is to build upon [Redux Toolkit][], adding functionality to facilitate slice lazy loading, and further improving developer experience.
+
+Sables Core is made available from both the `@sables/core` and `@sables/framework` packages for convenience.
+
+[redux toolkit]: https://redux-toolkit.js.org
+
+### createSlice
+
+> `createSlice(options): EnhancedSlice;`
+
+An enhanced version of [Redux Toolkit's `createSlice`](https://redux-toolkit.js.org/api/createslice), that returns enhanced slices.
+
+Enhanced slices contain selectors for slice state, and enhanced action creators.
+Enhanced action creators can create actions with dependencies, and have additional utility functions attached.
+
+##### Example
+
+```ts
+const dogsSlice = createSlice({
+  name: "dogs",
+  initialState: {},
+  reducers: {},
+});
+
+dogsSlice.selector(store.getState());
+```
+
+##### Complete example
+
+```ts
+const dogsSlice = createSlice({
+  name: "dogs",
+  initialState: { puppyCount: 0 },
+  reducers: {
+    adoptPuppies(state, action: PayloadAction<string[]>) {
+      state.puppyCount += action.payload.length;
+    },
+  },
+});
+
+const { adoptPuppies } = dogsSlice.actions;
+const { selectDogsState } = dogsSlice;
+
+const selectPuppyCount = createSelector(
+  selectDogsState,
+  ({ puppyCount }) => puppyCount
+);
+
+// `dogsSlice` is inserted into the store
+store.dispatch(adoptPuppies(["Fei", "Ekko"]));
+
+// Evaluates to `true`
+selectPuppyCount(store.getState()) === 2;
+```
+
+### enhanceSlice
+
+> `enhanceSlice(slice): EnhancedSlice;`
+
+Returns a new enhanced slice.
+Enhanced slices contain selectors for slice state, and enhanced action creators.
+Enhanced action creators can create actions with dependencies, and have additional utility functions attached.
+
+##### Example
+
+```ts
+const dogsSliceBasic = ReduxToolkit.createSlice({
+  name: "dogs",
+  initialState: {},
+  reducers: {},
+});
+
+const dogsSlice = enhanceSlice(dogsSliceBasic);
+
+dogsSlice.selector(store.getState());
+dogsSlice.selectDogsState(store.getState());
+```
+
+### Slice.selector
+
+> `Slice.selector(storeState): SliceState;`
+
+A reselect selector that retrieves the state of its slice.
+The selector is exposed on both the `selector` property, and a property based on the slice's `name`.
+For example, if the slice's name is `"books"`, the named selector will be called `selectBooksState`.
+
+```ts
+const dogsSlice = createSlice({
+  name: "dogs",
+  initialState: { puppyCount: 0 },
+  reducers: {},
+});
+
+const state = store.getState();
+
+// Both return `0`
+dogsSlice.selectDogsState(state).puppyCount;
+dogsSlice.selector(state).puppyCount;
+```
+
+### createAction
+
+> `createAction(actionType): EnhancedActionCreator;`
+
+Creates an enhanced action creator that adheres to Flux Standard Action conventions.
+
+Enhanced action creators can create actions with dependencies, and have additional utility functions attached.
+
+##### Example
+
+```ts
+const wakeCat = createAction("wakeCat");
+
+// { type: "wakeCat", payload: undefined, error: false, meta: {} }
+const action = wakeCat();
+```
+
+##### See also
+
+- [`actionCreator.dependsUpon`](#actioncreatordependsupon)
+- [`enhanceAction`](#enhanceaction)
+
+### enhanceAction
+
+> `enhanceAction(basicActionCreator): EnhancedActionCreator;`
+
+Creates a new, enhanced action creator.
+Enhanced action creators can create actions with dependencies, and have additional utility functions attached.
+
+##### Example
+
+```ts
+function wakeCat(payload?: Error) {
+  return {
+    type: "wakeCat",
+    payload,
+  };
+}
+
+const enhancedWakeCat = enhanceAction(wakeCat);
+
+// Returns `true`
+enhancedWakeCat.match(wakeCat());
+```
+
+### actionCreator.dependsUpon
+
+> `EnhancedActionCreator.dependsUpon(...actionDependencies): this;`
+
+Adds a dependency to the action creator.
+When a created action is dispatched, its dependencies are included.
+
+- Slices are inserted before the action is given to the reducer.
+- Observables are created and subscribed to before the action is emitted.
+
+##### Example
+
+```ts
+const adoptDog = createAction("adoptDog");
+const dogsSlice = createSlice({
+  name: "dogs",
+  initialState: { adoptionCount: 0 },
+  reducers: {},
+  extraReducers(builder) {
+    builder.addCase(adoptDog, (state) => {
+      state.adoptionCount++;
+    });
+  },
+});
+const dogsObservable = createObservable(({ actions$ }) =>
+  actions$.pipe(
+    filter(adoptDog.match),
+    tap(() => console.log("A dog was adopted!"))
+  )
+);
+
+adoptDog.dependsUpon(dogsSlice, dogsObservable);
+```
+
+##### Add slice dependencies
+
+```ts
+const dogsSlice = createSlice({
+  name: "dogs",
+  initialState: { puppyCount: 0 },
+  reducers: {
+    adoptPuppies(state, action: PayloadAction<string[]>) {
+      state.puppyCount += action.payload.length;
+    },
+  },
+});
+
+const { adoptPuppies } = dogsSlice.actions;
+
+const catSlice = createSlice({
+  name: "cat",
+  initialState: { isAnnoyed: false },
+  reducers: {},
+  extraReducers(builder) {
+    builder.addCase(adoptPuppies, (state) => {
+      state.isAnnoyed = true;
+    });
+  },
+});
+
+adoptPuppies.dependsUpon(catSlice);
+
+// The slice hasn't been inserted to the store yet,
+// so the selector returns the initial state.
+// Returns `false`
+catSlice.selectCatState(store.getState()).isAnnoyed;
+
+// Both slices are inserted to the store before the
+// action is reduced.
+store.dispatch(adoptPuppies(["Fei", "Ekko"]));
+
+// Returns `true`
+catSlice.selectCatState(store.getState()).isAnnoyed;
+
+// Returns `2`
+dogsSlice.selectDogsState(store.getState()).puppyCount;
+```
+
+### isEnhancedActionCreator
+
+> `isEnhancedActionCreator(actionCreator): boolean;`
+
+Determines whether the given action creator is an enhanced action creator.
+
+### createObservable
+
+> `createObservable(creator: (effectAPI) => Observable): ObservableCreator;`
+
+Create a Observable Creator. An Observable Creator is a function that creates an observable using the given Effect API object.
+
+##### Example
+
+```ts
+const actionLogger = createObservable(({ actions$ }) => {
+  return actions$.pipe(tap(console.log));
+});
+```
+
+### Effect API
+
+The Effect API is a customizable object with methods for interacting with an application.
+The object is provided to all effects in the framework, and can be retrieved from the React context with [`useEffectAPI`](#useeffectapi).
+
+#### Required properties
+
+While the Effect API object can be easily customized, a few properties are expected to always be present.
+
+_The required properties are:_
+
+- `action$` — A [RxJS observable](https://rxjs.dev/guide/observable) that asynchronously emits dispatched actions.
+- `dispatch` — A [Redux `dispatch`](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow#dispatch) function.
+- `getState` — A [Redux `getState`](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow#store) function.
+
+#### Default properties
+
+By default, the [manager](#manager) also provides the following properties on the Effect API.
+
+_The additional default properties are:_
+
+- `buildLink` — A method to build an object to interact with a route.
+- `history` — A [History](https://github.com/remix-run/history/blob/dev/docs/api-reference.md#history) instance.
+- `insertSlices` — A method to asynchronously add slices to the store.
+- `subscribeTo` — A method to subscribe to observable.
+
+### createSideEffect
+
+> `createSideEffect(actionTypePrefix, mapStartActionFn): SideEffect;`
+
+Creates a reactive side effect using a combination of actions and observables.
+
+##### Example
+
+```ts
+const getUser = createSideEffect(
+  "getUser",
+  async (action: PayloadAction<string>, effectAPI) => {
+    return fetch(
+      `https://api.example.com/users/${action.payload}`
+    );
+  }
+);
+
+// The dispatched action will cause a request to be sent to
+// https://api.example.com/users/@ash.ketchum
+store.dispatch(getUser.actions.start("@ash.ketchum"));
+```
+
+##### See also
+
+- [`createSideEffectActions`](#createsideeffectactions)
+- [`createSideEffectObservable`](#createsideeffectobservable)
+
+### createSideEffectActions
+
+> `createSideEffectActions(actionTypePrefix): SideEffectActions;`
+
+Creates a pair of action creators intended for use with side effects.
+
+##### Example
+
+```ts
+type SuperHero = {
+  id: string;
+  secretIdentity: string;
+  username: string;
+};
+
+const getSuperHero = createSideEffectActions<
+  SuperHero["id"],
+  SuperHero
+>("getSuperHero");
+
+// Returns: { type: "getSuperHero/start", payload: "1212" }
+const startAction = getSuperHero.start("1212");
+
+// Returns: { type: "getSuperHero/end", payload: SuperHero }
+const endAction = getSuperHero.end(
+  {
+    id: "1212",
+    secretIdentity: "Kate Bishop",
+    username: "Hawkeye",
+  },
+  // Affiliate with the start action
+  startAction
+);
+
+// Returns `true`
+const actionsAreAffiliated = getSuperHero.hasAffiliation(
+  startAction,
+  endAction
+);
+```
+
+### createSideEffectObservable
+
+> `createSideEffectObservable(sideEffectActions, mapStartActionFn): ObservableCreator;`
+
+Creates an Observable Creator containing logic for handling side effects.
+
+##### Example
+
+In the example below, dispatching the start action causes the following:
+
+1. First, the side effect observable is created and subscribed to
+2. Next, the start action is reduced into store state
+3. Then the start action is observed, and the request is sent
+4. Then the observer awaits the JSON data
+5. Lastly, the observer dispatches an affiliated end action with the JSON data
+
+```ts
+type MyData = { hello: string };
+const getData = createSideEffectActions<void, MyData>(
+  "getData"
+);
+const getDataObservableCreator = createSideEffectObservable(
+  getData,
+  (effectAPI) =>
+    fetch("https://api.example.com/data.json").then(
+      (response) => response.json()
+    )
+);
+
+// Dispatching the start action will send the request
+store.dispatch(getData.start());
+```
+
+### entityAdapterToReducers
+
+> `entityAdapterToReducers(entityStateAdapter, singularName, pluralName?): ReducersMap;`
+
+Creates unique names for entity adapter actions.
+
+##### Example
+
+```ts
+interface Dog {
+  id: number;
+  name: string;
+}
+
+const dogsEntityAdapter = createEntityAdapter<Dog>();
+
+const dogsSlice = createSlice({
+  name: "dogs",
+  initialState: dogsEntityAdapter.getInitialState(),
+  reducers: entityAdapterToReducers(
+    dogsEntityAdapter,
+    "dog"
+  ),
+});
+
+// `addDog` is equal to `addOne` from Redux Toolkit
+const { addDog } = dogsSlice.actions;
+```
+
+##### More complex example
+
+```ts
+type Cactus = {
+  plantId: string;
+  name: string;
+};
+
+const cactiAdapter = createEntityAdapter<Cactus>({
+  selectId: (cactus) => cactus.plantId,
+  sortComparer: (a, b) => a.name.localeCompare(b.name),
+});
+
+const cactiSlice = createSlice({
+  name: "cacti",
+  initialState: cactiAdapter.getInitialState(),
+  reducers: entityAdapterToReducers(
+    cactiAdapter,
+    "cactus",
+    "cacti"
+  ),
+});
+
+const { addCactus, addCacti } = cactiSlice.actions;
+
+store.dispatch(
+  addCactus({
+    plantId: "1",
+    name: "Opuntia",
+  })
+);
+store.dispatch(
+  addCacti([
+    {
+      plantId: "2",
+      name: "Echinocactus",
+    },
+    {
+      plantId: "3",
+      name: "Mammillaria",
+    },
+  ])
+);
+```
+
+#### Reducer names
+
+If `"book"` is used as the entity's `singularName`, then the following reducers are created:
+
+<div className="table-width-tight">
+
+| Unique Name      |     | Original Name |
+| ---------------- | --- | ------------- |
+| `addBook`        | ←   | `addOne`      |
+| `addBooks`       | ←   | `addMany`     |
+| `setBook`        | ←   | `setOne`      |
+| `setBooks`       | ←   | `setMany`     |
+| `setAllBooks`    | ←   | `setAll`      |
+| `removeBook`     | ←   | `removeOne`   |
+| `removeBooks`    | ←   | `removeMany`  |
+| `removeAllBooks` | ←   | `removeAll`   |
+| `updateBook`     | ←   | `updateOne`   |
+| `updateBooks`    | ←   | `updateMany`  |
+| `upsertBook`     | ←   | `upsertOne`   |
+| `upsertBooks`    | ←   | `upsertMany`  |
+
+</div>
+
+### createNotableEntities
+
+> `createNotableEntities(entityStateAdapter, singularName, adjectiveMap): NotableEntities;`
+
+Creates actions and reducers for notable entities. Notable entities are defined by providing adjectives in the form of an object literal. The object's keys are the adjectives, and the object values are functions that retrieve the entity ID from the payload of its respective action.
+
+##### Simple example
+
+```ts
+type Book = { id: string; title: string };
+
+const booksAdapter = createEntityAdapter<Book>();
+
+const notableBooks = createNotableEntities(
+  booksAdapter,
+  "book",
+  { best: (id: string) => id }
+);
+```
+
+##### Complete example
+
+```ts
+type Book = {
+  bookId: string;
+  title: string;
+};
+
+const booksAdapter = createEntityAdapter<Book>({
+  selectId: (book) => book.bookId,
+  sortComparer: (a, b) => a.title.localeCompare(b.title),
+});
+const booksReducers = entityAdapterToReducers(
+  booksAdapter,
+  "book"
+);
+const notableBooks = createNotableEntities(
+  booksAdapter,
+  "book",
+  {
+    // Each adjective function accepts a single parameter,
+    // which is the payload of its respective action.
+    // The adjective function returns the ID of the notable entity.
+    best: (payload: { id: string; reason: string }) =>
+      payload.id,
+  }
+);
+
+const booksSlice = createSlice({
+  name: "books",
+  initialState: {
+    ...booksAdapter.getInitialState(),
+    ...notableBooks.getInitialState(),
+  },
+  reducers: {
+    ...booksReducers,
+    ...notableBooks.reducers,
+  },
+});
+
+// Selectors are created for each adjective
+const { selectBestBook } = notableBooks.createSelectors(
+  booksSlice.selectBooksState
+);
+
+// Returns `Book | undefined`
+selectBestBook(store.getState());
+
+// Action creators are created for each adjective
+const { denoteBestBook } = booksSlice.actions;
+
+store.dispatch(
+  denoteBestBook({
+    id: "1",
+    reason: "It's awesome!",
+  })
+);
+```
+
+### withProps
+
+> `withProps(component, props): FunctionComponent;`
+
+A higher-order component that assigns props to the given component.
+
+```ts
+const Link = withProps("a", { className: "link" });
+const ButtonLink = withProps(Link, { role: "button" });
+```
+
+### createSelector
+
+> `createSelector(...selectorResults): Selector;`
+
+An enhanced version of [Reselect's `createSelector` function](https://redux.js.org/usage/deriving-data-selectors#createselector-overview) that creates selectors with slice dependencies.
+
+When selectors with slice dependencies are used with [Sables' `useSelector`](#useselector), associated slices will automatically be inserted into the store.
+
+##### Example
+
+```ts
+const booksSlice = createSlice({
+  name: "books",
+  initialState: { books: [] },
+  reducers: {},
+});
+
+const selectBooks = createSelector(
+  booksSlice.selector,
+  ({ books }) => books
+);
+```
+
+### useSelector
+
+An enhanced version of [`useSelector` from react-redux](https://react-redux.js.org/api/hooks#useselector) that asynchronously inserts slices from selector dependencies.
+
+> _This method is optional._
+>
+> When slices are properly set as dependencies of actions,
+> the usage of this hook isn't necessary. However, using this
+> hook will help cover developer mistakes when a slice isn't
+> set as dependency by accident.
+
+##### Example
+
+```ts
+const booksSlice = createSlice({
+  name: "books",
+  initialState: { books: [] },
+  reducers: {},
+});
+
+const selectBooks = createSelector(
+  booksSlice.selector,
+  ({ books }) => books
+);
+
+function MyComponent() {
+  // `booksSlice` is inserted
+  const books = useSelector(selectBooks);
+
+  return null;
+}
+```
+
+### useObservable
+
+> `useObservable(observableCreator): void;`
+
+A React hook that creates and subscribes to an observable using the given observable creator.
+
+The hook subscribes to the observable when the component mounts,
+and unsubscribes from the observable when the component is unmounted.
+
+> It's recommended to use `useObservable` for component-level side effects.
+> Application-level side effects should be implemented using [`subscribeTo`](#manager.subscribeto) or [`Manager.actions$`](#manager.actions$).
+
+##### Example
+
+```tsx
+const actionLogger = createObservable(({ actions$ }) => {
+  return actions$.pipe(tap(console.log));
+});
+
+function MyComponent() {
+  useObservable(actionLogger);
+
+  return null;
+}
+```
+
+### useWithDispatch
+
+> `useWithDispatch(...actionCreators): BoundActionCreator[];`
+
+A React hook that binds the given action creators to the dispatch
+function available in the context.
+
+##### Example
+
+```tsx
+const sayHello = createAction("sayHello");
+
+function MyComponent() {
+  const [dispatchSayHello] = useWithDispatch(sayHello);
+
+  return (
+    <button
+      type="button"
+      onClick={() => dispatchSayHello()}
+    >
+      Hello!
+    </button>
+  );
+}
+```
+
+### useSideEffect
+
+> `useSideEffect(sideEffectOrActions): [startEffect, isAwaiting];`
+
+##### Returns
+
+A tuple containing a function to dispatch the side effect's
+start action, and a boolean that represents whether the side effect is
+currently awaiting resolution.
+
+##### Remarks
+
+Each invocation of `useSideEffect` within a component allows for one
+occurrence of a side effect to be awaited at a time.
+Component state is used to monitor each side effect occurrence.
+
+##### Example
+
+```tsx
+const fetchCurrentDate = createSideEffect(
+  "fetchCurrentDate",
+  async () => new Date()
+);
+
+function MyComponent() {
+  const [updateDate, isAwaiting] = useSideEffect(
+    fetchCurrentDate
+  );
+
+  return (
+    <button
+      type="button"
+      onClick={updateDate}
+      disabled={isAwaiting}
+    >
+      Update Date
+    </button>
+  );
+}
+```
+
+### useEffectAPI
+
+> `useEffectAPI(): EffectAPI;`
+
+A React hook that retrieves the Effect API from the React context.
+
+```tsx
+function MyComponent() {
+  const effectAPI = useEffectAPI();
+
+  useEffect(() => {
+    const subscription = effectAPI.actions$.subscribe(
+      console.log
+    );
+
+    return () => subscription.unsubscribe();
+  }, [effectAPI]);
+
+  return null;
+}
+```
+
+##### See also
+
+- [Effect API](#effect-api)
+
+### ActionSubject
+
+> `new ActionSubject();`
+
+An `RxJS.Subject` that asynchronously emits dispatched actions on the next microtask.
+
+##### Example
+
+```ts
+const actions$ = new ActionSubject();
+
+actions$.subscribe(console.log);
+
+actions$.next({
+  type: "myAction",
+  payload: "my payload value",
+});
+```
+
+### createActionObservableMiddleware
+
+> `createActionObservableMiddleware();`
+
+Creates a Redux middleware function that emits dispatched actions to an [`ActionSubject`](#actionsubject).
+
+##### Example
+
+```ts
+const { actionObservableMiddleware, actions$ } =
+  createActionObservableMiddleware();
+```
+
+## Router
+
+Sables Router is Redux-based routing library with distributed routing logic.
+Building upon [Redux First History](https://github.com/salvoravida/redux-first-history),
+Sables Router adds support for routes and asynchronous route transitions.
+
+The library is designed to be integrated into any Redux project.
+As a result, it can be used without the rest of the Sables framework.
+
+### Location vs. Route
+
+Sables Router maintains the single source of truth of Redux First History by adhering to a strict separation between locations and routes.
+
+_An overview of the differences between locations and routes:_
+
+| Location                                                                 | Route                                                              |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Location changes are triggered by either the browser or the application. | Route transitions are a side effect of observing location changes. |
+| Location changes are synchronous.                                        | Route transitions are asynchronous.                                |
+| The current location always exists.                                      | The current route may be undefined.                                |
+| A location change can be blocked.                                        | A route transition can be interrupted.                             |
+| Location history is handled by Redux First History.                      | Routes are handled by Sables Router.                               |
+
+### createRoutes
+
+> `createRoutes(): Routes;`
+
+Creates a [`Routes`](#routes) object to be used with route transitions.
+
+```ts
+const routes = createRoutes()
+  .set("root", "/")
+  .set("about", "/about-us")
+  // Lazy-load additional routes
+  .setRoutes("/users/*", () => import("./routes/users.js"));
+```
+
+### Routes
+
+A map of routes to be used with route transitions. `Routes` objects expose a fluent interface to building routing logic.
+Route object methods can be chained, and return a new object when called.
+
+_`Routes` methods include:_
+
+<dl>
+
+<div>
+<dt>`Routes.find`</dt>
+<dd>
+
+Retrieves a set route by matching the given hyperlink
+
+</dd>
+</div>
+
+<div>
+<dt>`Routes.set`</dt>
+<dd>
+
+Sets a route to be matched for route transitions
+
+</dd>
+</div>
+
+<div>
+<dt>`Routes.setWildcard`</dt>
+<dd>
+
+Sets a wildcard route to be matched for route transitions
+
+</dd>
+</div>
+
+<div>
+<dt>`Routes.setRoutes`</dt>
+<dd>
+
+Sets wildcard route to add the given routes when matched
+
+</dd>
+</div>
+
+<div>
+<dt>`Routes.setEffects`</dt>
+<dd>
+
+Sets a Route Effects object to be used during route transitions
+
+</dd>
+</div>
+
+</dl>
+
+#### Routes.find
+
+> `Routes.find(href): Routes;`
+
+Retrieves a set route by matching the given hyperlink.
+
+##### Example
+
+```ts
+const routes = createRoutes()
+  .set("root", "/")
+  .set("profile", "/profiles/:handle");
+
+const profileRouteWithParams = routes.find(
+  "/profiles/@ash.ketchum"
+);
+```
+
+#### Routes.set
+
+> `Routes.set(id, path): Routes;`
+
+Sets a route to be matched for route transitions.
+
+##### Example
+
+```ts
+const routes = createRoutes()
+  .set("root", "/")
+  .set("profile", "/profiles/:handle");
+```
+
+#### Routes.setForwarding
+
+> `Routes.setForwarding(path, getDestFn): Routes;`
+
+Sets route to forward to another location.
+
+> The resulting route is considered unidentified, and a `forwardTo`
+> route middleware is appended to the internal Route Effects object.
+
+##### Example
+
+```ts
+const routes = createRoutes()
+  .set("root", "/")
+  // Forwards "/home.html" to "/"
+  .setForwarding("/home.html", () => "/");
+```
+
+#### Routes.setWildcard
+
+> `Routes.setWildcard(id, path): Routes;`
+
+Sets a wildcard route to be matched for route transitions.
+
+> Wildcard routes _must_ be set after non-wildcard routes.
+> TypeScript definitions enforce this pattern.
+
+##### Example
+
+```ts
+const routes = createRoutes()
+  .set("root", "/")
+  .setWildcard("search", "/search/*");
+```
+
+#### Routes.setRoutes
+
+> `Routes.setRoutes(path: string, getRoutesFn, effectMessage?): Routes;`
+
+Sets wildcard route to add the given routes when matched.
+
+The given callback function should return a `Routes` object,
+or a promise that resolves to an object with a `Routes` object
+assigned to the `default` property. The latter can be used to lazy-load
+routes using dynamic imports.
+
+> The resulting route is considered unidentified, and an `addRoutes`
+> route middleware is appended to the internal Route Effects object.
+>
+> Wildcard routes _must_ be set after non-wildcard routes.
+> TypeScript definitions enforce this pattern.
+
+##### Example
+
+```ts
+const settingsRoutes = createRoutes()
+  .set("notifications", "/settings/notifications")
+  .set("resetPassword", "/settings/reset-password");
+
+const routes = createRoutes()
+  .set("root", "/")
+  .setRoutes("/settings/*", () => settingsRoutes)
+  .setRoutes(
+    "/company/*",
+    () => import("./companyRoutes.js")
+  );
+```
+
+#### Routes.setEffects
+
+> `Routes.setEffects(getRouteEffectsFn): Routes;`
+
+Sets a Route Effects object to be used during route transitions.
+The given value may be a Route Effects object, or a callback with
+a dynamic import to lazy-load the effects.
+
+> Route Effects _must_ be set after all other method calls; the last
+> in the chain. TypeScript definitions enforce this pattern.
+
+##### Example
+
+```ts
+const routes = createRoutes()
+  .set("root", "/")
+  .set("profile", "/profiles/:handle")
+  .setEffects(() => import("./routeEffects.js"));
+```
+
+### createRouteEffects
+
+> `createRouteEffects(): RouteEffects;`
+
+Creates an object with a fluent interface for adding effects to route transitions.
+A Route Effects object is essentially a list of effects assigned to one or all routes.
+
+_Two types of effects can be added, middleware and listeners:_
+
+1. Middleware effects are called asynchronously in a series within a route transition. A middleware effect must resolve before the next middleware effect is invoked.
+2. Listener effects are called synchronously in a series outside of the route transition. A listener effect may be asynchronous, but they're not awaited.
+
+##### Example
+
+```ts
+const initialRoutes = createRoutes()
+  .set("root", "/")
+  .setWildcard("profiles", "/profiles/*")
+  .set("legacyRoot", "/app");
+
+createRouteEffects()
+  // Delay all route transitions by 500ms
+  .appendAll(delayTransition(500))
+  // Forward "legacyRoot" to the "root".
+  // This effect will called before the transition delay.
+  .prepend("legacyRoot", forwardTo("/"))
+  // Lazy-load routes when a location matches the Profiles wildcard route
+  .append(
+    initialRoutes.Profiles.id,
+    addRoutes(() => import("./profileRoutes.js"))
+  );
+```
+
+### RouteEffects
+
+A set of effects to be used with route transitions. `RouteEffects` objects expose a fluent interface for binding effects to route transitions.
+Route Effects object methods can be chained, and return a new object when called.
+
+_`RouteEffects` methods include:_
+
+| Name                          | Type       | Target     | When                  |
+| ----------------------------- | ---------- | ---------- | --------------------- |
+| `RouteEffects.append`         | Middleware | one route  | middleware chain      |
+| `RouteEffects.appendAll`      | Middleware | all routes | middleware chain      |
+| `RouteEffects.prepend`        | Middleware | one route  | middleware chain      |
+| `RouteEffects.prependAll`     | Middleware | all routes | middleware chain      |
+| `RouteEffects.onComplete`     | Listener   | one route  | transition completes  |
+| `RouteEffects.onCompleteAll`  | Listener   | any route  | transition completes  |
+| `RouteEffects.onEnd`          | Listener   | one route  | transition ends       |
+| `RouteEffects.onEndAll`       | Listener   | any route  | transition ends       |
+| `RouteEffects.onExit`         | Listener   | one route  | transition exits      |
+| `RouteEffects.onExitAll`      | Listener   | any route  | transition exits      |
+| `RouteEffects.onFailure`      | Listener   | one route  | transition fails      |
+| `RouteEffects.onFailureAll`   | Listener   | any route  | transition fails      |
+| `RouteEffects.onInterrupt`    | Listener   | one route  | transition interrupts |
+| `RouteEffects.onInterruptAll` | Listener   | any route  | transition interrupts |
+| `RouteEffects.onStart`        | Listener   | one route  | transition starts     |
+| `RouteEffects.onStartAll`     | Listener   | any route  | transition starts     |
+
+#### RouteEffects.append
+
+> `RouteEffects.append(routeID, routeMiddleware): RouteEffects;`
+
+Adds middleware for the given route to the end of the stack.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().append(
+  routes.Root.id,
+  delayTransition(5000)
+);
+```
+
+#### RouteEffects.appendAll
+
+> `RouteEffects.appendAll(routeMiddleware): RouteEffects;`
+
+Adds middleware for all routes to the end of the stack.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().appendAll(delayTransition(5000));
+```
+
+#### RouteEffects.prepend
+
+> `RouteEffects.prepend(routeID, routeMiddleware): RouteEffects;`
+
+Adds middleware for the given route to the beginning of the stack.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().prepend(
+  routes.Root.id,
+  delayTransition(5000)
+);
+```
+
+#### RouteEffects.prependAll
+
+> `RouteEffects.prependAll(routeMiddleware): RouteEffects;`
+
+Adds middleware for all routes to the beginning of the stack.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().prependAll(delayTransition(5000));
+```
+
+#### RouteEffects.onComplete
+
+> `RouteEffects.onComplete(routeID, routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for the given route completes.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onComplete(routes.Root.id, () => {
+  console.log("The root route transition completed.");
+});
+```
+
+#### RouteEffects.onCompleteAll
+
+> `RouteEffects.onCompleteAll(routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for any route completes.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onCompleteAll(() => {
+  console.log("A route transition completed.");
+});
+```
+
+#### RouteEffects.onEnd
+
+> `RouteEffects.onEnd(routeID, routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for the given route ends.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onEnd(routes.Root.id, () => {
+  console.log("The root route transition ended.");
+});
+```
+
+#### RouteEffects.onEndAll
+
+> `RouteEffects.onEndAll(routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for any route ends.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onEndAll(() => {
+  console.log("A route transition ended.");
+});
+```
+
+#### RouteEffects.onExit
+
+> `RouteEffects.onExit(routeID, routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for the given route exits.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onExit(routes.Root.id, () => {
+  console.log("The root route transition exited.");
+});
+```
+
+#### RouteEffects.onExitAll
+
+> `RouteEffects.onExitAll(routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for any route exits.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onExitAll(() => {
+  console.log("A route transition exited.");
+});
+```
+
+#### RouteEffects.onFailure
+
+> `RouteEffects.onFailure(routeID, routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for the given route fails.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onFailure(routes.Root.id, () => {
+  console.log("The root route transition failed.");
+});
+```
+
+#### RouteEffects.onFailureAll
+
+> `RouteEffects.onFailureAll(routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for any route fails.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onFailureAll(() => {
+  console.log("A route transition failed.");
+});
+```
+
+#### RouteEffects.onInterrupt
+
+> `RouteEffects.onInterrupt(routeID, routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for the given route interrupts.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onInterrupt(routes.Root.id, () => {
+  console.log("The root route transition was interrupted.");
+});
+```
+
+#### RouteEffects.onInterruptAll
+
+> `RouteEffects.onInterruptAll(routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for any route interrupts.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onInterruptAll(() => {
+  console.log("A route transition was interrupted.");
+});
+```
+
+#### RouteEffects.onStart
+
+> `RouteEffects.onStart(routeID, routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for the given route starts.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onStart(routes.Root.id, () => {
+  console.log("The root route transition started.");
+});
+```
+
+#### RouteEffects.onStartAll
+
+> `RouteEffects.onStartAll(routeListener): RouteEffects;`
+
+Adds a route listener that's called when a route transition for the given route starts.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+
+createRouteEffects().onStartAll(() => {
+  console.log("A route transition started.");
+});
+```
+
+### Actions
+
+#### chooseLocation
+
+> `chooseLocation(delta): PayloadAction;`
+
+An action creator. When its actions are dispatched, middleware will
+navigates `n` entries backward/forward in the history stack relative to the
+current index. For example, a "back" navigation would use `chooseLocation()`.
+
+##### See also
+
+- [History `history.go` documentation](https://github.com/remix-run/history/tree/main/docs/api-reference.md#history.go)
+
+#### retreatLocation
+
+> `retreatLocation(): PayloadAction;`
+
+An action creator. When its actions are dispatched, middleware will
+navigate to the previous location in history.
+
+#### advanceLocation
+
+> `advanceLocation(): PayloadAction;`
+
+An action creator. When its actions are dispatched, middleware will
+navigate to the next location in history.
+
+#### pushLocation
+
+> `pushLocation(to: History.To): PayloadAction;`
+
+An action creator. When its actions are dispatched, middleware will
+push a new location onto the history stack, increasing its length by one.
+If there were any entries in the stack after the current one, they are lost.
+
+> It's recommended to use the `ensureLocation` action instead. `ensureLocation` will
+> avoid accidentally pushing duplicate location entries.
+
+##### See also
+
+- [History `history.push` documentation](https://github.com/remix-run/history/tree/main/docs/api-reference.md#history.push)
+- [`ensureLocation`](#ensurelocation)
+
+#### replaceLocation
+
+> `replaceLocation(to: History.To): PayloadAction;`
+
+An action creator. When its actions are dispatched, middleware will
+replace the current location in the history stack with a new one. The
+location that was replaced will no longer be available.
+
+##### See also
+
+- [History `history.replace` documentation](https://github.com/remix-run/history/tree/main/docs/api-reference.md#history.replace)
+
+#### ensureLocation
+
+> `ensureLocation(dest: NavigationDestination): PayloadAction;`
+
+An action creator. When its actions are dispatched, middleware will
+checks if the current location matches the given destination.
+If the current location doesn't match, then a location push action
+is dispatched to update the location to match.
+
+##### See also
+
+- [`pushLocation`](#pushlocation)
+
+#### locationChange
+
+Utilities for the location change action. Location change actions are dispatched by
+[Redux First History](https://github.com/salvoravida/redux-first-history)
+in response to changes in location history.
+
+- `locationChange.type;`
+- `locationChange.match(action);`
+- `locationChange.isPopAction(action);`
+- `locationChange.isPushAction(action);`
+- `locationChange.isReplaceAction(action);`
+
+### Route transition middleware
+
+Middleware functions can be added to route transitions using [Route Effects](#createrouteeffects).
+While Route middleware functions can be easily written from scratch, several utilities are available to provide some out-of-the-box functionality.
+
+_The following route middleware utilities are available:_
+
+<dl>
+
+<div>
+<dt>`exitTransition`</dt>
+<dd>
+
+Preemptively ends a route transition.
+
+</dd>
+</div>
+<div>
+<dt>`delayTransition`</dt>
+<dd>
+
+Delays a route transition for a duration.
+
+</dd>
+</div>
+<div>
+<dt>`logTransition`</dt>
+<dd>
+
+Logs values.
+
+</dd>
+</div>
+<div>
+<dt>`forwardTo`</dt>
+<dd>
+
+Forwards a route transition to another location.
+
+</dd>
+</div>
+<div>
+<dt>`addRoutes`</dt>
+<dd>
+
+Adds the given routes to the application.
+
+</dd>
+</div>
+
+</dl>
+
+#### exitTransition
+
+> `exitTransition`
+
+Route middleware that preemptively ends a route transition.
+The middleware resolves early if the route transition was aborted.
+
+##### Example
+
+```ts
+const routeEffects = createRouteEffects()
+  // Prevent all route transitions
+  .prependAll(exitTransition);
+```
+
+#### delayTransition
+
+> `delayTransition(milliseconds): RouteMiddleware;`
+
+Creates middleware that delays a route transition for a duration.
+The middleware resolves early if the route transition was aborted.
+The middleware immediately resolves during SSR.
+
+##### Example
+
+```ts
+const routeEffects = createRouteEffects()
+  // Delay all routes by five seconds.
+  .appendAll(delayTransition(5000));
+```
+
+#### logTransition
+
+> `logTransition(...values): RouteMiddleware;`
+
+Creates middleware that logs values.
+The middleware resolves early if the route transition was aborted.
+
+##### Example
+
+```ts
+const routeEffects = createRouteEffects()
+  // Log a message during every route transition
+  .appendAll(
+    logTransition("A route transition is occurring.")
+  );
+```
+
+#### forwardTo
+
+> `forwardTo(getDest: (routeParams) => NavigationDestination): RouteMiddleware;`
+
+Creates middleware that forwards a route transition to another location.
+The middleware resolves early if the route transition was aborted.
+
+##### Example
+
+```ts
+const routes = createRoutes()
+  .set("root", "/")
+  .set("appRoot", "/app");
+
+const routeEffects = createRouteEffects()
+  // Forwards "/" to "/app"
+  .append(
+    routes.Root.id,
+    forwardTo(() => routes.AppRoot)
+  );
+```
+
+#### addRoutes
+
+> `addRoutes(getRoutesFn, message?): RouteMiddleware;`
+
+Creates middleware that adds the given routes to the application.
+The middleware resolves early if the route transition was aborted.
+
+> Routes can only be added during a route transition.
+> Whenever routes are added, the current route transition is interrupted,
+> and a new route transition is started.
+
+##### Example
+
+```ts
+const initialRoutes = createRoutes()
+  .set("root", "/")
+  .setWildcard("profile", "/profile/*");
+
+const profileRoutes = createRoutes()
+  .set("profile", "/profile/:handle")
+  .set("profileSettings", "/profile/settings");
+
+const routeEffects = createRouteEffects()
+  // Add `profileRoutes` when the location matches `initialRoutes.Profile`
+  .append(
+    initialRoutes.Profile.id,
+    addRoutes(() => profileRoutes)
+  );
+
+initialRoutes.setEffects(() => routeEffects);
+```
+
+### chainMiddleware
+
+> `chainMiddleware(...routeMiddlewareEffects): RouteMiddleware;`
+
+Creates a new route middleware function, that calls the given
+middleware in an asynchronous series.
+The series execution is halted if the transition is aborted.
+
+##### Example
+
+```ts
+const myRouteEffect = chainMiddleware(
+  delayTransition(3000),
+  logTransition("A route transition occurred.")
+);
+```
+
+### combineListeners
+
+> `combineListeners(...routeListeners): RouteListener;`
+
+Creates a new route listener that calls the given
+route listeners in series synchronously.
+
+##### Example
+
+```ts
+const myRouteListener = combineListeners(
+  () => console.log("First log."),
+  () => console.log("Second log.")
+);
+```
+
+### sideEffectToRouteMiddleware
+
+> `sideEffectToRouteMiddleware(sideEffect, assertRouteParams): RouteMiddleware;`
+
+Creates a new route middleware using the given side effect.
+The second parameter should be a function that asserts that the provided
+route parameters match the side effect's start action payload.
+
+##### Example
+
+```ts
+const getBooks = createSideEffect(
+  "getBooks",
+  async (action: PayloadAction<{ id: string }>) =>
+    fetch(`https://example.com/books/${action.payload.id}`)
+);
+const loadBooks = sideEffectToRouteMiddleware(
+  getBooks,
+  (params) =>
+    yup
+      .object({ id: yup.string().required() })
+      .validate(params)
+);
+
+// Loads books for every route transition
+createRoutes().setEffects(() =>
+  createRouteEffects().appendAll(loadBooks)
+);
+```
+
+### Route middleware signals
+
+A route middleware signal is an object thrown within a
+route middleware function to halt a route transition.
+
+| Name                    | Description                                      |
+| ----------------------- | ------------------------------------------------ |
+| `AddRoutesSignal`       | Add routes to the application.                   |
+| `ForwardRouteSignal`    | Forward a route transition to another location.  |
+| `ExitTransitionSignal`  | Preemptively end a route transition.             |
+| `RouteMiddlewareSignal` | The base class for all route middleware signals. |
+
+#### AddRoutesSignal
+
+> `new AddRoutesSignal(routes, message?);`
+
+A route middleware signal thrown to add routes to the application.
+
+> It's recommended to use the [`addRoutes`](#addroutes) route middleware creator when applicable.
+
+#### ForwardRouteSignal
+
+> `new ForwardRouteSignal(destination, message?);`
+
+A route middleware signal thrown to forward a route transition to another location.
+
+> It's recommended to use the [`forwardTo`](#forwardto) route middleware creator when applicable.
+
+#### ExitTransitionSignal
+
+> `new ExitTransitionSignal(message?);`
+
+A route middleware signal thrown to preemptively end a route transition.
+
+> It's recommended to use the [`exitTransition`](#exittransition) route middleware when applicable.
+
+#### RouteMiddlewareSignal
+
+> `new RouteMiddlewareSignal(message?);`
+
+The base class for all route middleware signals.
+
+> `RouteMiddlewareSignal` doesn't cause any effects by default.
+> It should only be used for type checking; e.g. `value instanceof RouteMiddlewareSignal`.
+
+### Hooks
+
+#### useLink
+
+> `useLink(route?, params?, opts?): RouteLink;`
+
+A React hook that returns an object for integrating a route with components.
+
+##### Example
+
+```tsx
+const routes = createRoutes()
+  .set("root", "/")
+  .set("profile", "/profile/:handle");
+
+function MyComponent() {
+  const { ensureLocation } = useLink(routes.Profile, {
+    handle: "@ash.ketchum",
+  });
+
+  return (
+    <button type="button" onClick={ensureLocation}>
+      This link will cause the page to reload.
+    </button>
+  );
+}
+```
+
+#### useLinkProps
+
+> `useLinkProps(onClick?, route?, params?, opts?): LinkPropsPayload;`
+
+A React hook that returns props for integrating a route with components
+that render an [anchor element](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement).
+
+##### Example
+
+```tsx
+const routes = createRoutes()
+  .set("root", "/")
+  .set("profile", "/profile/:handle");
+
+function MyComponent(props: {
+  onClick?: MouseEventHandler;
+}) {
+  const { props } = useLinkProps(
+    props.onClick,
+    routes.Profile,
+    {
+      handle: "@ash.ketchum",
+    }
+  );
+
+  return (
+    <a {...props}>
+      This link will cause a route transition.
+    </a>
+  );
+}
+```
+
+### Selectors
+
+Several [Reselect](https://github.com/reduxjs/reselect) selectors are available for the retrieving router state.
+
+_The available selectors include:_
+
+| Name                          | Description                                                                       |
+| ----------------------------- | --------------------------------------------------------------------------------- |
+| `selectRouterState`           | Retrieves the router state from the given store state.                            |
+| `selectCurrentLocation`       | Retrieves the current location from the given store state.                        |
+| `selectCurrentHref`           | Retrieves the current href value from the given store state.                      |
+| `selectCurrentRoute`          | Retrieves the current route from the given store state.                           |
+| `selectPrevRoute`             | Retrieves the previous route from the given store state.                          |
+| `selectIsRouteTransitioning`  | Determines whether a route is currently transitioning from the given store state. |
+| `createRouteMatchSelector`    | Determines whether the current route has the same ID as given route.              |
+| `createLocationMatchSelector` | Determines whether the current location matches the given route.                  |
+
+#### selectRouterState
+
+> `selectRouterState(storeState);`
+
+A selector that retrieves the router state from the given store state.
+
+##### Example
+
+```ts
+const routerState = selectRouterState(store.getState());
+```
+
+#### selectCurrentLocation
+
+> `selectCurrentLocation(storeState);`
+
+A selector that retrieves the current location from the given store state.
+
+##### Example
+
+```ts
+const currentLocation = selectCurrentLocation(
+  store.getState()
+);
+```
+
+#### selectCurrentHref
+
+> `selectCurrentHref(storeState);`
+
+A selector that retrieves the current href value from the given store state.
+
+##### Example
+
+```ts
+const currentHref = selectCurrentHref(store.getState());
+```
+
+#### selectCurrentRoute
+
+> `selectCurrentRoute(storeState);`
+
+A selector that retrieves the current route from the given store state.
+
+##### Example
+
+```ts
+const currentRoute = selectCurrentRoute(store.getState());
+```
+
+#### selectPrevRoute
+
+> `selectPrevRoute(storeState);`
+
+A selector that retrieves the previous route from the given store state.
+
+##### Example
+
+```ts
+const prevRoute = selectPrevRoute(store.getState());
+```
+
+#### selectIsRouteTransitioning
+
+> `selectIsRouteTransitioning(storeState);`
+
+A selector that determines whether a route is currently transitioning from the given store state.
+
+##### Example
+
+```ts
+const isRouteTransitioning = selectIsRouteTransitioning(
+  store.getState()
+);
+```
+
+#### createRouteMatchSelector
+
+> `createRouteMatchSelector(route);`
+
+Creates a selector that determines whether the current route has the same ID as given route.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+const selectRouteMatchesRoot = createRouteMatchSelector(
+  routes.Root
+);
+const routeMatchesRoot = selectRouteMatchesRoot(
+  store.getState()
+);
+```
+
+#### createLocationMatchSelector
+
+> `createLocationMatchSelector(route);`
+
+Creates a selector that determines whether the current location matches the given route.
+
+##### Example
+
+```ts
+const routes = createRoutes().set("root", "/");
+const selectLocationMatchesRoot =
+  createLocationMatchSelector(routes.Root);
+const locationMatchesRoot = selectLocationMatchesRoot(
+  store.getState()
+);
+```
+
+### buildHref
+
+> `buildHref(route?, params?, opts?): string;`
+
+Builds a hyperlink for a given route.
+
+### buildLink
+
+> `buildLink(dispatch, route?, params?, opts?): RouteLink;`
+
+Builds an object to interact with a route.
+
+### createRouter
+
+> `createRouter(options): RouterBag;`
+
+Creates a standalone router for use with any Redux-based framework.
+
+> `createManager` automatically integrates Sables Router with a Redux store.
+> This function should only be used there's a desire to use Sables Router
+> without using the rest of Sables.
+
+```ts
+const initialRoutes = createRoutes().set(
+  "appRoot",
+  "/app/:abc"
+);
+const router = createRouter({ initialRoutes });
+const store = Redux.createStore();
+
+router.initialize(store);
+```
+
+## Framework
+
+Sables Framework contains integrations to enable application-first patterns.
+The [`Manager`](#manager) object is introduced to consolidate technologies,
+serving as the foundation for server-side features.
+
+### createManager
+
+> `createManager(options): Manager;`
+
+Creates a new [Manager](#manager) object.
+
+> This function should be used within a `configureManager` function.
+
+#### effectAPI
+
+> `EffectApiCreator<StoreState, EffectAPI>;`
+
+Extends the Manager's Effect API object.
+
+##### Example
+
+```ts
+function configureManager({ initialLocation }) {
+  const myLogger = console.log;
+
+  return createManager({
+    effectAPI: (manager, defaults) => ({
+      ...manager,
+      myLogger,
+    }),
+  });
+}
+```
+
+##### See also
+
+- [Effect API](#effect-api)
+
+#### initialLocation
+
+> `InitialLocation;`
+
+The initial location used in location history.
+
+This value should either be passed from the parameters of a `configureManager`
+function, or be set to the desired default location.
+
+##### Default value
+
+`"/"`
+
+##### Example
+
+```ts
+function configureManager({ initialLocation }) {
+  return createManager({
+    initialLocation: initialLocation || "/app",
+  });
+}
+```
+
+#### initialRoutes
+
+> `Routes<EffectAPI>;`
+
+Sets the initial routes used for route transitions.
+
+##### Default value
+
+`createRoutes().set("defaultRoot", "/");`
+
+##### Example
+
+```ts
+const initialRoutes = createRoutes()
+  .set("root", "/")
+  .set("about", "/about-us");
+
+function configureManager() {
+  return createManager({ initialRoutes });
+}
+```
+
+#### reducers
+
+> `GetReducersMap<StoreState>;`
+
+Sets the initial reducer map for the Redux store reducer.
+
+> Instead of manually constructing the reducer map, it's recommended
+> to make use of action dependencies to have slices automatically inserted
+> instead. Please refer to the [`actionCreator.dependsUpon`](#actioncreatordependsupon) method for details.
+
+##### Default value
+
+`createReducersMapObject(routerSlice, routeTransitionSlice);`
+
+##### Example
+
+```ts
+const dogsSlice = createSlice({
+  name: "dogs",
+  initialState: {},
+  reducers: {},
+});
+
+function configureManager() {
+  return createManager({
+    reducers: (defaultReducers) => ({
+      ...defaultReducers,
+      ...createReducersMapObject(dogsSlice),
+    }),
+  });
+}
+```
+
+### Manager
+
+A manager object acts as the main reference point for an application.
+All application state and side effects ultimately belong to a manager object.
+During server-side rendering or routing, a new Manager object is created for each
+incoming request.
+
+#### Manager.store
+
+A enhanced [Redux store](https://redux.js.org/api/store).
+
+> `manager.store;`
+
+#### Manager.store.insertSlices
+
+> `manager.store.insertSlices(...slices): Promise<void>;`
+
+Asynchronously adds slices to the store.
+
+> Instead of manually adding slices to the store, it's recommended
+> to add slices to action creators as dependencies, so they'll
+> automatically be inserted.
+
+```ts
+const birdsSlice = createSlice({
+  name: "birds",
+  initialState: {},
+  reducers: {},
+});
+
+manager.store.insertSlices(birdsSlice);
+```
+
+#### Manager.subscribeTo
+
+> `manager.subscribeTo(...observableCreators): Subscription;`
+
+Subscribes to observables created from the given observable creators.
+
+Only one observable per observable creator, can be subscribed to
+using this method.
+
+```ts
+const locationChangeLogger = createObservable(
+  ({ actions$ }) =>
+    actions$.pipe(
+      filter(locationChange.match),
+      tap(() => console.log("The location changed!"))
+    )
+);
+
+manager.subscribeTo(locationChangeLogger);
+```
+
+### Provider
+
+> `<Provider configureManager={configureManager}>{children}</Provider>`
+
+The top-level context provider for Sables Framework.
+
+> This provider also includes [`react-redux`'s `Provider`](https://react-redux.js.org/api/provider) to provide the Redux store to the application.
+
+#### configureManager
+
+> configureManager?: ConfigureManagerFn;
+
+A function that configures a new `Manager` instance for use in the application. Please view [`defineConfigureManager`](#defineconfiguremanager).
+
+##### Example
+
+```tsx
+function MyComponent() {
+  useObservable(({ actions$ }) =>
+    // Log every dispatched action
+    actions$.pipe(tap(console.log))
+  );
+
+  return <h1>Welcome to Sables!</h1>;
+}
+
+function App() {
+  return (
+    <Provider>
+      <MyComponent />
+    </Provider>
+  );
+}
+```
+
+### defineEffectAPIHook
+
+> `defineEffectAPIHook(): useEffectAPI;`
+
+A utility function to assist in defining hooks for customized Effect API objects.
+
+##### Example
+
+```ts
+import { ExtendEffectAPI } from "@sables/framework";
+
+const customLogFn = console.log;
+
+export const useApp = defineEffectAPIHook<
+  ExtendEffectAPI<{
+    customLogFn: typeof customLogFn;
+  }>
+>();
+
+function MyComponent() {
+  const { customLogFn } = useApp();
+
+  return null;
+}
+```
+
+##### See also
+
+- [Effect API](#effect-api)
+
+### defineConfigureManager
+
+> `defineConfigureManager(configureManager): ConfigureManagerFn;`
+
+A utility function to assist in defining `configureManager` functions.
+
+##### Example
+
+```ts
+export const configureManager = defineConfigureManager(
+  ({ initialLocation }) => {
+    return createManager({ initialLocation });
+  }
+);
+```
+
+## Server
+
+Sables Server contains composable handlers and middleware for server-side rendering and routing.
+
+Documentation for server-side functionality is a work in progress. Please refer to the [example apps](/docs/getting-started#examples) in the meantime.
+
+## SSR
+
+Sables SSR contains client-side integrations for server-side rendering and routing.
+
+Documentation for server-side rendering & routing is a work in progress. Please refer to the [example apps](/docs/getting-started#examples) in the meantime.
+
+## CLI
+
+The `sables` CLI has two commands: `build` and `create`. The `build` command looks for a `sables.config.js` configuration file in the current working directory, and builds the project accordingly.
+
+Run `npx sables --help` for details.
+
+### Build
+
+> `npx sables build [--verbose]`
+
+Build a Sables project from the current working directory.
+The `build` command makes use two configuration files to build artifacts, `vite.config.js` and `sables.config.js`.
+
+#### vite.config.js
+
+Sables makes use of [Vite][]'s bundling capabilities to build artifacts. Additionally, `vite.config.js` is also used by the
+[Vite dev server](https://vitejs.dev/guide/cli.html#dev-server) during development.
+
+For convenience, Sables comes with a default config ready for use:
+
+<div className="codeblock-with-title">
+
+`vite.config.js`
+
+```js
+export { viteSablesDefaultConfig as default } from "sables";
+```
+
+</div>
+
+#### sables.config.js
+
+The Sables CLI `build` command is configured via the `sables.config.js` file.
+
+Similar to Vite, Sables CLI exports a configuration utility named `defineConfig` to provide intellisense.
+Sables configuration is strictly typed with detailed descriptions.
+
+<div className="codeblock-with-title">
+
+`sables.config.js`
+
+```js
+import { defineConfig } from "sables";
+
+export default defineConfig({
+  client: {
+    output: "dist/client",
+  },
+  server: {
+    entry: "src/entry-server.tsx",
+    output: "dist/server",
+    target: defineConfig.NODE,
+  },
+});
+```
+
+</div>
+
+Documentation for `sables.config.js` is a work in progress.
+Please refer to the [example apps](/docs/getting-started#examples) for more details.
+
+### Create
+
+> `npx sables create [--verbose]`
+
+Generate a new Sables application. The command will issue prompts for options.
+
+The `create` command can also be run using `npm create @sables`.
