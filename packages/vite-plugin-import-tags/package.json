@@ -6,6 +6,9 @@
   "license": "MIT",
   "bugs": "https://github.com/sables-app/sables/issues",
   "homepage": "https://github.com/sables-app/sables/tree/main/packages/vite-plugin-import-tags",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/sables-app/sables.git",
