@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@humanwhocodes/module-importer": "^1.0.1",
-    "@sables/boilerplate": "0.1.0",
-    "@sables/server": "0.1.0",
-    "@sables/vite-plugin-import-tags": "0.1.0",
+    "@sables/boilerplate": "~0.1.0",
+    "@sables/server": "~0.1.0",
+    "@sables/vite-plugin-import-tags": "~0.1.0",
     "@types/prompts": "^2.4.2",
     "@types/yargs": "^17.0.17",
     "chalk": "^4.1.2",

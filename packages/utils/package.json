@@ -23,7 +23,7 @@
     "redux": "^4.2.0"
   },
   "devDependencies": {
-    "@sables-app/scripts": "0.1.0",
+    "@sables-app/scripts": "~0.1.0",
     "@types/node": "^18.11.9",
     "typescript": "^4.9.3"
   },

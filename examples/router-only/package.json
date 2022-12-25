@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
-    "@sables/router": "0.1.0",
+    "@sables/router": "~0.1.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",
