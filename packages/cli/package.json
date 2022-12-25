@@ -47,6 +47,7 @@
     "config",
     "dist",
     "lib",
-    "!__tests__"
+    "!__tests__",
+    "!tsconfig.tsbuildinfo"
   ]
 }
