@@ -28,7 +28,7 @@
     "@sables/vite-plugin-import-tags": "~0.1.0",
     "@types/prompts": "^2.4.2",
     "@types/yargs": "^17.0.17",
-    "chalk": "^4.1.2",
+    "chalk": "^5.2.0",
     "execa": "^5.1.1",
     "fs-jetpack": "^5.1.0",
     "prepend-file": "^2.0.1",
