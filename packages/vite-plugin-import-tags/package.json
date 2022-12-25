@@ -1,6 +1,6 @@
 {
   "name": "@sables/vite-plugin-import-tags",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0",
   "description": "Tags dynamic imports for server-side rendered module preload links.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",

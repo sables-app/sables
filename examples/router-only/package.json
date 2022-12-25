@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
-    "@sables/router": "0.1.0-alpha.1",
+    "@sables/router": "0.1.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",
@@ -19,7 +19,7 @@
     "redux": "^4.2.0"
   },
   "devDependencies": {
-    "sables": "0.1.0-alpha.1",
+    "sables": "0.1.0",
     "vite": "^4.0.2"
   },
   "exports": {

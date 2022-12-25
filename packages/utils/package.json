@@ -1,6 +1,6 @@
 {
   "name": "@sables/utils",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0",
   "description": "Common utilities for Sables.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",

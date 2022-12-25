@@ -14,9 +14,9 @@
     "serve": "npx wrangler dev --local"
   },
   "dependencies": {
-    "@sables/framework": "0.1.0-alpha.1",
-    "@sables/server": "0.1.0-alpha.1",
-    "@sables/ssr": "0.1.0-alpha.1",
+    "@sables/framework": "0.1.0",
+    "@sables/server": "0.1.0",
+    "@sables/ssr": "0.1.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.18.0",
-    "sables": "0.1.0-alpha.1",
+    "sables": "0.1.0",
     "vite": "^4.0.2",
     "wrangler": "^2.1.15"
   },
