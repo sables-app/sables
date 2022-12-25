@@ -29,7 +29,7 @@
     "@types/prompts": "^2.4.2",
     "@types/yargs": "^17.0.17",
     "chalk": "^4.1.2",
-    "execa": "^5.1.1",
+    "execa": "^6.1.0",
     "fs-jetpack": "^5.1.0",
     "prepend-file": "^2.0.1",
     "prompts": "^2.4.2",
