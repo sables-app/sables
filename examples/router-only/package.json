@@ -19,7 +19,7 @@
     "redux": "^4.2.0"
   },
   "devDependencies": {
-    "sables": "0.1.0",
+    "sables": "~0.1.1",
     "vite": "^4.0.2"
   },
   "exports": {
