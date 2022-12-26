@@ -48,6 +48,18 @@ function getResponseHeaders(object: R2Object, range?: ParsedRange) {
     );
   }
 
+  if (!headers.has("content-type")) {
+    headers.set("content-type", "application/octet-stream");
+  }
+
+  if (!headers.has("cache-control")) {
+    // TODO - Add env var for cache-control, currently set for 7 days
+    headers.set("cache-control", "max-age=604800, must-revalidate");
+  }
+
+  headers.set("accept-ranges", "bytes");
+  headers.set("last-modified", object.uploaded.toUTCString());
+
   return headers;
 }
 
@@ -69,7 +81,7 @@ function hasBody(
   return !!object && typeof (object as any).body == "object";
 }
 
-const HTTP_OK = 206;
+const HTTP_OK = 200;
 const HTTP_PARTIAL_CONTENT = 206;
 const HTTP_NOT_MODIFIED = 304;
 
