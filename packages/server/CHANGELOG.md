@@ -1,5 +1,11 @@
 # @sables/server
 
+## 0.2.0
+
+### Minor Changes
+
+- 8fc0498: Add cache headers to asset request worker handler
+
 ## 0.1.1
 
 ### Patch Changes
