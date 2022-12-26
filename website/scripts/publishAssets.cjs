@@ -101,7 +101,9 @@ async function uploadFiles(context, assetDir, filePaths) {
 }
 
 async function main() {
-  const assetDir = path.dirname(require.resolve("@sables-app/website/index.html"));
+  const assetDir = path.dirname(
+    require.resolve("@sables-app/website/index.html")
+  );
   const filePaths = await fs.cwd(assetDir).findAsync(".");
   const context = getContext();
 

@@ -33,7 +33,13 @@ const ArticleHeaderLargeFramework = withProps(Text, {
   paddingLeft: "0.5",
 });
 
-const sideSectionWidth = ["7rem", "7rem", "7rem", "article.aside", "article.asideWide"];
+const sideSectionWidth = [
+  "7rem",
+  "7rem",
+  "7rem",
+  "article.aside",
+  "article.asideWide",
+];
 const paddingSideInner = [0, 0, 0, ...articleContentGutter.slice(3, 5)];
 const paddingSideOuter = [...articleContentGutter.slice(0, 3), 0, 0];
 
