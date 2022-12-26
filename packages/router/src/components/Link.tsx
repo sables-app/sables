@@ -1,8 +1,8 @@
-import { ComponentProps, ComponentType } from "react";
+import { ComponentProps, ComponentType, useMemo } from "react";
 
 import { useLinkProps } from "../hooks.js";
 import { AnyRouteReference } from "../Routes.js";
-import { RouteParams } from "../types.js";
+import { PartialHistoryPathStrict, RouteParams } from "../types.js";
 
 /** @internal */
 type LinkProps = Omit<ComponentProps<"a">, "href"> & {
@@ -59,17 +59,17 @@ export function Link({
   onClick,
   params,
   route,
-  ...otherProps
+  ...componentProps
 }: LinkProps) {
   const Component = as || "a";
-  const { href, handleClick } = useLinkProps(onClick, route, params);
+  const historyPath = useMemo(
+    (): PartialHistoryPathStrict => ({ pathname: route.build(params), hash }),
+    [hash, params, route]
+  );
+  const { href, handleClick } = useLinkProps(onClick, historyPath);
 
   return (
-    <Component
-      href={`${href}${hash || ""}`}
-      onClick={handleClick}
-      {...otherProps}
-    >
+    <Component href={href} onClick={handleClick} {...componentProps}>
       {children}
     </Component>
   );
