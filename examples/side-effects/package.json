@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@sables-app/example-side-effects",
-  "version": "0.0.0",
+  "version": "0.1.1",
   "description": "Example using creating side effects.",
   "author": "Morris Allison III (https://morris.xyz)",
   "type": "module",
@@ -12,7 +12,7 @@
     "dev": "vite"
   },
   "dependencies": {
-    "@sables/framework": "~0.1.0",
+    "@sables/framework": "~0.2.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",
