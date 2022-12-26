@@ -6,17 +6,7 @@ export default defineConfig({
     skipBundle: envFlag("SKIP_CLIENT"),
   },
   server: [
-    // !envFlag("SKIP_SERVER") && {
-    //   entry: "src/entry-server.ts",
-    //   output: "dist/server",
-    //   target: defineConfig.NODE,
-    // },
-    // !envFlag("SKIP_WORKER_RENDER") && {
-    //   entry: "src/entry-worker-render.ts",
-    //   output: "dist/worker-render",
-    //   target: defineConfig.WORKER,
-    // },
-    !envFlag("SKIP_WORKER_TRANSITION") && {
+    !envFlag("SKIP_SERVER") && {
       entry: "src/entry-worker-transition.ts",
       output: "dist/worker-transition",
       target: defineConfig.WORKER,
