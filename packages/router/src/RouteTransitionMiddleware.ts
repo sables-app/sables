@@ -2,7 +2,6 @@ import { ActionSubject, DefaultEffectAPI } from "@sables/core";
 import { createMutableRef, MutableReferenceObject } from "@sables/utils";
 
 import type * as ReduxToolkit from "@reduxjs/toolkit";
-import type * as History from "history";
 import { Action as HistoryAction } from "history";
 import { nanoid } from "nanoid";
 import { filter, firstValueFrom, map, merge } from "rxjs";
@@ -41,6 +40,7 @@ import type {
   EndTransitionAction,
   LocationChangeAction,
   NavigationDestination,
+  PartialHistoryPathStrict,
   RouteEffectHandlers,
   RouteHref,
   RouteListener,
@@ -70,18 +70,18 @@ export function createRouteTransitionMiddleware<
 
   function destinationToLocation(
     dest: NavigationDestination
-  ): RouteHref | Partial<History.Path> {
+  ): RouteHref | PartialHistoryPathStrict {
     if (typeof dest == "string") {
       return dest;
     }
     if (Array.isArray(dest)) {
-      return routesCollection.buildHref(...dest);
+      return buildHref(...dest);
     }
     if (isPartialHistoryPath(dest)) {
       return dest;
     }
 
-    return routesCollection.buildHref(dest);
+    return buildHref(dest);
   }
 
   function destinationToHref(dest: NavigationDestination): RouteHref {

@@ -3,7 +3,7 @@ import { createSelector } from "@sables/core";
 import { ROUTER_REDUCER_KEY } from "./constants.js";
 import { AnyRouteReference } from "./Routes.js";
 import { selectRouteTransitionState } from "./routeTransitionSlice.js";
-import { CombinedRouterState } from "./types.js";
+import { CombinedRouterState, PartialHistoryPathStrict } from "./types.js";
 import { buildHref } from "./utils.js";
 
 /**
@@ -49,7 +49,8 @@ export const selectCurrentLocation = createSelector(
  */
 export const selectCurrentHref = createSelector(
   selectCurrentLocation,
-  (location) => (location ? buildHref(location) : undefined)
+  (location) =>
+    location ? buildHref(location as PartialHistoryPathStrict) : undefined
 );
 
 /**

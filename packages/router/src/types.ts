@@ -74,12 +74,12 @@ export type RouteID = string;
 /**
  * @public
  */
-export type MatchingHref = Partial<History.Path> | RouteHref | null | undefined;
+export type MatchingHref = PartialHistoryPath | RouteHref | null | undefined;
 
 /**
  * @public
  */
-export type InitialLocation = RouteHref | Partial<History.Path>;
+export type InitialLocation = RouteHref | PartialHistoryPathStrict;
 
 /** @internal */
 export type DynamicImportFn<T = unknown> = () => Promise<T>;
@@ -282,6 +282,26 @@ export type CombinedRouterState = Redux.StateFromReducersMapObject<
 export type RouteParams = Record<string, unknown> | null;
 
 /**
+ * A stricter `Partial<History.Path>` using template literal types
+ *
+ * @see {History.Path}
+ *
+ * @public
+ */
+export type PartialHistoryPathStrict = {
+  pathname?: `/${string}`;
+  search?: `?${string}`;
+  hash?: `#${string}`;
+};
+
+/**
+ * @see {History.Path}
+ *
+ * @public
+ */
+export type PartialHistoryPath = Partial<History.Path>;
+
+/**
  * Parameters used to build a hyperlink for a route.
  *
  * @example
@@ -294,10 +314,9 @@ export type RouteParams = Record<string, unknown> | null;
  *
  * @public
  */
-export type BuildHrefParams = [
-  route?: AnyRouteReference | Partial<History.Path>,
-  params?: RouteParams,
-  opts?: PathParser.PathBuildOptions
+export type BuildHrefOptions = [
+  route?: AnyRouteReference | PartialHistoryPathStrict,
+  params?: RouteParams
 ];
 
 /**
@@ -310,8 +329,8 @@ export type BuildHrefParams = [
  */
 export type NavigationDestination =
   | AnyRouteReference
-  | BuildHrefParams
-  | Partial<History.Path>
+  | BuildHrefOptions
+  | PartialHistoryPathStrict
   | RouteHref;
 
 /**
@@ -323,7 +342,7 @@ export type NavigationDestination =
  */
 export type BuildLinkParams = [
   dispatch: Redux.Dispatch,
-  buildHrefArgs: BuildHrefParams
+  buildHrefOptions: BuildHrefOptions
 ];
 
 /** @internal */
@@ -374,27 +393,6 @@ export type RouteLink = {
    * @public
    */
   replaceLocation: () => void;
-};
-
-/** @internal */
-export type SharedRoutesMethods = {
-  /**
-   * Builds a hyperlink for a route
-   *
-   * @public
-   */
-  buildHref(...params: BuildHrefParams): RouteHref;
-  /**
-   * Builds an object to interact with a route.
-   *
-   * @public
-   */
-  buildLink(...params: BuildLinkParams): RouteLink;
-  /**
-   *
-   * @public
-   */
-  getRouteByID<RID extends RouteID>(id?: RID): RouteReference<RID> | undefined;
 };
 
 /** @internal */

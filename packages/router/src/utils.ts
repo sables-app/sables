@@ -5,16 +5,16 @@ import {
 } from "@sables/core";
 import { isSSREnv } from "@sables/utils";
 
-import type * as History from "history";
 import { createPath } from "history";
 
 import { ensureLocation, pushLocation, replaceLocation } from "./actions.js";
 import { AnyRouteReference } from "./Routes.js";
 import { isRoutesCollection, RoutesCollection } from "./RoutesCollection.js";
 import type {
-  BuildHrefParams,
+  BuildHrefOptions,
   BuildLinkParams,
   LocationChangeAction,
+  PartialHistoryPathStrict,
   RegisterDynamicImportFn,
   RouteHref,
   RouteLink,
@@ -41,8 +41,8 @@ export function areLocationChangesRouterEquivalent(
 
 /** @internal */
 export function isPartialHistoryPath(
-  value?: AnyRouteReference | Partial<History.Path> | BuildHrefParams
-): value is Partial<History.Path> {
+  value?: AnyRouteReference | PartialHistoryPathStrict | BuildHrefOptions
+): value is PartialHistoryPathStrict {
   return (
     typeof value === "object" &&
     !Array.isArray(value) &&
@@ -61,8 +61,8 @@ const FALLBACK_HREF = "/";
  *
  * @public
  */
-export function buildHref(...args: BuildHrefParams): RouteHref {
-  const [route, params, opts] = args;
+export function buildHref(...args: BuildHrefOptions): RouteHref {
+  const [route, params] = args;
 
   if (isPartialHistoryPath(route)) {
     return createPath(route) as RouteHref;
@@ -70,7 +70,7 @@ export function buildHref(...args: BuildHrefParams): RouteHref {
 
   if (!route) return FALLBACK_HREF;
 
-  return route.build(params, opts);
+  return route.build(params);
 }
 
 /**
