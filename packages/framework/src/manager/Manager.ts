@@ -268,12 +268,7 @@ export function createManager<
     routesCollectionRef,
     store,
   });
-  const {
-    dispatch,
-    getState,
-    insertSlices,
-    subscribeTo
-   } = store;
+  const { dispatch, getState, insertSlices, subscribeTo } = store;
   const effectAPIDefaults = createEffectAPIDefaults({
     actions$,
     dispatch,
@@ -289,7 +284,7 @@ export function createManager<
     buildLink,
     history,
     insertSlices,
-    subscribeTo
+    subscribeTo,
   });
 
   return manager;

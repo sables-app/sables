@@ -7,7 +7,11 @@ import {
 import { isSSREnv } from "@sables/utils";
 
 import { LifecycleState, ServerRequestStateRef } from "../LifecycleContext.js";
-import { ConfigureManagerFn, ConfigureManagerParams, Manager } from "../types.js";
+import {
+  ConfigureManagerFn,
+  ConfigureManagerParams,
+  Manager,
+} from "../types.js";
 import { createManager } from "./Manager.js";
 
 export * from "@sables/utils";

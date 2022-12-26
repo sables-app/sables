@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sables: Application-first Web Framework</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicons/apple-touch-icon.png"
+    />
+    <link rel="alternate icon" type="image/png" href="/favicons/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" href="/assets/homeLogo.min.svg" as="image" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sables: Application-first Web Framework</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
-  <link rel="alternate icon" type="image/png" href="/favicons/favicon.png">
-  <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg">
-  <link rel="manifest" href="/site.webmanifest" />
-  <link rel="preload" href="/assets/homeLogo.min.svg" as="image" />
-</head>
-
-<body style="background-color: #231e22">
-  <div id="root"><!-- SABLES-SSR-OUTLET --></div>
-  <script type="module" src="/entry-client.tsx"></script>
-</body>
-
+  <body style="background-color: #231e22">
+    <div id="root"><!-- SABLES-SSR-OUTLET --></div>
+    <script type="module" src="/entry-client.tsx"></script>
+  </body>
 </html>

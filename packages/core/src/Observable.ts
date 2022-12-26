@@ -219,7 +219,9 @@ export function bindSideEffect<T extends SideEffectActions<any, any, any>>(
   const observableCreator = createObservable(({ actions$ }) =>
     actions$.pipe(
       filter(
-        (endAction): endAction is EndAction<EndPayloadFromSideEffectActions<T>> =>
+        (
+          endAction
+        ): endAction is EndAction<EndPayloadFromSideEffectActions<T>> =>
           !!startActionRef.current &&
           actions.hasAffiliation(startActionRef.current, endAction)
       ),
