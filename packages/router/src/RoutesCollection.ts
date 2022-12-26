@@ -3,21 +3,14 @@ import {
   SYMBOL_ROUTES_COLLECTION_INSTANCE,
 } from "@sables/core";
 
-import { createRoutes, Routes } from "./Routes.js";
-import type {
-  BuildHrefParams,
-  BuildLinkParams,
-  MatchingHref,
-  RouteHref,
-  RouteWithParams,
-  SharedRoutesMethods,
-} from "./types.js";
-import { buildHref, buildLink } from "./utils.js";
+import { createRoutes, RouteReference, Routes } from "./Routes.js";
+import type { MatchingHref, RouteID, RouteWithParams } from "./types.js";
 
 /** @internal */
 export interface RoutesCollection<
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
-> extends SharedRoutesMethods {
+> {
+  getRouteByID<RID extends RouteID>(id?: RID): RouteReference<RID> | undefined;
   add(routes: Routes<EffectAPI>): void;
   addInitial(initialRoutes?: Routes<EffectAPI>): void;
   findByHref(href: MatchingHref): {
@@ -56,12 +49,6 @@ export function createRoutesCollection<
       );
 
       routesCollection.add(initialRoutes || defaultInitialRoutes);
-    },
-    buildHref(...params: BuildHrefParams): RouteHref {
-      return buildHref(...params);
-    },
-    buildLink(...params: BuildLinkParams) {
-      return buildLink(...params);
     },
     findByHref(...params) {
       for (const routes of collection) {

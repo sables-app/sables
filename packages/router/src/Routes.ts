@@ -5,9 +5,7 @@ import {
 } from "@sables/core";
 import { capitalize } from "@sables/utils";
 
-import type * as History from "history";
 import { createPath } from "history";
-import type * as PathParser from "path-parser";
 import { Path as ParserPath } from "path-parser";
 
 import {
@@ -24,10 +22,9 @@ import {
 } from "./RouteEffects.js";
 import type {
   AnyRoutePath,
-  BuildHrefParams,
-  BuildLinkParams,
   DynamicImportFn,
   MatchingHref,
+  PartialHistoryPathStrict,
   RegisterDynamicImportFn,
   RouteEffectHandlers,
   RouteHref,
@@ -36,10 +33,8 @@ import type {
   RouteParams,
   RoutePathType,
   RouteWithParams,
-  SharedRoutesMethods,
   WildCardPathType,
 } from "./types.js";
-import { buildHref, buildLink } from "./utils.js";
 
 /** @internal */
 type ExternalEffectsFn<EffectAPI extends DefaultEffectAPI> =
@@ -88,7 +83,12 @@ function cloneRoutes<
 export interface RoutesMethods<
   EffectAPI extends DefaultEffectAPI,
   RoutesRID extends string = never
-> extends SharedRoutesMethods {
+> {
+  /**
+   * @public
+   */
+  getRouteByID<RID extends RouteID>(id?: RID): RouteReference<RID> | undefined;
+
   /**
    * Retrieves a map of handlers to invoke effects matching
    * the given route ID.
@@ -162,7 +162,9 @@ export interface RoutesMethods<
    */
   setForwarding(
     path: RoutePathType,
-    getDestination: (params: RouteParams) => Partial<History.Path> | RouteHref
+    getDestination: (
+      params: RouteParams
+    ) => PartialHistoryPathStrict | RouteHref
   ): UntouchedRoutes<EffectAPI, RoutesRID>;
 
   /**
@@ -252,10 +254,7 @@ export type RouteReference<
   RID extends RouteID,
   PathParams extends Record<string, unknown> = Record<string, unknown>
 > = Readonly<{
-  build(
-    params?: PathParams | null,
-    opts?: PathParser.PathBuildOptions
-  ): RouteHref;
+  build(params?: PathParams | null): RouteHref;
   id: RID;
   path: RoutePathType;
   test(href: MatchingHref): PathParams | null;
@@ -365,12 +364,6 @@ export function createRoutes<
 
       return nextRoutes;
     },
-    buildHref(...params: BuildHrefParams) {
-      return buildHref(...params);
-    },
-    buildLink(...params: BuildLinkParams) {
-      return buildLink(...params);
-    },
     find(href: MatchingHref) {
       if (!href) return undefined;
 
@@ -421,8 +414,8 @@ export function createRoutes<
 
     type Params = Record<string, unknown>;
 
-    function build(params?: Params | null, opts?: PathParser.PathBuildOptions) {
-      return parser.build(params || {}, opts) as RouteHref;
+    function build(params?: Params | null) {
+      return parser.build(params || {}) as RouteHref;
     }
 
     function resolveHref(value: NonNullable<MatchingHref>): string {

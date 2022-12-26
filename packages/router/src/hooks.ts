@@ -3,9 +3,8 @@ import { useEffectAPI } from "@sables/core";
 import { MouseEventHandler, useCallback, useMemo, useRef } from "react";
 import { useDispatch } from "react-redux";
 
-import { useRoutesCollection } from "./StoreEnhancer.js";
-import type { BuildHrefParams, DynamicImportFn, RouteLink } from "./types.js";
-import { createDynamicImportRegistrar } from "./utils.js";
+import type { BuildHrefOptions, DynamicImportFn, RouteLink } from "./types.js";
+import { buildLink, createDynamicImportRegistrar } from "./utils.js";
 
 /**
  * A React hook that returns an object for integrating a route with components.
@@ -32,14 +31,13 @@ import { createDynamicImportRegistrar } from "./utils.js";
  *
  * @public
  */
-export function useLink(...buildHrefArgs: BuildHrefParams): RouteLink {
-  const [id, params, opts] = buildHrefArgs;
+export function useLink(...options: BuildHrefOptions): RouteLink {
+  const [route, params] = options;
   const dispatch = useDispatch();
-  const routesCollection = useRoutesCollection();
 
   return useMemo(
-    () => routesCollection.buildLink(dispatch, [id, params, opts]),
-    [id, params, opts, dispatch, routesCollection]
+    () => buildLink(dispatch, [route, params]),
+    [route, params, dispatch]
   );
 }
 
@@ -67,9 +65,9 @@ export function useLink(...buildHrefArgs: BuildHrefParams): RouteLink {
  */
 export function useLinkProps(
   onClick?: MouseEventHandler<HTMLAnchorElement>,
-  ...args: BuildHrefParams
+  ...options: BuildHrefOptions
 ) {
-  const { href, ensureLocation } = useLink(...args);
+  const { href, ensureLocation } = useLink(...options);
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement>>(
     (event) => {
       onClick?.(event);

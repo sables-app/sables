@@ -5,7 +5,7 @@ import {
   SYMBOL_EFFECT_API_ROUTES,
   SYMBOL_MANAGER_EFFECT_API,
 } from "@sables/core";
-import { BuildHrefParams, RoutesCollection } from "@sables/router";
+import { BuildHrefOptions, buildLink, RoutesCollection } from "@sables/router";
 import type { MutableReferenceObject } from "@sables/utils";
 
 import type * as History from "history";
@@ -34,16 +34,14 @@ export function createManagerInstance<
 }): Manager<StoreState, EffectAPI> {
   const { dispatch, getState } = store;
 
-  function buildLink(...buildHrefArgs: BuildHrefParams) {
-    return routesCollectionRef.demand().buildLink(dispatch, buildHrefArgs);
-  }
-
   return {
     [SYMBOL_EFFECT_API_LIFECYCLE]: lifecycleRef,
     [SYMBOL_EFFECT_API_ROUTES]: routesCollectionRef,
     [SYMBOL_MANAGER_EFFECT_API]: effectAPIRef,
     actions$,
-    buildLink,
+    buildLink(...args: BuildHrefOptions) {
+      return buildLink(dispatch, args);
+    },
     dispatch,
     getState,
     history,
