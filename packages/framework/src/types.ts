@@ -62,7 +62,7 @@ export type Manager<
     >;
     [SYMBOL_MANAGER_EFFECT_API]: MutableReferenceObject<EffectAPI>;
     /**
-     * A enhanced Redux store.
+     * An enhanced Redux store.
      *
      * @public
      */

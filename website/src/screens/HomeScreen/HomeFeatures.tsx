@@ -173,7 +173,7 @@ export function HomeFeatures() {
       <Feature
         iconSrc={locomotiveSrc}
         heading={translate("homeScreen.features.appFirst.heading")}
-        apiLinkHash="#server"
+        apiLinkHash="#framework"
         description={translate("homeScreen.features.appFirst.description")}
       />
       <Feature
