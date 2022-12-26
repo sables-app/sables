@@ -59,8 +59,8 @@ export function createAssetProxyHandler(
 
     try {
       const originalPathname = new URL(request.url).pathname;
-      // `any` used because miniflare blows us when a string is passed,
-      // but cloudflare worker types error when a `URL` is used 🙃
+      // `any` used because Miniflare blows up when a string is given,
+      // but Cloudflare Worker's types error out when a `URL` is given 🙃
       const nextURL: any = new URL(originalPathname, assetProxyURL);
 
       return fetch(new Request(nextURL));
