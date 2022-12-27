@@ -28,6 +28,7 @@
     "@sables/vite-plugin-import-tags": "~0.1.0",
     "@types/prompts": "^2.4.2",
     "@types/yargs": "^17.0.17",
+    "@vitejs/plugin-react-swc": "^3.0.1",
     "chalk": "^4.1.2",
     "execa": "^5.1.1",
     "fs-jetpack": "^5.1.0",
@@ -38,7 +39,6 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
-    "@vitejs/plugin-react-swc": "^3.0.1",
     "typescript": "^4.9.3",
     "vite": "^4.0.2"
   },
