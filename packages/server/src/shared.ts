@@ -60,7 +60,16 @@ export function getEnvVarString(
   return fromImportMeta() || fromProcessEnv() || fromWorkerEnv(workerEnv);
 }
 
-export function getAssetProxyURL(workerEnv?: Record<string, unknown>) {
+/**
+ * @privateRemarks
+ *
+ * The `workerEnv` param may be `undefined`, but is intentionally not optional.
+ *
+ * @internal
+ */
+export function getAssetProxyURL(
+  workerEnv: Record<string, unknown> | undefined
+) {
   return getEnvVarString("ASSET_PROXY_URL", workerEnv);
 }
 

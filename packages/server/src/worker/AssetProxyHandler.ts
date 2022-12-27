@@ -46,7 +46,6 @@ export function createAssetProxyHandler(
     sablesBuildMeta?: SablesBuildMeta;
   } = {}
 ) {
-  const assetProxyURL = getAssetProxyURL();
   const buildMeta = getBuildMeta(options?.sablesBuildMeta);
   const { assetManifest } = buildMeta;
 
@@ -54,7 +53,10 @@ export function createAssetProxyHandler(
     return assetManifest.includes(new URL(request.url).pathname);
   }
 
-  async function proxyToURL(request: FetchEvent["request"]) {
+  async function proxyToURL(
+    request: FetchEvent["request"],
+    assetProxyURL: string | undefined
+  ) {
     if (!assetProxyURL) return undefined;
 
     try {
@@ -86,6 +88,7 @@ export function createAssetProxyHandler(
     request: FetchEvent["request"],
     env: WorkerEnv
   ) {
+    const assetProxyURL = getAssetProxyURL(env);
     const assetProxyBucket = getAssetProxyBucket(env);
     const isProxyDisabled = !assetProxyURL && !assetProxyBucket;
     const shouldHandleRequest = isAssetRequest(request);
@@ -102,7 +105,7 @@ export function createAssetProxyHandler(
 
     // The return must be awaited so we can check
     // whether the request was handled or not
-    const response = await proxyToURL(request);
+    const response = await proxyToURL(request, assetProxyURL);
 
     return response || proxyToBucket(request, assetProxyBucket);
   };

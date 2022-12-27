@@ -29,7 +29,7 @@ export async function createRenderingMiddleware(
   options: RenderingMiddlewareOptions = {}
 ) {
   const { describeResponse } = options;
-  const assetProxyURL = getAssetProxyURL();
+  const assetProxyURL = getAssetProxyURL(undefined);
   const buildMeta = getBuildMeta(options?.sablesBuildMeta);
   const { taggedSSRManifest, template: baseTemplate } = buildMeta;
   const assetsDir = options.assetsDir || path.resolve(__dirname, "client");
