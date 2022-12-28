@@ -1,5 +1,16 @@
 # @sables-app/website
 
+## 0.2.0
+
+### Minor Changes
+
+- 1e8a000: Add staging env to worker
+
+### Patch Changes
+
+- Updated dependencies [a78aa99]
+  - @sables/server@0.2.1
+
 ## 0.1.3
 
 ### Patch Changes
