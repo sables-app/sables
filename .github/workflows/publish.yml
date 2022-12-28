@@ -26,8 +26,8 @@ jobs:
 
       - name: Creating .npmrc
         run: |
-          echo "//npm.pkg.github.com/:_authToken=\${GITHUB_TOKEN}" >> .npmrc
-          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=\${GITHUB_TOKEN}" >> $HOME/.npmrc
+          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc
 
       - name: Publish packages to GitHub and NPM registries
         uses: changesets/action@v1
