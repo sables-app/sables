@@ -7,8 +7,8 @@ export default defineConfig({
   },
   server: [
     !envFlag("SKIP_SERVER") && {
-      entry: "src/entry-worker-transition.ts",
-      output: "dist/worker-transition",
+      entry: "src/entry-worker.ts",
+      output: "dist/worker",
       target: defineConfig.WORKER,
     },
   ],

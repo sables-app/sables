@@ -39,11 +39,6 @@ namespace("watch", () => {
   });
 });
 
-namespace("serve", () => {
-  desc("Start the built example app server.");
-  taskExec("website", "npm run serve --workspace=@sables-app/website");
-});
-
 desc("Delete all build artifacts.");
 task("clean", () =>
   Promise.all([
@@ -94,7 +89,7 @@ namespace("publish", () => {
     );
     taskExec(
       "worker",
-      "npm run publish:worker --workspace=@sables-app/website"
+      "npm run publish:worker --workspace=@sables-app/website -- --env=production"
     );
   });
 });

@@ -2,4 +2,4 @@
 "@sables/server": patch
 ---
 
-Fix worker asset proxying
+Correct asset proxy URL retrieval in workers
