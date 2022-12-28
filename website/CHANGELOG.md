@@ -1,5 +1,11 @@
 # @sables-app/website
 
+## 0.1.3
+
+### Patch Changes
+
+- b3c4ea0: Update Chakra UI
+
 ## 0.1.2
 
 ### Patch Changes
