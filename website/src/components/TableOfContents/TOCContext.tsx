@@ -10,7 +10,7 @@ import {
   useState,
 } from "react";
 
-import { Box } from "../../../deps.js";
+import { Box } from "@chakra-ui/react";
 import { HeadingMeta, HeadingsReadyHandler } from "./constants.js";
 import { TOCContent } from "./Presenters.js";
 

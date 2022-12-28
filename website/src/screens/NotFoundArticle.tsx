@@ -1,4 +1,4 @@
-import { Box } from "../../deps.js";
+import { Box } from "@chakra-ui/react";
 import {
   Article,
   articleContentGutter,

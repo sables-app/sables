@@ -19,7 +19,7 @@ import {
   Th,
   Thead,
   Tr,
-} from "../../deps.js";
+} from "@chakra-ui/react";
 import { greenCheckboxSrc } from "../assets/mod.js";
 import { ArticleHeadingWithAnchor } from "./ArticleHeading.js";
 import { Blockquote } from "./Blockquote.js";

@@ -1,7 +1,7 @@
 import { withProps } from "@sables/framework";
 import { Link } from "@sables/framework/router";
 
-import { Box, Center, HStack, Img, Text, VStack } from "../../deps.js";
+import { Box, Center, HStack, Img, Text, VStack } from "@chakra-ui/react";
 import { articleLogoSrc } from "../assets/mod.js";
 import { useApp } from "../hooks/mod.js";
 import routes from "../routes/mod.js";

@@ -2,7 +2,7 @@ import { withProps } from "@sables/framework";
 
 import { ReactNode } from "react";
 
-import { Box, Container, Grid, GridItem, VStack } from "../../deps.js";
+import { Box, Container, Grid, GridItem, VStack } from "@chakra-ui/react";
 import { ArticleHeader } from "./ArticleHeader.js";
 import { ArticleSideNav } from "./ArticleSideNav.js";
 import { Footer } from "./Footer.js";

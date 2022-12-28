@@ -1,7 +1,7 @@
 import { withProps } from "@sables/framework";
 import { Link } from "@sables/framework/router";
 
-import { LinkOverlay, Text } from "../../deps.js";
+import { LinkOverlay, Text } from "@chakra-ui/react";
 
 export const LargeLinkOverlay = withProps(LinkOverlay, {
   as: Link,
