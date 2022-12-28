@@ -1,5 +1,11 @@
 # @sables/server
 
+## 0.2.1
+
+### Patch Changes
+
+- a78aa99: Correct asset proxy URL retrieval in workers
+
 ## 0.2.0
 
 ### Minor Changes
