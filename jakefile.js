@@ -77,11 +77,15 @@ namespace("build", () => {
   });
 });
 
-task("publish", ["publish:website"]);
+task("publish", ["publish:packages", "publish:website"]);
+
 namespace("publish", () => {
+  taskExec("packages", "npx changeset publish");
+
   task("website", ["publish:website:assets", "publish:website:worker"], {
     concurrency: 2,
   });
+
   namespace("website", () => {
     taskExec(
       "assets",
@@ -94,4 +98,5 @@ namespace("publish", () => {
   });
 });
 
-task("gamut", ["clean", "build", "test", "publish"]);
+task("prepare", ["clean", "build", "test"]);
+task("gamut", ["prepare", "publish"]);
