@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-import { Tooltip } from "../../deps.js";
+import { Tooltip } from "@chakra-ui/react";
 import { ThickButton } from "./ThickButton.js";
 
 const CopyTooltip = withProps(Tooltip, {

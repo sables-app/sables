@@ -1,6 +1,6 @@
 import { withProps } from "@sables/framework";
 
-import { Box } from "../../deps.js";
+import { Box } from "@chakra-ui/react";
 
 export const Blockquote = withProps(Box, {
   as: "blockquote",

@@ -3,7 +3,7 @@ import { withProps } from "@sables/framework";
 import type { StyleProps } from "@chakra-ui/react";
 import { ComponentProps, memo } from "react";
 
-import { Heading as HeadingBase, Link, Text } from "../../deps.js";
+import { Heading as HeadingBase, Link, Text } from "@chakra-ui/react";
 import { AnchorSlug } from "./AnchorSlug.js";
 
 const HeadingBaseStyle = withProps(HeadingBase, {

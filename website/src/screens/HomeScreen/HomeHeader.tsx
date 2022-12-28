@@ -1,7 +1,7 @@
 import { withProps } from "@sables/framework";
 import { responsiveToken } from "@sables/framework/utils";
 
-import { Box, Img, Text, VStack } from "../../../deps.js";
+import { Box, Img, Text, VStack } from "@chakra-ui/react";
 import { homeBackgroundSrc, homeLogoSrc } from "../../assets/mod.js";
 import { useApp } from "../../hooks/mod.js";
 import { HomeNav } from "./HomeNav.js";

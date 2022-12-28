@@ -2,7 +2,7 @@ import { withProps } from "@sables/framework";
 
 import { ComponentProps } from "react";
 
-import { Text } from "../../deps.js";
+import { Text } from "@chakra-ui/react";
 import { useIsInsidePreformattedText } from "./PreformattedText.js";
 
 const CodeBase = withProps(Text, {

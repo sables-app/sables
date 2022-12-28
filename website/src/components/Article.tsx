@@ -3,7 +3,7 @@ import { selectIsRouteTransitioning } from "@sables/framework/router";
 
 import { ComponentProps, ReactNode, useEffect, useRef, useState } from "react";
 
-import { Box, Container, GridItem } from "../../deps.js";
+import { Box, Container, GridItem } from "@chakra-ui/react";
 import { SCREEN_ANIMATION_DURATION } from "../constants.js";
 import { articleContentGutter } from "./ThemeProvider.js";
 

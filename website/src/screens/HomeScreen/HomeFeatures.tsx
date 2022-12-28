@@ -14,7 +14,7 @@ import {
   StackDivider,
   Text,
   VStack,
-} from "../../../deps.js";
+} from "@chakra-ui/react";
 import {
   distributedSrc,
   featuresPatternSrc,

@@ -2,7 +2,7 @@ import { withProps } from "@sables/framework";
 
 import { css } from "@emotion/css";
 
-import { Link as LinkBase } from "../../deps.js";
+import { Link as LinkBase } from "@chakra-ui/react";
 
 export const Link = withProps(LinkBase, {
   color: "red.200",

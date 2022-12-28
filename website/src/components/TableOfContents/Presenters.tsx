@@ -11,7 +11,7 @@ import {
   Box,
   Text,
   VStack,
-} from "../../../deps.js";
+} from "@chakra-ui/react";
 import { AnchorSlug } from "../AnchorSlug.js";
 import { Link } from "../Link.js";
 import { HeadingMeta, HeadingTag, isRenderedHeadingMeta } from "./constants.js";

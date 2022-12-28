@@ -1,6 +1,6 @@
 import { ScaleLoader } from "react-spinners";
 
-import { Box, Center } from "../../deps.js";
+import { Box, Center } from "@chakra-ui/react";
 import { Article, articleContentGutter } from "../components/mod.js";
 import { useApp } from "../hooks/mod.js";
 
