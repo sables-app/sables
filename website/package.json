@@ -20,11 +20,10 @@
     "dev": "vite",
     "publish:assets": "node ./scripts/publishAssets.cjs",
     "publish:worker": "npx wrangler publish",
-    "dev:worker": "npx wrangler dev --local",
     "build": "sables build --verbose",
-    "watch:build": "chokidar \"**/*.ts?(x)\" -c \"npm run build\"",
-    "preview": "vite preview",
-    "serve": "node ./dist/server/entry-server.js"
+    "_dev:worker:wrangler": "npx wrangler dev --local",
+    "_dev:worker:http-server": "cd ./dist/client && http-server",
+    "dev:worker": "concurrently \"npm:_dev:worker:wrangler\" \"npm:_dev:worker:http-server\""
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.4",
@@ -50,6 +49,7 @@
     "errorhandler": "^1.5.1",
     "get-port": "~5.1.1",
     "github-slugger": "^2.0.0",
+    "http-server": "^14.1.1",
     "lodash.get": "^4.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -68,6 +68,7 @@
     "@vitejs/plugin-react-swc": "^3.0.1",
     "aws-sdk": "^2.1261.0",
     "chokidar-cli": "^3.0.0",
+    "concurrently": "^7.6.0",
     "fs-jetpack": "^5.1.0",
     "mime-types": "^2.1.35",
     "sables": "~0.1.2",
