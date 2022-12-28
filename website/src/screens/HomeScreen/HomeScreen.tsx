@@ -1,8 +1,8 @@
 import { withProps } from "@sables/framework";
 
+import { Box, VStack } from "@chakra-ui/react";
 import { Helmet } from "react-helmet-async";
 
-import { Box, VStack } from "@chakra-ui/react";
 import { Footer } from "../../components/Footer.js";
 import { bodyFontProps } from "../../components/ThemeProvider.js";
 import { useApp } from "../../hooks/mod.js";

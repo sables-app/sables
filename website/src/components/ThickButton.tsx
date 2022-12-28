@@ -1,6 +1,5 @@
-import { ComponentPropsWithoutRef, forwardRef } from "react";
-
 import { Button } from "@chakra-ui/react";
+import { ComponentPropsWithoutRef, forwardRef } from "react";
 
 // TODO - update `withProps` to support `forwardRef`, rewrite to use `withProps`
 export const ThickButton = forwardRef<

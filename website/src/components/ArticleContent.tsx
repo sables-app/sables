@@ -1,15 +1,5 @@
 import { withProps } from "@sables/framework";
 
-import { css } from "@emotion/css";
-import type { MDXComponents, MDXContent } from "mdx/types.js";
-import {
-  Children,
-  ComponentProps,
-  isValidElement,
-  ReactNode,
-  useMemo,
-} from "react";
-
 import {
   Box,
   Table,
@@ -20,6 +10,16 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { css } from "@emotion/css";
+import type { MDXComponents, MDXContent } from "mdx/types.js";
+import {
+  Children,
+  ComponentProps,
+  isValidElement,
+  ReactNode,
+  useMemo,
+} from "react";
+
 import { greenCheckboxSrc } from "../assets/mod.js";
 import { ArticleHeadingWithAnchor } from "./ArticleHeading.js";
 import { Blockquote } from "./Blockquote.js";

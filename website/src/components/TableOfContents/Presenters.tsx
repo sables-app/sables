@@ -1,7 +1,5 @@
 import { withProps } from "@sables/framework";
 
-import { ComponentProps, memo, ReactNode, useMemo } from "react";
-
 import {
   Accordion,
   AccordionButton,
@@ -12,6 +10,8 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { ComponentProps, memo, ReactNode, useMemo } from "react";
+
 import { AnchorSlug } from "../AnchorSlug.js";
 import { Link } from "../Link.js";
 import { HeadingMeta, HeadingTag, isRenderedHeadingMeta } from "./constants.js";

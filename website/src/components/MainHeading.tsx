@@ -1,6 +1,6 @@
+import { Box } from "@chakra-ui/react";
 import { ComponentProps } from "react";
 
-import { Box } from "@chakra-ui/react";
 import { ArticleHeadingWithAnchor } from "./ArticleHeading.js";
 
 export function MainHeading({

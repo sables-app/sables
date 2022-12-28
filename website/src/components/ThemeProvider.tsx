@@ -1,6 +1,10 @@
+import {
+  Box,
+  ChakraProvider,
+  extendTheme,
+  useColorMode,
+} from "@chakra-ui/react";
 import { ComponentPropsWithoutRef, ReactNode, useRef } from "react";
-
-import { Box, ChakraProvider, extendTheme, useColorMode } from "@chakra-ui/react";
 
 const theme = extendTheme({
   initialColorMode: "dark",
