@@ -1,8 +1,8 @@
 import { withProps } from "@sables/framework";
 
+import { Box, HStack, Img, Stack, StackDivider } from "@chakra-ui/react";
 import { ComponentProps } from "react";
 
-import { Box, HStack, Img, Stack, StackDivider } from "@chakra-ui/react";
 import { californiaFlagSrc, githubSrc } from "../assets/mod.js";
 import { Link } from "./Link.js";
 import { bodyFontProps } from "./ThemeProvider.js";

@@ -1,8 +1,6 @@
 import { withProps } from "@sables/framework";
 import { Link } from "@sables/framework/router";
 
-import { ComponentProps, ReactNode } from "react";
-
 import {
   Box,
   Center,
@@ -15,6 +13,8 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { ComponentProps, ReactNode } from "react";
+
 import {
   distributedSrc,
   featuresPatternSrc,

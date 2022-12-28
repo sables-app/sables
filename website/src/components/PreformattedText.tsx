@@ -1,8 +1,7 @@
 import { withProps } from "@sables/framework";
 
-import { ComponentPropsWithoutRef, createContext, useContext } from "react";
-
 import { Box } from "@chakra-ui/react";
+import { ComponentPropsWithoutRef, createContext, useContext } from "react";
 
 const PreformattedTextContext = createContext(false);
 

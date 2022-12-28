@@ -1,5 +1,6 @@
 import { withProps } from "@sables/framework";
 
+import { Box } from "@chakra-ui/react";
 import {
   createContext,
   ReactNode,
@@ -10,7 +11,6 @@ import {
   useState,
 } from "react";
 
-import { Box } from "@chakra-ui/react";
 import { HeadingMeta, HeadingsReadyHandler } from "./constants.js";
 import { TOCContent } from "./Presenters.js";
 

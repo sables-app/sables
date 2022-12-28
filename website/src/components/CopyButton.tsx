@@ -1,5 +1,6 @@
 import { withProps } from "@sables/framework";
 
+import { Tooltip } from "@chakra-ui/react";
 import copyToClipboard from "copy-to-clipboard";
 import {
   ComponentPropsWithoutRef,
@@ -8,7 +9,6 @@ import {
   useState,
 } from "react";
 
-import { Tooltip } from "@chakra-ui/react";
 import { ThickButton } from "./ThickButton.js";
 
 const CopyTooltip = withProps(Tooltip, {

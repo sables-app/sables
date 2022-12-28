@@ -1,6 +1,7 @@
 import { withProps } from "@sables/framework";
 
 import { Heading, LinkBox, Stack, Text } from "@chakra-ui/react";
+
 import { useApp } from "../hooks/mod.js";
 import routes from "../routes/mod.js";
 import { LargeLinkOverlay, LargeSubtext } from "./LargeLink.js";

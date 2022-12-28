@@ -1,8 +1,8 @@
+import { Box } from "@chakra-ui/react";
 import { ComponentProps, ReactNode } from "react";
 import SyntaxHighlighterBase from "react-syntax-highlighter";
 import { nord } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-import { Box } from "@chakra-ui/react";
 import { Code } from "../Code.js";
 import { CopyButton } from "../CopyButton.js";
 import { PreformattedText } from "../PreformattedText.js";
