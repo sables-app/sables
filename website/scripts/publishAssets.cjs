@@ -10,18 +10,18 @@ const mime = require("mime-types");
 const fs = require("fs-jetpack");
 
 function getContext() {
-  const { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET } =
+  const { CF_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET } =
     process.env;
 
   return {
-    accountId: R2_ACCOUNT_ID,
+    accountId: CF_ACCOUNT_ID,
     accessKeyId: R2_ACCESS_KEY_ID,
     secretAccessKey: R2_SECRET_ACCESS_KEY,
     // Region is only used by AWS S3. It's always "auto" for Cloudflare R2.
     region: "auto",
     bucket: R2_BUCKET,
     client: new S3({
-      endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      endpoint: `https://${CF_ACCOUNT_ID}.r2.cloudflarestorage.com`,
       accessKeyId: R2_ACCESS_KEY_ID,
       secretAccessKey: R2_SECRET_ACCESS_KEY,
       signatureVersion: "v4",

@@ -99,4 +99,9 @@ namespace("publish", () => {
 });
 
 task("prepare", ["clean", "build", "test"]);
+
+namespace("prepare", () => {
+  task("packages", ["clean", "build:packages", "test"]);
+});
+
 task("gamut", ["prepare", "publish"]);

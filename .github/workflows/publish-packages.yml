@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Clean, build, and test
-        run: npx jake prepare
+        run: npx jake prepare:packages
 
       - name: Creating .npmrc
         run: |
@@ -30,9 +30,7 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc
 
       - name: Publish packages to GitHub and NPM registries
-        uses: changesets/action@v1
-        with:
-          publish: npx changeset publish
+        run: npx changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
