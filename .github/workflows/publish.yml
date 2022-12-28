@@ -24,6 +24,11 @@ jobs:
       - name: Clean, build, and test
         run: npx jake prepare
 
+      - name: Creating .npmrc
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=\${GITHUB_TOKEN}" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> .npmrc
+
       - name: Publish packages to GitHub and NPM registries
         uses: changesets/action@v1
         with:
