@@ -3,7 +3,7 @@ import {
   SYMBOL_EFFECT_API_LIFECYCLE,
   SYMBOL_EFFECT_API_ROUTES,
 } from "@sables/core";
-import { createTestStore, mockEffectAPI } from "@sables/core/test";
+import { createTestStore, mockEffectAPI } from "@sables/core/__internal__test";
 import { createMutableRef, demandValue } from "@sables/utils";
 
 import { Action } from "history";
