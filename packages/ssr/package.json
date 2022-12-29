@@ -23,12 +23,21 @@
   },
   "dependencies": {
     "@sables/framework": "~0.2.0",
-    "@types/react": "^18.0.25",
-    "react": "^18.2.0",
     "rxjs": "^7.8.0"
+  },
+  "peerDependencies": {
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
+    "@types/react": "^18.0.26",
+    "react": "^18.2.0",
     "typescript": "^4.9.3"
   },
   "files": [
