@@ -6,7 +6,7 @@ import {
   SYMBOL_EFFECT_API_ROUTES,
   SYMBOL_STORE_ROUTES,
 } from "@sables/core";
-import { createTestStore } from "@sables/core/test";
+import { createTestStore } from "@sables/core/__internal__test";
 
 import { Observable } from "rxjs";
 import * as vitest from "vitest";

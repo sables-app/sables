@@ -34,7 +34,7 @@
   "exports": {
     ".": "./dist/main.js",
     "./package.json": "./package.json",
-    "./test": "./dist/__tests__/utils.js"
+    "./__internal__test": "./dist/__tests__/utils.js"
   },
   "files": [
     "dist",
