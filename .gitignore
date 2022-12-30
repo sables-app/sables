@@ -77,3 +77,6 @@ vite.config.js.timestamp-*
 
 # Build output
 dist
+
+# Created by `vitest typecheck`
+tsconfig.temp.json

@@ -20,11 +20,9 @@ import { getSlicesFromSelector } from "../utils.js";
  *
  * @example
  *
- * const booksSlice = createSlice({
- *   name: "books",
- *   initialState: { books: [] },
- *   reducers: {},
- * });
+ * const booksSlice = createSlice("books", {
+ *   books: [],
+ * }).setReducer((builder) => builder);
  *
  * const selectBooks = createSelector(
  *   booksSlice.selector,
@@ -32,7 +30,7 @@ import { getSlicesFromSelector } from "../utils.js";
  * );
  *
  * function MyComponent() {
- *   // `booksSlice` is inserted
+ *   // `booksSlice` is asynchronously inserted
  *   const books = useSelector(selectBooks);
  *
  *   return null;

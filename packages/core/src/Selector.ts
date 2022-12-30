@@ -12,16 +12,15 @@ import {
 /**
  * An enhanced version of Reselect's `createSelector` function that
  * creates selectors with slice dependencies.
+ *
  * When selectors with slice dependencies are used with Sables' `useSelector`,
  * associated slices will automatically be inserted into the store.
  *
  * @example
  *
- * const booksSlice = createSlice({
- *   name: "books",
- *   initialState: { books: [] },
- *   reducers: {},
- * });
+ * const booksSlice = createSlice("books", {
+ *   books: [],
+ * }).setReducer((builder) => builder);
  *
  * const selectBooks = createSelector(
  *   booksSlice.selector,

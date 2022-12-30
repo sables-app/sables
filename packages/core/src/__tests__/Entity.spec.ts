@@ -29,12 +29,10 @@ describe("Entity", () => {
 
     function createTestConstructs() {
       const bookReducers = entityAdapterToReducers(booksAdapter, "book");
-
-      const booksSlice = createSlice({
-        name: "books",
-        initialState: booksAdapter.getInitialState(),
-        reducers: bookReducers,
-      });
+      const booksSlice = createSlice(
+        "books",
+        booksAdapter.getInitialState()
+      ).setReducer((builder) => builder.addCases(bookReducers));
 
       return { bookReducers, booksSlice };
     }
@@ -149,17 +147,12 @@ describe("Entity", () => {
         favorite: (id: string) => id,
       });
 
-      const booksSlice = createSlice({
-        name: "books",
-        initialState: {
-          ...booksAdapter.getInitialState(),
-          ...notableBooks.getInitialState(),
-        },
-        reducers: {
-          ...bookReducers,
-          ...notableBooks.reducers,
-        },
-      });
+      const booksSlice = createSlice("books", {
+        ...booksAdapter.getInitialState(),
+        ...notableBooks.getInitialState(),
+      }).setReducer((builder) =>
+        builder.addCases(bookReducers).addCases(notableBooks.reducers)
+      );
 
       const { selectBestBook, selectWorstBook, selectFavoriteBook } =
         notableBooks.createSelectors(booksSlice.selectBooksState);

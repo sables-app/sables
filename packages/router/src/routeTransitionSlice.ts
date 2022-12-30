@@ -30,31 +30,31 @@ export const transitionRoute = createSideEffectActions<
 >("sables/transitionRoute");
 
 /** @internal */
-export const routeTransitionSlice = createSlice({
-  name: "sablesRouteTransition",
-  initialState: createInitialState(),
-  reducers: {
-    reportTransitionResult(state, action: PayloadAction<SSRTransitionResult>) {
-      state._ssrTransitionResult = action.payload;
-    },
-  },
-  extraReducers(builder) {
-    builder
-      .addCase(transitionRoute.start, (state) => {
-        state.isTransitioning = true;
-      })
-      .addCase(transitionRoute.end, (state, action) => {
-        state.isTransitioning = false;
+export const routeTransitionSlice = createSlice(
+  "sablesRouteTransition",
+  createInitialState()
+).setReducer((builder) =>
+  builder
+    .addCase(
+      "reportTransitionResult",
+      (state, action: PayloadAction<SSRTransitionResult>) => {
+        state._ssrTransitionResult = action.payload;
+      }
+    )
+    .addCase(transitionRoute.start, (state) => {
+      state.isTransitioning = true;
+    })
+    .addCase(transitionRoute.end, (state, action) => {
+      state.isTransitioning = false;
 
-        const { nextRoute } = action.payload;
+      const { nextRoute } = action.payload;
 
-        if (nextRoute !== undefined && nextRoute !== state.currentRoute) {
-          state.prevRoute = state.currentRoute;
-          state.currentRoute = nextRoute;
-        }
-      });
-  },
-});
+      if (nextRoute !== undefined && nextRoute !== state.currentRoute) {
+        state.prevRoute = state.currentRoute;
+        state.currentRoute = nextRoute;
+      }
+    })
+);
 
 transitionRoute.dependsUpon(routeTransitionSlice);
 

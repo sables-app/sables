@@ -159,25 +159,11 @@ export function enhanceAction<
  * dependencies, and have additional utility functions attached.
  *
  * @example
+ *
  * const wakeCat = createAction("wakeCat");
  *
- * const catSlice = createSlice({
- *   name: "cat",
- *   initialState: {
- *     sleep: true,
- *   },
- *   reducers: {},
- *   extraReducers: (builder) =>
- *     builder.addCase(wakeCat, (state) => {
- *       state.sleep = false;
- *     }),
- * })
- *
- * wakeCat.dependsUpon(catSlice);
- *
- * // The slice is automatically added to the store
- * // before the action is reduced into the store.
- * store.dispatch(wakeCat());
+ * // { type: "wakeCat", payload: undefined, error: false, meta: {} }
+ * const action = wakeCat();
  *
  * @public
  */

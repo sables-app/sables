@@ -18,13 +18,13 @@ const dogsEntityAdapter = createEntityAdapter<Dog>({
   sortComparer: (dogA, dogB) => dogA.name.localeCompare(dogB.name),
 });
 
-export const dogsSlice = createSlice({
-  name: "dogs",
-  initialState: dogsEntityAdapter.getInitialState(),
-  reducers: entityAdapterToReducers(dogsEntityAdapter, "dog"),
-  extraReducers(builder) {
-    builder.addCase(dogSearch.actions.end, (state, action) => {
+export const dogsSlice = createSlice(
+  "dogs",
+  dogsEntityAdapter.getInitialState()
+).setReducer((builder) =>
+  builder
+    .addCases(entityAdapterToReducers(dogsEntityAdapter, "dog"))
+    .addCase(dogSearch.actions.end, (state, action) => {
       dogsEntityAdapter.addMany(state, action);
-    });
-  },
-});
+    })
+);
