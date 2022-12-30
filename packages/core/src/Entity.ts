@@ -50,15 +50,21 @@ namespace EntityReducers {
  *
  * @example
  *
- * interface Dog { id: number; name: string; }
+ * interface Dog {
+ *   id: number;
+ *   name: string;
+ * }
  *
  * const dogsEntityAdapter = createEntityAdapter<Dog>();
  *
- * export const dogsSlice = createSlice({
- *   name: "dogs",
- *   initialState: dogsEntityAdapter.getInitialState(),
- *   reducers: entityAdapterToReducers(dogsEntityAdapter, "dog"),
- * });
+ * const dogsSlice = createSlice(
+ *   "dogs",
+ *   dogsEntityAdapter.getInitialState()
+ * ).setReducer((builder) =>
+ *   builder.addCases(
+ *     entityAdapterToReducers(dogsEntityAdapter, "dog")
+ *   )
+ * );
  *
  * // `addDog` is equal to `addOne` from Redux Toolkit
  * const { addDog } = dogsSlice.actions;

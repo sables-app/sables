@@ -12,9 +12,9 @@ Sables Core is made available from both the `@sables/core` and `@sables/framewor
 
 ### createSlice
 
-> `createSlice(options): EnhancedSlice;`
+> `createSlice(name, initialState): DraftSlice;`
 
-An enhanced version of [Redux Toolkit's `createSlice`](https://redux-toolkit.js.org/api/createslice), that returns enhanced slices.
+An enhanced version of Redux Toolkit's `createSlice` with a fluent interface.
 
 Enhanced slices contain selectors for slice state, and enhanced action creators.
 Enhanced action creators can create actions with dependencies, and have additional utility functions attached.
@@ -22,41 +22,35 @@ Enhanced action creators can create actions with dependencies, and have addition
 ##### Example
 
 ```ts
-const dogsSlice = createSlice({
-  name: "dogs",
-  initialState: {},
-  reducers: {},
-});
-
-dogsSlice.selector(store.getState());
-```
-
-##### Complete example
-
-```ts
-const dogsSlice = createSlice({
-  name: "dogs",
-  initialState: { puppyCount: 0 },
-  reducers: {
-    adoptPuppies(state, action: PayloadAction<string[]>) {
-      state.puppyCount += action.payload.length;
-    },
-  },
-});
-
-const { adoptPuppies } = dogsSlice.actions;
-const { selectDogsState } = dogsSlice;
-
-const selectPuppyCount = createSelector(
-  selectDogsState,
-  ({ puppyCount }) => puppyCount
+const booksSlice = createSlice("books", {
+  purchasedBookCount: 0,
+}).setReducer((builder) =>
+  builder.addCase(
+    "buyBooks",
+    (state, action: PayloadAction<string[]>) => {
+      state.purchasedBookCount += action.payload.length;
+    }
+  )
 );
 
-// `dogsSlice` is inserted into the store
-store.dispatch(adoptPuppies(["Fei", "Ekko"]));
+const { buyBooks } = booksSlice.actions;
+const { selectBooksState } = booksSlice;
 
-// Evaluates to `true`
-selectPuppyCount(store.getState()) === 2;
+// `booksSlice` is inserted into the store
+store.dispatch(
+  buyBooks([
+    "Goosebumps: Night of the Living Dummy",
+    "Goosebumps: Welcome to Dead House",
+  ])
+);
+
+const selectPurchasedBookCount = createSelector(
+  selectBooksState,
+  ({ purchasedBookCount }) => purchasedBookCount
+);
+
+// Returns `2`
+selectPurchasedBookCount(store.getState());
 ```
 
 ### enhanceSlice
@@ -82,6 +76,91 @@ dogsSlice.selector(store.getState());
 dogsSlice.selectDogsState(store.getState());
 ```
 
+### DraftSlice.setReducer
+
+> `DraftSlice.setReducer(buildReducerFn): EnhancedSlice;`
+
+`DraftSlice.setReducer` exposes a fluent interface for building a slice's reducer function.
+
+In comparison, Redux Toolkit's `createSlice` uses two different patterns when constructing a slice reducer.
+The `reducers` option accepts a reducer map object, while the `extraReducers` option accepts a build function.
+
+In contrast, `DraftSlice.setReducer` uses a single fluent interface for all reducer cases.
+
+##### Example
+
+```ts
+type PetName = string;
+
+const adoptCats = createAction<PetName[], "adoptCats">(
+  "adoptCats"
+);
+const adoptDogs = createAction<PetName[], "adoptDogs">(
+  "adoptDogs"
+);
+
+const slice = createSlice("pets", {
+  adoptedPetCount: 0,
+}).setReducer((builder) =>
+  builder
+    .addCase(
+      "adoptPuppies",
+      (state, action: PayloadAction<PetName[]>) => {
+        state.adoptedPetCount += action.payload.length;
+      }
+    )
+    .addCase(adoptDogs, (state, action) => {
+      state.adoptedPetCount += action.payload.length;
+    })
+    .addCases({
+      adoptKittens: (
+        state,
+        action: PayloadAction<PetName[]>
+      ) => {
+        state.adoptedPetCount += action.payload.length;
+      },
+    })
+    .addMatcher(adoptCats.match, (state, action) => {
+      state.adoptedPetCount += action.payload.length;
+    })
+    .addDefaultCase((state) => {
+      return state;
+    })
+);
+
+adoptDogs.dependsUpon(slice);
+adoptCats.dependsUpon(slice);
+
+const { adoptKittens, adoptPuppies } = petSlice.actions;
+```
+
+#### SliceReducerBuilder.addCase
+
+> `builder.addCase(actionType, caseReducer): SliceReducerBuilder;`
+>
+> `builder.addCase(actionCreator, caseReducer): SliceReducerBuilder;`
+
+Adds a reducer to handle a specific action.
+
+#### SliceReducerBuilder.addCases
+
+> `builder.addCases(reducersMap): SliceReducerBuilder;`
+
+Adds a map of reducers to handle specific actions.
+
+#### SliceReducerBuilder.addMatcher
+
+> `builder.addMatcher(actionMatcher, caseReducer): SliceReducerBuilder;`
+
+Adds a reducer to handle actions that meet the condition of the given match function.
+The given match function _must_ be a type guard for an action.
+
+#### SliceReducerBuilder.addDefaultCase
+
+> `builder.addDefaultCase(caseReducer): SliceReducerBuilder;`
+
+Adds a reducer to handle actions that aren't handled by other reducers.
+
 ### Slice.selector
 
 > `Slice.selector(storeState): SliceState;`
@@ -91,11 +170,9 @@ The selector is exposed on both the `selector` property, and a property based on
 For example, if the slice's name is `"books"`, the named selector will be called `selectBooksState`.
 
 ```ts
-const dogsSlice = createSlice({
-  name: "dogs",
-  initialState: { puppyCount: 0 },
-  reducers: {},
-});
+const dogsSlice = createSlice("dogs", {
+  puppyCount: 0,
+}).setReducer((builder) => builder);
 
 const state = store.getState();
 
@@ -163,16 +240,15 @@ When a created action is dispatched, its dependencies are included.
 
 ```ts
 const adoptDog = createAction("adoptDog");
-const dogsSlice = createSlice({
-  name: "dogs",
-  initialState: { adoptionCount: 0 },
-  reducers: {},
-  extraReducers(builder) {
-    builder.addCase(adoptDog, (state) => {
-      state.adoptionCount++;
-    });
-  },
-});
+
+const dogsSlice = createSlice("dogs", {
+  adoptionCount: 0,
+}).setReducer((builder) =>
+  builder.addCase(adoptDog, (state) => {
+    state.adoptionCount++;
+  })
+);
+
 const dogsObservable = createObservable(({ actions$ }) =>
   actions$.pipe(
     filter(adoptDog.match),
@@ -186,28 +262,26 @@ adoptDog.dependsUpon(dogsSlice, dogsObservable);
 ##### Add slice dependencies
 
 ```ts
-const dogsSlice = createSlice({
-  name: "dogs",
-  initialState: { puppyCount: 0 },
-  reducers: {
-    adoptPuppies(state, action: PayloadAction<string[]>) {
+const dogsSlice = createSlice("dogs", {
+  puppyCount: 0,
+}).setReducer((builder) =>
+  builder.addCase(
+    "adoptPuppies",
+    (state, action: PayloadAction<string[]>) => {
       state.puppyCount += action.payload.length;
-    },
-  },
-});
+    }
+  )
+);
 
 const { adoptPuppies } = dogsSlice.actions;
 
-const catSlice = createSlice({
-  name: "cat",
-  initialState: { isAnnoyed: false },
-  reducers: {},
-  extraReducers(builder) {
-    builder.addCase(adoptPuppies, (state) => {
-      state.isAnnoyed = true;
-    });
-  },
-});
+const catSlice = createSlice("cat", {
+  isAnnoyed: false,
+}).setReducer((builder) =>
+  builder.addCase(adoptPuppies, (state) => {
+    state.isAnnoyed = true;
+  })
+);
 
 adoptPuppies.dependsUpon(catSlice);
 
@@ -391,14 +465,14 @@ interface Dog {
 
 const dogsEntityAdapter = createEntityAdapter<Dog>();
 
-const dogsSlice = createSlice({
-  name: "dogs",
-  initialState: dogsEntityAdapter.getInitialState(),
-  reducers: entityAdapterToReducers(
-    dogsEntityAdapter,
-    "dog"
-  ),
-});
+const dogsSlice = createSlice(
+  "dogs",
+  dogsEntityAdapter.getInitialState()
+).setReducer((builder) =>
+  builder.addCases(
+    entityAdapterToReducers(dogsEntityAdapter, "dog")
+  )
+);
 
 // `addDog` is equal to `addOne` from Redux Toolkit
 const { addDog } = dogsSlice.actions;
@@ -417,15 +491,14 @@ const cactiAdapter = createEntityAdapter<Cactus>({
   sortComparer: (a, b) => a.name.localeCompare(b.name),
 });
 
-const cactiSlice = createSlice({
-  name: "cacti",
-  initialState: cactiAdapter.getInitialState(),
-  reducers: entityAdapterToReducers(
-    cactiAdapter,
-    "cactus",
-    "cacti"
-  ),
-});
+const cactiSlice = createSlice(
+  "cacti",
+  cactiAdapter.getInitialState()
+).setReducer((builder) =>
+  builder.addCases(
+    entityAdapterToReducers(cactiAdapter, "cactus", "cacti")
+  )
+);
 
 const { addCactus, addCacti } = cactiSlice.actions;
 
@@ -519,19 +592,14 @@ const notableBooks = createNotableEntities(
       payload.id,
   }
 );
-
-const booksSlice = createSlice({
-  name: "books",
-  initialState: {
-    ...booksAdapter.getInitialState(),
-    ...notableBooks.getInitialState(),
-  },
-  reducers: {
-    ...booksReducers,
-    ...notableBooks.reducers,
-  },
-});
-
+const booksSlice = createSlice("books", {
+  ...booksAdapter.getInitialState(),
+  ...notableBooks.getInitialState(),
+}).setReducer((builder) =>
+  builder
+    .addCases(booksReducers)
+    .addCases(notableBooks.reducers)
+);
 // Selectors are created for each adjective
 const { selectBestBook } = notableBooks.createSelectors(
   booksSlice.selectBooksState
@@ -573,11 +641,9 @@ When selectors with slice dependencies are used with [Sables' `useSelector`](#us
 ##### Example
 
 ```ts
-const booksSlice = createSlice({
-  name: "books",
-  initialState: { books: [] },
-  reducers: {},
-});
+const booksSlice = createSlice("books", {
+  books: [],
+}).setReducer((builder) => builder);
 
 const selectBooks = createSelector(
   booksSlice.selector,
@@ -599,11 +665,9 @@ An enhanced version of [`useSelector` from react-redux](https://react-redux.js.o
 ##### Example
 
 ```ts
-const booksSlice = createSlice({
-  name: "books",
-  initialState: { books: [] },
-  reducers: {},
-});
+const booksSlice = createSlice("books", {
+  books: [],
+}).setReducer((builder) => builder);
 
 const selectBooks = createSelector(
   booksSlice.selector,
@@ -611,7 +675,7 @@ const selectBooks = createSelector(
 );
 
 function MyComponent() {
-  // `booksSlice` is inserted
+  // `booksSlice` is asynchronously inserted
   const books = useSelector(selectBooks);
 
   return null;
@@ -1961,11 +2025,10 @@ Sets the initial reducer map for the Redux store reducer.
 ##### Example
 
 ```ts
-const dogsSlice = createSlice({
-  name: "dogs",
-  initialState: {},
-  reducers: {},
-});
+const dogsSlice = ReduxToolkit.createSlice(
+  "dogs",
+  {}
+).setReducer((builder) => builder);
 
 function configureManager() {
   return createManager({
@@ -2001,13 +2064,17 @@ Asynchronously adds slices to the store.
 > automatically be inserted.
 
 ```ts
-const birdsSlice = createSlice({
-  name: "birds",
+const basicSlice = ReduxToolkit.createSlice({
+  name: "basic",
   initialState: {},
   reducers: {},
 });
+const enhancedSlice = ReduxToolkit.createSlice(
+  "enhanced",
+  {}
+).setReducer((builder) => builder);
 
-manager.store.insertSlices(birdsSlice);
+manager.store.insertSlices(birdsSlice, enhancedSlice);
 ```
 
 #### Manager.subscribeTo

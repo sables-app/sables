@@ -256,6 +256,18 @@ export type EnhancedSlice<S extends ReduxToolkit.Slice = ReduxToolkit.Slice> =
        * The selector is exposed on both the `selector` property, and a property based on the slice's `name`.
        * For example, if the slice's name is `"books"`, the named selector will be called `selectBooksState`.
        *
+       * @example
+       *
+       * const dogsSlice = createSlice("dogs", {
+       *   puppyCount: 0,
+       * }).setReducer((builder) => builder);
+       *
+       * const state = store.getState();
+       *
+       * // Both return `0`
+       * dogsSlice.selectDogsState(state).puppyCount;
+       * dogsSlice.selector(state).puppyCount;
+       *
        * @see {@link https://sables.dev/api#sliceselector Slice.selector}
        *
        * @public

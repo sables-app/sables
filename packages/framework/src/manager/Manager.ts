@@ -116,11 +116,10 @@ export interface CreateManagerOptions<
    *
    * @example
    *
-   * const dogsSlice = createSlice({
-   *   name: "dogs",
-   *   initialState: {},
-   *   reducers: {}
-   * });
+   * const dogsSlice = ReduxToolkit.createSlice(
+   *   "dogs",
+   *   {}
+   * ).setReducer((builder) => builder);
    *
    * function configureManager() {
    *   return createManager({

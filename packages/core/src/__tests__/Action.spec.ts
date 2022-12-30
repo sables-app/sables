@@ -22,19 +22,13 @@ describe("Action", () => {
       const statesPromise = firstValueFrom(
         storeStates$.pipe(take(3), toArray())
       );
-
       const wakeCat = createAction("wakeCat");
-      const catsSlice = createSlice({
-        name: "cat",
-        initialState: {
-          sleep: true,
-        },
-        reducers: {},
-        extraReducers: (builder) =>
+      const catsSlice = createSlice("cat", { sleep: true }).setReducer(
+        (builder) =>
           builder.addCase(wakeCat, (state, action) => {
             state.sleep = false;
-          }),
-      });
+          })
+      );
 
       wakeCat.dependsUpon(catsSlice);
 
@@ -112,16 +106,12 @@ describe("Action", () => {
         const { store } = createTestStore(vitest);
 
         const adoptDog = createAction("adoptDog");
-        const dogsSlice = createSlice({
-          name: "dogs",
-          initialState: { adoptionCount: 0 },
-          reducers: {},
-          extraReducers(builder) {
+        const dogsSlice = createSlice("dogs", { adoptionCount: 0 }).setReducer(
+          (builder) =>
             builder.addCase(adoptDog, (state) => {
               state.adoptionCount++;
-            });
-          },
-        });
+            })
+        );
         const tapStub = vitest.vi.fn();
         const dogsObservable = createObservable(({ actions$ }) =>
           actions$.pipe(filter(adoptDog.match), tap(tapStub))

@@ -58,13 +58,17 @@ export type LazySlicesEnhancerExt<
    *
    * @example
    *
-   * const birdsSlice = createSlice({
-   *   name: "birds",
+   * const basicSlice = ReduxToolkit.createSlice({
+   *   name: "basic",
    *   initialState: {},
    *   reducers: {},
    * });
+   * const enhancedSlice = ReduxToolkit.createSlice(
+   *   "enhanced",
+   *   {}
+   * ).setReducer((builder) => builder);
    *
-   * manager.store.insertSlices(birdsSlice);
+   * manager.store.insertSlices(birdsSlice, enhancedSlice);
    *
    * @privateRemarks
    *

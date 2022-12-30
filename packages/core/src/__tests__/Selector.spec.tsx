@@ -9,12 +9,9 @@ import { hasLazyMeta } from "../utils.js";
 
 describe("Selector", () => {
   function createTestSlice() {
-    return createSlice({
-      name: "cat",
-      reducers: {},
-      initialState: { sleep: true },
-    });
+    return createSlice("cat", { sleep: true }).setReducer((builder) => builder);
   }
+
   function createTestSelector() {
     return createSelector(testSlice.selectCatState, ({ sleep }) => sleep);
   }
