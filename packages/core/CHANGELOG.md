@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.2.0
+
+### Minor Changes
+
+- 058d952: Rewrite `createSlice` to use a fluent interface
+
 ## 0.1.2
 
 ### Patch Changes

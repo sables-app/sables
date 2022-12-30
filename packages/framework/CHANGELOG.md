@@ -1,5 +1,17 @@
 # @sables/framework
 
+## 0.3.0
+
+### Minor Changes
+
+- 058d952: Rewrite `createSlice` to use a fluent interface
+
+### Patch Changes
+
+- Updated dependencies [058d952]
+  - @sables/core@0.2.0
+  - @sables/router@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

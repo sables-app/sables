@@ -1,6 +1,6 @@
 {
   "name": "@sables/router",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A Redux-based routing library with distributed routing logic.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.0",
-    "@sables/core": "~0.1.2",
+    "@sables/core": "~0.2.0",
     "@sables/utils": "~0.1.0",
     "history": "^5.3.0",
     "nanoid": "^4.0.0",
