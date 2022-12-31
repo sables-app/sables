@@ -5,8 +5,7 @@ on: workflow_dispatch
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  release:
-    name: Release
+  publish:
     runs-on: ubuntu-latest
     environment: public-npm
     steps:
