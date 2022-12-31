@@ -415,8 +415,9 @@ export function combineHandlers<EffectAPI extends DefaultEffectAPI>(
  * @example
  *
  * const getBooks = createSideEffect(
- *   "getBooks",
- *   async (action: PayloadAction<{ id: string }>) =>
+ *   createAction<{ id: string }>("getBooks/start"),
+ *   createAction<Response>("getBooks/end"),
+ *   async (action) =>
  *     fetch(`https://example.com/books/${action.payload.id}`)
  * );
  * const loadBooks = sideEffectToRouteMiddleware(getBooks, (params) =>

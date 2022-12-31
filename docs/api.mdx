@@ -351,7 +351,7 @@ _The additional default properties are:_
 
 ### createSideEffect
 
-> `createSideEffect(actionTypePrefix, mapStartActionFn): SideEffect;`
+> `createSideEffect(startActionCreator, endActionCreator, mapStartActionFn): SideEffect;`
 
 Creates a reactive side effect using a combination of actions and observables.
 
@@ -359,8 +359,9 @@ Creates a reactive side effect using a combination of actions and observables.
 
 ```ts
 const getUser = createSideEffect(
-  "getUser",
-  async (action: PayloadAction<string>, effectAPI) => {
+  createAction<string>("getUser/start"),
+  createAction<Response>("getUser/end"),
+  async (action, effectAPI) => {
     return fetch(
       `https://api.example.com/users/${action.payload}`
     );
@@ -755,15 +756,16 @@ Component state is used to monitor each side effect occurrence.
 ##### Example
 
 ```tsx
-const fetchCurrentDate = createSideEffect(
-  "fetchCurrentDate",
-  async () => new Date()
+const sendRequest = createSideEffect(
+  createAction("sendRequest/start"),
+  createAction("sendRequest/end"),
+  async () => {
+    return;
+  }
 );
 
 function MyComponent() {
-  const { isAwaiting, start } = useSideEffect(
-    fetchCurrentDate
-  );
+  const { isAwaiting, start } = useSideEffect(sendRequest);
 
   return (
     <button
@@ -1643,8 +1645,9 @@ route parameters match the side effect's start action payload.
 
 ```ts
 const getBooks = createSideEffect(
-  "getBooks",
-  async (action: PayloadAction<{ id: string }>) =>
+  createAction<{ id: string }>("getBooks/start"),
+  createAction<Response>("getBooks/end"),
+  async (action) =>
     fetch(`https://example.com/books/${action.payload.id}`)
 );
 const loadBooks = sideEffectToRouteMiddleware(
@@ -1655,8 +1658,8 @@ const loadBooks = sideEffectToRouteMiddleware(
       .validate(params)
 );
 
-// Loads books for every route transition
 createRoutes().setEffects(() =>
+  // Loads books for every route transition
   createRouteEffects().appendAll(loadBooks)
 );
 ```

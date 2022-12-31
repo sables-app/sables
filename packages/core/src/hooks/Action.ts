@@ -79,15 +79,16 @@ export function useWithDispatch<
  *
  * @example
  *
- * const fetchCurrentDate = createSideEffect(
- *   "fetchCurrentDate",
- *   async () => new Date()
+ * const sendRequest = createSideEffect(
+ *   createAction("sendRequest/start"),
+ *   createAction("sendRequest/end"),
+ *   async () => {
+ *     return;
+ *   }
  * );
  *
  * function MyComponent() {
- *   const { isAwaiting, start } = useSideEffect(
- *     fetchCurrentDate
- *   );
+ *   const { isAwaiting, start } = useSideEffect(sendRequest);
  *
  *   return (
  *     <button

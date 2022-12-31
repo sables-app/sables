@@ -100,18 +100,8 @@ export function createSideEffectObservable<
  *
  * @example
  *
- * const getUser = createSideEffect(
- *   "getUser",
- *   async (action: PayloadAction<string>, effectAPI) => {
- *     return fetch(`https://api.example.com/users/${action.payload}`);
- *   }
- * );
- *
- * // The dispatched action will cause a request to be sent to
- * // https://api.example.com/users/@ash.ketchum
- * store.dispatch(getUser.actions.start("@ash.ketchum"));
- *
  * @see {createSideEffect}
+ * @see {@link https://sables.dev/docs/api#createsideeffect createSideEffect documentation}
  *
  * @public
  */
@@ -165,10 +155,10 @@ function createSideEffectInstance<
  * @example
  *
  * const getUser = createSideEffect(
- *   "getUser",
- *   async (action: PayloadAction<string>, effectAPI) => {
- *     return fetch(`https://api.example.com/users/${action.payload}`);
- *   }
+ *   createAction<string>("getUser/start"),
+ *   createAction<Response>("getUser/end"),
+ *   async (action, effectAPI) =>
+ *     fetch(`https://api.example.com/users/${action.payload}`)
  * );
  *
  * // The dispatched action will cause a request to be sent to
