@@ -17,25 +17,27 @@ function submissionToPayload(
 }
 
 function useSubmitHandler() {
-  const [startSearch, isSearching] = useSideEffect(searchDogs);
-
+  const { isAwaiting, start } = useSideEffect(searchDogs);
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (event) => {
       event.preventDefault();
 
-      startSearch(
+      start(
         // Cast assumes the payload is valid
         submissionToPayload(event) as any
       );
     },
-    [startSearch]
+    [start]
   );
 
-  return [handleSubmit, isSearching] as const;
+  return {
+    handleSubmit,
+    isSearching: isAwaiting,
+  };
 }
 
 export function HomeScreen() {
-  const [handleSubmit, isSearching] = useSubmitHandler();
+  const { handleSubmit, isSearching } = useSubmitHandler();
 
   return (
     <form onSubmit={handleSubmit}>

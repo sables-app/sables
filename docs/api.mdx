@@ -734,13 +734,15 @@ function MyComponent() {
 
 ### useSideEffect
 
-> `useSideEffect(sideEffectOrActions): [startEffect, isAwaiting];`
+> `useSideEffect(sideEffectOrActions): { isAwaiting, latest, start };`
 
 ##### Returns
 
-A tuple containing a function to dispatch the side effect's
-start action, and a boolean that represents whether the side effect is
-currently awaiting resolution.
+An object with methods to interact with the side effect.
+
+- `start` — A function to dispatch the side effect's start action, triggering the side effect.
+- `isAwaiting` — A boolean that represents whether the side effect is currently awaiting resolution.
+- `latest` — An end action resolved from the latest side effect call.
 
 ##### Remarks
 
@@ -757,14 +759,14 @@ const fetchCurrentDate = createSideEffect(
 );
 
 function MyComponent() {
-  const [updateDate, isAwaiting] = useSideEffect(
+  const { isAwaiting, start } = useSideEffect(
     fetchCurrentDate
   );
 
   return (
     <button
       type="button"
-      onClick={updateDate}
+      onClick={start}
       disabled={isAwaiting}
     >
       Update Date

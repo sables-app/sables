@@ -2,7 +2,12 @@ import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { bindSideEffect } from "../Observable.js";
-import { ActionCreator, SideEffectActions, StandardAction } from "../types.js";
+import {
+  ActionCreator,
+  PayloadAction,
+  SideEffectActions,
+  StandardAction,
+} from "../types.js";
 import { useObservable } from "./Observable.js";
 
 type AnyActionCreator = ActionCreator<any, any[], StandardAction<any, any>>;
@@ -60,9 +65,11 @@ export function useWithDispatch<
  *
  * @returns
  *
- * A tuple containing a function to dispatch the side effect's
- * start action, and a boolean that represents whether the side effect is
- * currently awaiting resolution.
+ * An object with methods to interact with the side effect.
+ *
+ * - `start` — A function to dispatch the side effect's start action, triggering the side effect.
+ * - `isAwaiting` — A boolean that represents whether the side effect is currently awaiting resolution.
+ * - `latest` — An end action resolved from the latest side effect call.
  *
  * @remarks
  *
@@ -78,10 +85,16 @@ export function useWithDispatch<
  * );
  *
  * function MyComponent() {
- *   const [updateDate, isAwaiting] = useSideEffect(fetchCurrentDate);
+ *   const { isAwaiting, start } = useSideEffect(
+ *     fetchCurrentDate
+ *   );
  *
  *   return (
- *     <button type="button" onClick={updateDate} disabled={isAwaiting}>
+ *     <button
+ *       type="button"
+ *       onClick={start}
+ *       disabled={isAwaiting}
+ *     >
  *       Update Date
  *     </button>
  *   );
@@ -90,19 +103,35 @@ export function useWithDispatch<
  * @public
  */
 export function useSideEffect<T extends SideEffectActions<any, any>>(
-  sideEffect: T | { actions: T }
+  input: T | { actions: T }
 ) {
+  function isActions(input: T | { actions: T }): input is T {
+    return !Object.hasOwn(input, "actions");
+  }
+
   const dispatch = useDispatch();
-  const isActions = (sideEffect: T | { actions: T }): sideEffect is T =>
-    !Object.hasOwn(sideEffect, "actions");
-  const actions = isActions(sideEffect) ? sideEffect : sideEffect.actions;
-  const [isAwaiting, setIsAwaiting] = useState(false);
+  const actions = isActions(input) ? input : input.actions;
+  const [isAwaiting, onAwaitingChange] = useState(false);
+  type StartPayload = PayloadAction<
+    ReturnType<typeof actions["end"]>["payload"]
+  >;
+  const [latestEndAction, onEndAction] = useState<StartPayload>();
   const { dispatchStartAction, observableCreator } = useMemo(
-    () => bindSideEffect(dispatch, actions, setIsAwaiting),
+    () =>
+      bindSideEffect({
+        actions,
+        dispatch,
+        onAwaitingChange,
+        onEndAction,
+      }),
     [actions, dispatch]
   );
 
   useObservable(observableCreator);
 
-  return [dispatchStartAction, isAwaiting] as const;
+  return {
+    isAwaiting,
+    latest: latestEndAction,
+    start: dispatchStartAction,
+  };
 }
