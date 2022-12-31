@@ -225,7 +225,7 @@ export function createActionDependencyEnhancer<
 
   const actionDependencyEnhancer: Redux.StoreEnhancer<
     LazySlicesEnhancerExt<EffectAPI>
-  > = function lazySlicesEnhancer(createStore) {
+  > = function actionDependencyEnhancer(createStore) {
     return (reducer, preloadedState) => {
       const store = createStore(reducer, preloadedState);
 

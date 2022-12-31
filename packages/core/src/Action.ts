@@ -8,10 +8,13 @@ import {
 } from "./constants.js";
 import type {
   ActionDependency,
+  ActionMeta,
   BasicActionCreator,
-  EnhancedActionCreator,
+  BasicPayloadActionCreator,
+  EnhancedStandardActionCreator,
   ObservableCreator,
   PayloadAction,
+  PayloadActionCreator,
   SideEffectActions,
   StandardAction,
   StandardActionCreator,
@@ -32,12 +35,12 @@ export function isEnhancedActionCreator<
   A extends StandardAction<T> = StandardAction<T>
 >(
   actionCreator: BasicActionCreator<T, P, A>
-): actionCreator is EnhancedActionCreator<StandardActionCreator<T, P, A>> {
+): actionCreator is EnhancedStandardActionCreator<StandardActionCreator<T, P, A>> {
   return hasLazyMeta(actionCreator);
 }
 
 function findActionCreatorType<T extends string>(
-  actionCreator: BasicActionCreator<T>
+  actionCreator: BasicActionCreator<T, any, any>
 ): T {
   try {
     return actionCreator().type;
@@ -55,6 +58,9 @@ function findActionCreatorType<T extends string>(
 
   throw new Error("Couldn't determine action type. A type must be provided.");
 }
+
+type HasNoParameters = [] & { length: 0 };
+type HasOneOptionalParameter = [payload?: any] & { length: 0 | 1 };
 
 /**
  * Creates a new, enhanced action creator.
@@ -80,6 +86,16 @@ function findActionCreatorType<T extends string>(
  *
  * @public
  */
+export function enhanceAction<AC extends BasicPayloadActionCreator<any, any>>(
+  actionCreator: AC
+): PayloadActionCreator<
+  Parameters<AC> extends HasNoParameters
+    ? void
+    : Parameters<AC> extends HasOneOptionalParameter
+    ? ReturnType<AC>["payload"] | void
+    : ReturnType<AC>["payload"],
+  ReturnType<AC>["type"]
+>;
 export function enhanceAction<
   Type extends string,
   Params extends [...params: any] = [],
@@ -87,7 +103,12 @@ export function enhanceAction<
 >(
   actionCreator: BasicActionCreator<Type, Params, TAction>,
   typeInput?: Type
-): EnhancedActionCreator<StandardActionCreator<Type, Params, TAction>> {
+): EnhancedStandardActionCreator<StandardActionCreator<Type, Params, TAction>>;
+export function enhanceAction<
+  Type extends string,
+  Params extends [...params: any] = [],
+  TAction extends StandardAction<Type> = StandardAction<Type>
+>(actionCreator: BasicActionCreator<Type, Params, TAction>, typeInput?: Type) {
   if (isEnhancedActionCreator(actionCreator)) {
     return actionCreator;
   }
@@ -174,7 +195,7 @@ export function createAction<Payload = void, Type extends string = string>(
     payload: Payload
   ): PayloadAction<Payload, Type> {
     return { type, payload };
-  });
+  }) as PayloadActionCreator<Payload, Type>;
 }
 
 /**
@@ -182,7 +203,10 @@ export function createAction<Payload = void, Type extends string = string>(
  *
  * @example
  *
- * const mySideEffect = createSideEffectActions<Date, void | Error>("mySideEffect");
+ * const mySideEffect = createSideEffectActions(
+ *   createAction<Date>("mySideEffect/start"),
+ *   createAction<void | Error>("mySideEffect/end")
+ * );
  * const startAction = mySideEffect.start(new Date());
  * const endAction = mySideEffect.end(new Error("Side effect failed."), startAction);
  * const actionsAreAffiliated = mySideEffect.hasAffiliation(startAction, endAction);
@@ -190,45 +214,52 @@ export function createAction<Payload = void, Type extends string = string>(
  * @public
  */
 export function createSideEffectActions<
-  StartPayload = void,
-  EndPayload = void,
-  Type extends string = string
->(type: Type): SideEffectActions<StartPayload, EndPayload, Type> {
-  const startType = `${type}/start` as const;
-  const endType = `${type}/end` as const;
-
-  type T = SideEffectActions<StartPayload, EndPayload, Type>;
+  StartActionCreator extends PayloadActionCreator<any>,
+  EndActionCreator extends PayloadActionCreator<any>
+>(
+  startBase: StartActionCreator,
+  endBase: EndActionCreator
+): SideEffectActions<StartActionCreator, EndActionCreator> {
+  type T = SideEffectActions<StartActionCreator, EndActionCreator>;
   type StartAction = ReturnType<T["start"]>;
   type EndAction = ReturnType<T["end"]>;
+  type StartPayload = StartAction["payload"];
+  type EndPayload = EndAction["payload"];
+  const startType = startBase.type;
+  const endType = endBase.type;
 
   const startActionCreator: T["start"] = enhanceAction(
-    (payload: StartPayload) => ({
-      type: startType,
-      payload,
-      meta: {
+    (payload: StartPayload) => {
+      const actionBase = startBase(payload);
+      const meta: ActionMeta = {
+        ...actionBase.meta,
         [PROPERTY_EFFECT_ACTIONS_ID]: nanoid(),
-      },
-    }),
+      };
+
+      return { ...actionBase, meta };
+    },
     startType
   );
 
   const endActionCreator: T["end"] = enhanceAction(
-    (payload, startAction) => ({
-      type: endType,
-      payload,
-      meta: {
+    (payload: EndPayload, startAction?: StartAction) => {
+      const actionBase = endBase(payload);
+      const meta: ActionMeta = {
+        ...actionBase.meta,
         [PROPERTY_EFFECT_ACTIONS_ID]:
           startAction?.meta?.[PROPERTY_EFFECT_ACTIONS_ID],
         [PROPERTY_EFFECT_ACTIONS_START_ACTION]: startAction,
-      },
-    }),
+      };
+
+      return { ...actionBase, meta };
+    },
     endType
   );
 
   const match: T["match"] = function match(
     action?: Redux.Action
-  ): action is StartAction | EndAction {
-    return startActionCreator.match(action) || endActionCreator.match(action);
+  ): action is ReturnType<typeof startBase> | ReturnType<typeof endBase> {
+    return startBase.match(action) || endBase.match(action);
   };
 
   const hasAffiliation: T["hasAffiliation"] = function hasAffiliation(
@@ -264,8 +295,6 @@ export function createSideEffectActions<
     hasAffiliation,
     match,
     start: startActionCreator,
-    toString: () => type,
-    type,
   };
 
   return effectActions;

@@ -89,7 +89,7 @@ export function useWithDispatch<
  *
  * @public
  */
-export function useSideEffect<T extends SideEffectActions<any, any, any>>(
+export function useSideEffect<T extends SideEffectActions<any, any>>(
   sideEffect: T | { actions: T }
 ) {
   const dispatch = useDispatch();

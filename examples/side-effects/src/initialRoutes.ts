@@ -1,6 +1,6 @@
 import { createRouteEffects, createRoutes } from "@sables/framework/router";
 
-import { dogSearch } from "./actions.js";
+import { dogSearch } from "./sideEffects.js";
 
 export const initialRoutes = createRoutes()
   .set("root", "/")

@@ -55,6 +55,10 @@ export function createTestStore(
   });
 
   vitest.vi.spyOn(store, "dispatch");
+  vitest.vi.spyOn(store, "getState");
+
+  effectAPIRef.demand().dispatch = store.dispatch;
+  effectAPIRef.demand().getState = store.getState;
 
   const storeStates$ = new BehaviorSubject<Record<string, unknown>>(
     store.getState()

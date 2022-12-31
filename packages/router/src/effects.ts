@@ -1,9 +1,4 @@
-import {
-  DefaultEffectAPI,
-  PayloadAction,
-  SideEffect,
-  StartPayloadFromSideEffectActions,
-} from "@sables/core";
+import { DefaultEffectAPI, PayloadAction, SideEffect } from "@sables/core";
 import { SYMBOL_EFFECT_API_EFFECT_STATE } from "@sables/core";
 import { isSSREnv } from "@sables/utils";
 
@@ -435,12 +430,12 @@ export function combineHandlers<EffectAPI extends DefaultEffectAPI>(
  */
 export function sideEffectToRouteMiddleware<
   EffectAPI extends DefaultEffectAPI,
-  S extends SideEffect<any, any, EffectAPI, any>
+  S extends SideEffect<any, any, EffectAPI>
 >(
   sideEffect: S,
   assertRouteParams: (
     params: NonNullable<RouteParams>
-  ) => asserts params is StartPayloadFromSideEffectActions<S["actions"]>
+  ) => asserts params is ReturnType<S["actions"]["start"]>["payload"]
 ): RouteMiddleware<StartTransitionAction, EffectAPI> {
   return async (action, effectAPI, abortSignal) => {
     if (abortSignal.aborted) return;

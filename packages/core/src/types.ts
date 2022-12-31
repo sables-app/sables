@@ -49,17 +49,22 @@ export interface StandardAction<Type extends string, Payload = any> {
 
 /** @internal */
 export interface BasicActionCreator<
-  T extends string,
-  P extends [...params: any] = [],
-  A extends StandardAction<T> = StandardAction<T>
+  Type extends string,
+  Params extends [...params: any],
+  Action extends StandardAction<Type>
 > {
-  (...params: P): A;
+  (...params: Params): Action;
 }
 
 /** @internal */
-export type DecoratedActionCreator<
+export interface BasicPayloadActionCreator<Payload, Type extends string> {
+  (payload: Payload): PayloadAction<Payload, Type>;
+}
+
+/** @internal */
+type DecoratedActionCreator<
   T extends string,
-  AC extends BasicActionCreator<T>
+  AC extends (...args: any) => any
 > = AC & {
   match(action?: Redux.Action): action is ReturnType<AC>;
   toString(): T;
@@ -67,39 +72,53 @@ export type DecoratedActionCreator<
 };
 
 /** @internal */
+export type DecoratedBasicActionCreator<
+  Type extends string,
+  AC extends BasicActionCreator<Type, any, any>
+> = AC & {
+  match(action?: Redux.Action): action is ReturnType<AC>;
+  toString(): Type;
+  readonly type: Type;
+};
+
+/** @internal */
 export type StandardActionCreator<
   Type extends string,
-  Params extends [...params: any] = [],
-  Action extends StandardAction<Type> = StandardAction<Type>
-> = DecoratedActionCreator<Type, BasicActionCreator<Type, Params, Action>>;
+  Params extends [...params: any],
+  Action extends StandardAction<Type>
+> = DecoratedBasicActionCreator<Type, BasicActionCreator<Type, Params, Action>>;
 
 /** @internal */
 export type ActionDependency = ReduxToolkit.Slice | ObservableCreator<any>;
 
 /** @internal */
-export type EnhancedActionCreator<AC extends StandardActionCreator<string>> =
-  AC &
-    ObjectWithLazyMeta & {
-      /**
-       * Adds a dependency to the action creator.
-       * When a created action is dispatched, its dependencies are included.
-       *
-       * - Slices are inserted before the action is given to the reducer.
-       * - Observables are created and subscribed to before the action is emitted.
-       *
-       * @see {@link https://sables.dev/api#actiondependsupon Action.dependsUpon documentation}
-       *
-       * @public
-       *
-       * @returns Itself
-       */
-      dependsUpon: DependsUponFn<EnhancedActionCreator<AC>>;
-    };
+type EnhancedActionCreator<AC extends (...args: any) => any> = AC &
+  ObjectWithLazyMeta & {
+    /**
+     * Adds a dependency to the action creator.
+     * When a created action is dispatched, its dependencies are included.
+     *
+     * - Slices are inserted before the action is given to the reducer.
+     * - Observables are created and subscribed to before the action is emitted.
+     *
+     * @see {@link https://sables.dev/api#actiondependsupon Action.dependsUpon documentation}
+     *
+     * @public
+     *
+     * @returns Itself
+     */
+    dependsUpon: DependsUponFn<EnhancedActionCreator<AC>>;
+  };
+
+/** @internal */
+export type EnhancedStandardActionCreator<
+  AC extends StandardActionCreator<any, any, any>
+> = EnhancedActionCreator<AC>;
 
 /** @internal */
 export type EnhancedActionCreatorWithPayload<
   AC extends ReduxToolkit.ActionCreatorWithPayload<any>
-> = EnhancedActionCreator<
+> = EnhancedStandardActionCreator<
   StandardActionCreator<ReturnType<AC>["type"], Parameters<AC>, ReturnType<AC>>
 >;
 
@@ -113,7 +132,7 @@ export type ActionCreator<
   Type extends string = string,
   Params extends [...params: any] = unknown[],
   Action extends StandardAction<Type> = StandardAction<Type>
-> = EnhancedActionCreator<StandardActionCreator<Type, Params, Action>>;
+> = EnhancedStandardActionCreator<StandardActionCreator<Type, Params, Action>>;
 
 /**
  * An action creator that accepts a single payload parameter.
@@ -122,42 +141,22 @@ export type ActionCreator<
  * @public
  */
 export type PayloadActionCreator<
-  Payload = void,
-  Type extends string = string,
-  Action extends StandardAction<Type, Payload> = StandardAction<Type, Payload>
-> = EnhancedActionCreator<
-  StandardActionCreator<Type, Payload extends void ? [] : [Payload], Action>
+  Payload,
+  Type extends string = string
+> = EnhancedStandardActionCreator<
+  DecoratedBasicActionCreator<
+    Type,
+    (payload: Payload) => PayloadAction<Payload, Type>
+  >
 >;
-
-type StartTypeValue<Type extends string = string> = `${Type}/start`;
-type EndTypeValue<Type extends string = string> = `${Type}/end`;
-
-/**
- * An action creator representing the start of a side effect.
- *
- * @public */
-export type StartAction<
-  Payload = void,
-  Type extends string = string
-> = StandardAction<StartTypeValue<Type>, Payload>;
-
-/**
- * An action creator representing the end of a side effect.
- *
- * @public */
-export type EndAction<
-  Payload = void,
-  Type extends string = string
-> = StandardAction<EndTypeValue<Type>, Payload>;
 
 /** @internal */
 type DependsUponFn<T> = (...dependencies: ActionDependency[]) => T;
 
 /** @public */
 export type SideEffectActions<
-  StartPayload = void,
-  EndPayload = void,
-  Type extends string = string
+  StartActionCreator extends PayloadActionCreator<any>,
+  EndActionCreator extends PayloadActionCreator<any>
 > = {
   /**
    * Adds a dependency to the action.
@@ -169,40 +168,43 @@ export type SideEffectActions<
    *
    * @returns Itself
    */
-  dependsUpon: DependsUponFn<SideEffectActions<StartPayload, EndPayload, Type>>;
-  end: ActionCreator<
-    EndTypeValue<Type>,
-    [EndPayload, StartAction<StartPayload, Type> | void],
-    EndAction<EndPayload, Type>
+  dependsUpon: DependsUponFn<
+    SideEffectActions<StartActionCreator, EndActionCreator>
+  >;
+  end: EnhancedActionCreator<
+    DecoratedActionCreator<
+      EndActionCreator["type"],
+      (
+        payload: ReturnType<EndActionCreator>["payload"],
+        startAction?: ReturnType<StartActionCreator>
+      ) => PayloadAction<
+        ReturnType<EndActionCreator>["payload"],
+        EndActionCreator["type"]
+      >
+    >
   >;
   getStartAction(
-    endAction: EndAction<EndPayload, Type>
-  ): StartAction<StartPayload, Type> | undefined;
+    endAction: ReturnType<EndActionCreator>
+  ): ReturnType<StartActionCreator> | undefined;
   hasAffiliation(
     startAction: Redux.AnyAction,
     endAction: Redux.AnyAction
   ): boolean;
   match(
     action?: Redux.Action
-  ): action is StartAction<StartPayload, Type> | EndAction<EndPayload, Type>;
-  start: ActionCreator<
-    StartTypeValue<Type>,
-    [StartPayload],
-    StartAction<StartPayload, Type>
+  ): action is ReturnType<StartActionCreator> | ReturnType<EndActionCreator>;
+  start: EnhancedActionCreator<
+    DecoratedActionCreator<
+      StartActionCreator["type"],
+      (
+        payload: ReturnType<StartActionCreator>["payload"]
+      ) => PayloadAction<
+        ReturnType<StartActionCreator>["payload"],
+        StartActionCreator["type"]
+      >
+    >
   >;
-  toString: () => Type;
-  type: Type;
 };
-
-/** @internal */
-export type StartPayloadFromSideEffectActions<
-  T extends SideEffectActions<any, any, any>
-> = T extends SideEffectActions<infer P, any, any> ? P : never;
-
-/** @internal */
-export type EndPayloadFromSideEffectActions<
-  T extends SideEffectActions<any, any, any>
-> = T extends SideEffectActions<any, infer P, any> ? P : never;
 
 /* --- Slice --- */
 
