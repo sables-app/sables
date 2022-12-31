@@ -4,6 +4,8 @@ This document serves as an API reference for Sables. This guide assumes working 
 
 ## Core
 
+> [![npm Version](https://img.shields.io/npm/v/@sables/core.svg?style=flat-square)](https://www.npmjs.com/package/@sables/core)
+
 Sables Core contains the foundation of Sables. The focus of the package is to build upon [Redux Toolkit][], adding functionality to facilitate slice lazy loading, and further improving developer experience.
 
 Sables Core is made available from both the `@sables/core` and `@sables/framework` packages for convenience.
@@ -834,6 +836,8 @@ const { actionObservableMiddleware, actions$ } =
 ```
 
 ## Router
+
+> [![npm Version](https://img.shields.io/npm/v/@sables/router.svg?style=flat-square)](https://www.npmjs.com/package/@sables/router)
 
 Sables Router is Redux-based routing library with distributed routing logic.
 Building upon [Redux First History](https://github.com/salvoravida/redux-first-history),
@@ -1926,6 +1930,8 @@ router.initialize(store);
 
 ## Framework
 
+> [![npm Version](https://img.shields.io/npm/v/@sables/framework.svg?style=flat-square)](https://www.npmjs.com/package/@sables/framework)
+
 Sables Framework contains integrations to enable application-first patterns.
 The [`Manager`](#manager) object is introduced to consolidate technologies,
 serving as the foundation for server-side features.
@@ -2181,17 +2187,23 @@ export const configureManager = defineConfigureManager(
 
 ## Server
 
+> [![npm Version](https://img.shields.io/npm/v/@sables/server.svg?style=flat-square)](https://www.npmjs.com/package/@sables/server)
+
 Sables Server contains composable handlers and middleware for server-side rendering and routing.
 
 Documentation for server-side functionality is a work in progress. Please refer to the [example apps](/docs/getting-started#examples) in the meantime.
 
 ## SSR
 
+> [![npm Version](https://img.shields.io/npm/v/@sables/ssr.svg?style=flat-square)](https://www.npmjs.com/package/@sables/ssr)
+
 Sables SSR contains client-side integrations for server-side rendering and routing.
 
 Documentation for server-side rendering & routing is a work in progress. Please refer to the [example apps](/docs/getting-started#examples) in the meantime.
 
 ## CLI
+
+> [![npm Version](https://img.shields.io/npm/v/sables.svg?style=flat-square)](https://www.npmjs.com/package/sables)
 
 The `sables` CLI has two commands: `build` and `create`. The `build` command looks for a `sables.config.js` configuration file in the current working directory, and builds the project accordingly.
 
