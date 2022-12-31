@@ -1,5 +1,13 @@
 # @sables/framework
 
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [e93bc6e]
+  - @sables/core@0.4.0
+  - @sables/router@0.2.4
+
 ## 0.4.0
 
 ### Minor Changes

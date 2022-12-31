@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.4.0
+
+### Minor Changes
+
+- e93bc6e: Update `useSideEffect` to return an object
+
 ## 0.3.0
 
 ### Minor Changes

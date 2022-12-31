@@ -1,5 +1,12 @@
 # @sables-app/example-side-effects
 
+## 0.1.4
+
+### Patch Changes
+
+- e93bc6e: Update `useSideEffect` to return an object
+  - @sables/framework@0.4.1
+
 ## 0.1.3
 
 ### Patch Changes
