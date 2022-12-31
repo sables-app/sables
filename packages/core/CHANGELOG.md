@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.3.0
+
+### Minor Changes
+
+- 197bdac: Refactor `createSideEffect` to accept action creators
+
 ## 0.2.0
 
 ### Minor Changes

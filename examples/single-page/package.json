@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@sables-app/boilerplate-single-page",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Client-only single page application (SPA)",
   "author": "Morris Allison III (https://morris.xyz)",
   "type": "module",
@@ -12,7 +12,7 @@
     "dev": "vite"
   },
   "dependencies": {
-    "@sables/framework": "~0.3.0",
+    "@sables/framework": "~0.4.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",

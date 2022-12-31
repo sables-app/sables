@@ -1,5 +1,13 @@
 # @sables/router
 
+## 0.2.3
+
+### Patch Changes
+
+- 197bdac: Refactor `createSideEffect` to accept action creators
+- Updated dependencies [197bdac]
+  - @sables/core@0.3.0
+
 ## 0.2.2
 
 ### Patch Changes
