@@ -72,6 +72,7 @@ export function createTestStore(
 
   return {
     actions$,
+    effectAPIRef,
     insertSlices,
     storeStates$,
     store,

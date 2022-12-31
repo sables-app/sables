@@ -209,11 +209,17 @@ export function createSideEffect<
 }
 
 /** @internal */
-export function bindSideEffect<T extends SideEffectActions<any, any>>(
-  dispatch: Redux.Dispatch,
-  actions: T,
-  onAwaitingChange?: (isAwaiting: boolean) => void
-) {
+export function bindSideEffect<T extends SideEffectActions<any, any>>({
+  dispatch,
+  actions,
+  onAwaitingChange,
+  onEndAction,
+}: {
+  dispatch: Redux.Dispatch;
+  actions: T;
+  onAwaitingChange?: (isAwaiting: boolean) => void;
+  onEndAction?: (endAction: ReturnType<typeof actions.end>) => void;
+}) {
   type StartAction = ReturnType<typeof actions.start>;
   type EndAction = ReturnType<typeof actions.end>;
   type StartPayload = StartAction["payload"];
@@ -239,6 +245,7 @@ export function bindSideEffect<T extends SideEffectActions<any, any>>(
       ),
       map((endAction) => {
         onAwaitingChange?.(false);
+        onEndAction?.(endAction);
         startActionRef.current = undefined;
 
         return endAction;
@@ -258,10 +265,10 @@ async function callSideEffect<
   actions: T,
   startPayload: ReturnType<T["start"]>["payload"]
 ): Promise<ReturnType<T["end"]>["payload"]> {
-  const { dispatchStartAction, observableCreator } = bindSideEffect(
-    effectAPI.dispatch,
-    actions
-  );
+  const { dispatchStartAction, observableCreator } = bindSideEffect({
+    dispatch: effectAPI.dispatch,
+    actions,
+  });
   const endActionPromise = firstValueFrom(observableCreator(effectAPI));
 
   dispatchStartAction(startPayload);
