@@ -1,4 +1,5 @@
 import {
+  createAction,
   createSideEffectActions,
   createSlice,
   PayloadAction,
@@ -23,11 +24,15 @@ function createInitialState(): RouteTransitionState {
 }
 
 /** @internal */
-export const transitionRoute = createSideEffectActions<
-  StartRouteTransitionActionPayload,
-  EndRouteTransitionActionPayload,
-  "sables/transitionRoute"
->("sables/transitionRoute");
+export const transitionRoute = createSideEffectActions(
+  createAction<
+    StartRouteTransitionActionPayload,
+    "sables/transitionRoute/start"
+  >("sables/transitionRoute/start"),
+  createAction<EndRouteTransitionActionPayload, "sables/transitionRoute/end">(
+    "sables/transitionRoute/end"
+  )
+);
 
 /** @internal */
 export const routeTransitionSlice = createSlice(

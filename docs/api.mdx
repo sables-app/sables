@@ -377,7 +377,7 @@ store.dispatch(getUser.actions.start("@ash.ketchum"));
 
 ### createSideEffectActions
 
-> `createSideEffectActions(actionTypePrefix): SideEffectActions;`
+> `createSideEffectActions(startActionCreator, endActionCreator): SideEffectActions;`
 
 Creates a pair of action creators intended for use with side effects.
 
@@ -390,10 +390,10 @@ type SuperHero = {
   username: string;
 };
 
-const getSuperHero = createSideEffectActions<
-  SuperHero["id"],
-  SuperHero
->("getSuperHero");
+const getSuperHero = createSideEffectActions(
+  createAction<SuperHero["id"]>("getSuperHero/start"),
+  createAction<SuperHero>("getSuperHero/end")
+);
 
 // Returns: { type: "getSuperHero/start", payload: "1212" }
 const startAction = getSuperHero.start("1212");
@@ -434,9 +434,7 @@ In the example below, dispatching the start action causes the following:
 
 ```ts
 type MyData = { hello: string };
-const getData = createSideEffectActions<void, MyData>(
-  "getData"
-);
+const getData = createSideEffectActions("getData");
 const getDataObservableCreator = createSideEffectObservable(
   getData,
   (effectAPI) =>

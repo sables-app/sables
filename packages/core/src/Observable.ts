@@ -3,16 +3,13 @@ import { createMutableRef } from "@sables/utils";
 import type * as Redux from "redux";
 import { filter, firstValueFrom, map, switchMap, zipWith } from "rxjs";
 
-import { createSideEffectActions } from "./Action.js";
+import { createSideEffectActions } from "./main.js";
 import {
   ActionDependency,
   DefaultEffectAPI,
-  EndAction,
-  EndPayloadFromSideEffectActions,
   ObservableCreator,
+  PayloadActionCreator,
   SideEffectActions,
-  StartAction,
-  StartPayloadFromSideEffectActions,
 } from "./types.js";
 
 /**
@@ -40,25 +37,16 @@ export function createObservable<
 }
 
 /**
- * A asynchronous function that maps the given
- * start action to an end action payload.
- *
- * @public
- */
-export type MapActionFn<
-  EffectAPI extends DefaultEffectAPI,
-  S extends StartAction<any>,
-  EndPayload
-> = (startAction: S, effectAPI: EffectAPI) => Promise<EndPayload>;
-
-/**
  * Creates an Observable Creator containing logic for handling side effects.
+ *
+ * @param mapStartAction A asynchronous function that maps the given start action to an end action payload.
  *
  * @see {createObservable}
  *
  * type MyData = { hello: string };
- * const getData = createSideEffectActions<void, MyData>(
- *   "getData"
+ * const getData = createSideEffectActions(
+ *   createAction<void>("getData/start"),
+ *   createAction<MyData>("getData/end")
  * );
  * const getDataObservableCreator = createSideEffectObservable(
  *   getData,
@@ -75,28 +63,25 @@ export type MapActionFn<
  */
 export function createSideEffectObservable<
   EffectAPI extends DefaultEffectAPI,
-  StartPayload,
-  EndPayload,
-  Type extends string
+  ActionCreators extends SideEffectActions<any, any>
 >(
-  actions: SideEffectActions<StartPayload, EndPayload, Type>,
-  mapStartAction: MapActionFn<
-    EffectAPI,
-    StartAction<StartPayload, Type>,
-    EndPayload
-  >
+  actionCreators: ActionCreators,
+  mapStartAction: (
+    startAction: ReturnType<ActionCreators["start"]>,
+    effectAPI: EffectAPI
+  ) => Promise<ReturnType<ActionCreators["end"]>["payload"]>
 ) {
-  return createObservable<EffectAPI>((effectAPI) => {
+  return createObservable<EffectAPI, void>((effectAPI) => {
     const { actions$, dispatch } = effectAPI;
 
     const startActions$ = actions$.pipe(
-      filter((action): action is StartAction<StartPayload, Type> =>
-        actions.start.match(action)
+      filter((action): action is ReturnType<ActionCreators["start"]> =>
+        actionCreators.start.match(action)
       )
     );
 
     const endActionPayloads$ = startActions$.pipe(
-      switchMap((startAction: StartAction<StartPayload, Type>) =>
+      switchMap((startAction: ReturnType<ActionCreators["start"]>) =>
         mapStartAction(startAction, effectAPI)
       )
     );
@@ -104,7 +89,7 @@ export function createSideEffectObservable<
     return startActions$.pipe(
       zipWith(endActionPayloads$),
       map(([startAction, endPayload]) => {
-        dispatch(actions.end(endPayload, startAction));
+        dispatch(actionCreators.end(endPayload, startAction));
       })
     );
   });
@@ -131,17 +116,48 @@ export function createSideEffectObservable<
  * @public
  */
 export type SideEffect<
-  StartPayload = void,
-  EndPayload = void,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
-  Type extends string = string
+  StartActionCreator extends PayloadActionCreator<any>,
+  EndActionCreator extends PayloadActionCreator<any>,
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
 > = {
-  (effectAPI: EffectAPI, payload: StartPayload): Promise<EndPayload>;
-  actions: SideEffectActions<StartPayload, EndPayload, Type>;
+  (
+    effectAPI: EffectAPI,
+    payload: ReturnType<StartActionCreator>["payload"]
+  ): Promise<ReturnType<EndActionCreator>["payload"]>;
+  actions: SideEffectActions<StartActionCreator, EndActionCreator>;
   dependsUpon(
     ...dependencies: ActionDependency[]
-  ): SideEffect<StartPayload, EndPayload, EffectAPI, Type>;
+  ): SideEffect<StartActionCreator, EndActionCreator, EffectAPI>;
 };
+
+function createSideEffectInstance<
+  ActionCreators extends SideEffectActions<any, any>,
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+>(
+  actionCreators: ActionCreators,
+  observableCreator: ObservableCreator<EffectAPI, void>
+): SideEffect<
+  typeof actionCreators["start"],
+  typeof actionCreators["end"],
+  EffectAPI
+> {
+  actionCreators.dependsUpon(observableCreator);
+
+  function sideEffect(
+    effectAPI: EffectAPI,
+    payload: ReturnType<typeof actionCreators["start"]>["payload"]
+  ) {
+    return callSideEffect(effectAPI, actionCreators, payload);
+  }
+
+  sideEffect.actions = actionCreators;
+  sideEffect.dependsUpon = (...dependencies: ActionDependency[]) => {
+    actionCreators.dependsUpon(...dependencies);
+    return sideEffect;
+  };
+
+  return sideEffect;
+}
 
 /**
  * Creates a reactive side effect using a combination of actions and observables.
@@ -166,50 +182,48 @@ export type SideEffect<
  * @public
  */
 export function createSideEffect<
-  StartPayload = void,
-  EndPayload = void,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
-  Type extends string = string
+  StartActionCreator extends PayloadActionCreator<any>,
+  EndActionCreator extends PayloadActionCreator<any>,
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
 >(
-  type: Type,
-  mapStartAction: MapActionFn<
-    EffectAPI,
-    StartAction<StartPayload, Type>,
-    EndPayload
+  startBase: StartActionCreator,
+  endBase: EndActionCreator,
+  mapStartAction: (
+    startAction: ReturnType<
+      SideEffectActions<StartActionCreator, EndActionCreator>["start"]
+    >,
+    effectAPI: EffectAPI
+  ) => Promise<
+    ReturnType<
+      SideEffectActions<StartActionCreator, EndActionCreator>["end"]
+    >["payload"]
   >
-): SideEffect<StartPayload, EndPayload, EffectAPI, Type> {
-  const actions = createSideEffectActions<StartPayload, EndPayload, Type>(type);
-  const observable = createSideEffectObservable(actions, mapStartAction);
+) {
+  const actionCreators = createSideEffectActions(startBase, endBase);
+  const observableCreator = createSideEffectObservable(
+    actionCreators,
+    mapStartAction
+  );
 
-  actions.dependsUpon(observable);
-
-  function sideEffect(effectAPI: EffectAPI, payload: StartPayload) {
-    return callSideEffect(effectAPI, actions, payload);
-  }
-
-  sideEffect.actions = actions;
-  sideEffect.dependsUpon = (...dependencies: ActionDependency[]) => {
-    actions.dependsUpon(...dependencies);
-    return sideEffect;
-  };
-
-  return sideEffect;
+  return createSideEffectInstance(actionCreators, observableCreator);
 }
 
 /** @internal */
-export function bindSideEffect<T extends SideEffectActions<any, any, any>>(
+export function bindSideEffect<T extends SideEffectActions<any, any>>(
   dispatch: Redux.Dispatch,
   actions: T,
   onAwaitingChange?: (isAwaiting: boolean) => void
 ) {
-  type StartPayload = StartPayloadFromSideEffectActions<T>;
+  type StartAction = ReturnType<typeof actions.start>;
+  type EndAction = ReturnType<typeof actions.end>;
+  type StartPayload = StartAction["payload"];
 
-  const startActionRef = createMutableRef<StartAction<StartPayload>>();
+  const startActionRef = createMutableRef<StartAction>();
 
   const dispatchStartAction = (payload: StartPayload) => {
     if (startActionRef.current) return;
 
-    const action = actions.start(payload);
+    const action: StartAction = actions.start(payload);
 
     startActionRef.current = action;
     onAwaitingChange?.(true);
@@ -219,9 +233,7 @@ export function bindSideEffect<T extends SideEffectActions<any, any, any>>(
   const observableCreator = createObservable(({ actions$ }) =>
     actions$.pipe(
       filter(
-        (
-          endAction
-        ): endAction is EndAction<EndPayloadFromSideEffectActions<T>> =>
+        (endAction): endAction is EndAction =>
           !!startActionRef.current &&
           actions.hasAffiliation(startActionRef.current, endAction)
       ),
@@ -240,12 +252,12 @@ export function bindSideEffect<T extends SideEffectActions<any, any, any>>(
 /** @internal */
 async function callSideEffect<
   EffectAPI extends DefaultEffectAPI,
-  T extends SideEffectActions<any, any, any>
+  T extends SideEffectActions<any, any>
 >(
   effectAPI: EffectAPI,
   actions: T,
-  startPayload: StartPayloadFromSideEffectActions<T>
-): Promise<EndPayloadFromSideEffectActions<T>> {
+  startPayload: ReturnType<T["start"]>["payload"]
+): Promise<ReturnType<T["end"]>["payload"]> {
   const { dispatchStartAction, observableCreator } = bindSideEffect(
     effectAPI.dispatch,
     actions

@@ -11,14 +11,15 @@ import type {
   ActionCreator,
   AnySlice,
   BaseSliceLazySelector,
-  EnhancedActionCreator,
   EnhancedActionCreatorWithPayload,
   EnhancedSlice,
+  EnhancedStandardActionCreator,
   LazySliceSelectorName,
   LazySliceStoreState,
   PayloadAction,
   SliceLazySelector,
   SliceName,
+  StandardAction,
   StandardActionCreator,
 } from "./types.js";
 import { createLazyMeta } from "./utils.js";
@@ -60,10 +61,18 @@ function enhanceSliceActions<S extends AnySlice>(
   actions: S["actions"],
   enhancedSliceShell: Partial<EnhancedSlice<S>>
 ): EnhancedSlice<S>["actions"] {
-  type ActionCreatorEntries = Array<[string, StandardActionCreator<string>]>;
-  type LazyActionCreatorEntries = Array<
-    [string, EnhancedActionCreator<StandardActionCreator<string>>]
-  >;
+  type StandardActionCreatorWithType<Type extends string> =
+    StandardActionCreator<Type, [...params: any], StandardAction<Type>>;
+  type ActionCreatorEntry<Type extends string> = [
+    Type,
+    StandardActionCreatorWithType<Type>
+  ];
+  type ActionCreatorEntries = ActionCreatorEntry<string>[];
+  type EnhancedActionCreatorEntry<Type extends string> = [
+    Type,
+    EnhancedStandardActionCreator<StandardActionCreatorWithType<Type>>
+  ];
+  type LazyActionCreatorEntries = EnhancedActionCreatorEntry<string>[];
   const actionCreatorEntries = Object.entries(actions) as ActionCreatorEntries;
   const lazyActionCreatorEntries: LazyActionCreatorEntries =
     actionCreatorEntries.map(([name, actionCreator]) => {

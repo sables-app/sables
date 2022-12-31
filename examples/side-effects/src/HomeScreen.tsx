@@ -2,7 +2,7 @@ import { useSideEffect } from "@sables/framework";
 
 import { FormEventHandler, useCallback } from "react";
 
-import { dogSearch } from "./actions.js";
+import { searchDogs } from "./sideEffects.js";
 
 function submissionToPayload(
   event: React.FormEvent<HTMLFormElement>
@@ -16,8 +16,8 @@ function submissionToPayload(
   return Object.fromEntries(new FormData(formEl).entries());
 }
 
-export function HomeScreen() {
-  const [startSearch, isAwaiting] = useSideEffect(dogSearch);
+function useSubmitHandler() {
+  const [startSearch, isSearching] = useSideEffect(searchDogs);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (event) => {
@@ -31,12 +31,18 @@ export function HomeScreen() {
     [startSearch]
   );
 
+  return [handleSubmit, isSearching] as const;
+}
+
+export function HomeScreen() {
+  const [handleSubmit, isSearching] = useSubmitHandler();
+
   return (
     <form onSubmit={handleSubmit}>
       <label>
         Dog name <input type="text" name="name" />
       </label>
-      <button disabled={isAwaiting} type="submit">
+      <button disabled={isSearching} type="submit">
         Search
       </button>
     </form>
