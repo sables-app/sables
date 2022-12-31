@@ -1,5 +1,14 @@
 # @sables-app/boilerplate-node-rendering
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [197bdac]
+  - @sables/framework@0.4.0
+  - @sables/server@0.2.4
+  - @sables/ssr@0.1.4
+
 ## 0.1.3
 
 ### Patch Changes

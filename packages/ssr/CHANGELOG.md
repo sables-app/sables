@@ -1,5 +1,12 @@
 # @sables/ssr
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [197bdac]
+  - @sables/framework@0.4.0
+
 ## 0.1.3
 
 ### Patch Changes
