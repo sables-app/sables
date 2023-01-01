@@ -1,5 +1,12 @@
 # @sables-app/docs
 
+## 0.1.4
+
+### Patch Changes
+
+- ef12f71: Add `createEntitySlice` function
+- 76f8a8c: Update `createSideEffect` documentation
+
 ## 0.1.3
 
 ### Patch Changes
