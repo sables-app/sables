@@ -40,7 +40,8 @@ type EntitySliceSelectors<
   Entity,
   Adjectives,
   SingularName
->;
+> &
+  ReduxToolkit.EntitySelectors<Entity, ReduxToolkit.EntityState<Entity>>;
 type EntitySliceMixin<
   Entity,
   Adjectives extends NotableEntities.Adjectives,
