@@ -1,5 +1,13 @@
 # @sables/router
 
+## 0.2.6
+
+### Patch Changes
+
+- c747af0: Make `assertRouteParams` optional
+- Updated dependencies [8be70ce]
+  - @sables/core@0.5.2
+
 ## 0.2.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.5.2
+
+### Patch Changes
+
+- 8be70ce: Add `EntitySelectors` type to `EntitySlice`
+
 ## 0.5.1
 
 ### Patch Changes
