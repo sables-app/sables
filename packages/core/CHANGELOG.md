@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.5.1
+
+### Patch Changes
+
+- 66c78ca: Widen `Entity` generic to allow entity types to be defined using `interface`.
+
 ## 0.5.0
 
 ### Minor Changes
