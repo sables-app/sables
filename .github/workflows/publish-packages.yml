@@ -29,7 +29,9 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc
 
       - name: Publish packages to GitHub and NPM registries
-        run: npx changeset publish
+        uses: changesets/action@v1
+        with:
+          publish: npx changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
