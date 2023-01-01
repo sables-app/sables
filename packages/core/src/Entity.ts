@@ -7,7 +7,7 @@ import { PayloadAction } from "./types.js";
 
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-namespace
-namespace EntityReducers {
+export namespace EntityReducers {
   // prettier-ignore
   export type ReducerName<
     K,
@@ -27,16 +27,15 @@ namespace EntityReducers {
     | K extends "upsertMany" ? `upsert${Capitalize<PluralName>}`    : never;
 
   export type Reducers<
-    T,
-    Adapter extends ReduxToolkit.EntityStateAdapter<T>,
+    Entity extends Record<string, unknown>,
     SingularName extends string,
     PluralName extends string
   > = {
-    [K in keyof Adapter as ReducerName<
+    [K in keyof ReduxToolkit.EntityStateAdapter<Entity> as ReducerName<
       K,
       SingularName,
       PluralName
-    >]: Adapter[K];
+    >]: ReduxToolkit.EntityStateAdapter<Entity>[K];
   };
 
   export type ExtractEntityFromAdapter<T> =
@@ -81,7 +80,6 @@ export function entityAdapterToReducers<
   plural?: PluralName
 ): EntityReducers.Reducers<
   EntityReducers.ExtractEntityFromAdapter<Adapter>,
-  Adapter,
   SingularName,
   PluralName
 > {
@@ -149,18 +147,25 @@ export namespace NotableEntities {
     Extract<Adjective, string>
   >}${Capitalize<Name>}Payload`;
 
+  export type Selectors<
+    StoreState,
+    Entity,
+    A extends Adjectives,
+    Name extends string
+  > = {
+    [K in keyof A as EntitySelectorName<Extract<K, string>, Name>]: (
+      storeState: StoreState
+    ) => Entity | undefined;
+  } & {
+    [K in keyof A as PayloadSelectorName<Extract<K, string>, Name>]: (
+      storeState: StoreState
+    ) => NotableEntities.PayloadFromAdjectiveFn<A[K]> | undefined;
+  };
+
   export type Instance<Entity, A extends Adjectives, Name extends string> = {
-    createSelectors<StoreState>(
+    getSelectors<StoreState>(
       selectState: (storeState: StoreState) => SliceState<Entity, A, Name>
-    ): {
-      [K in keyof A as EntitySelectorName<Extract<K, string>, Name>]: (
-        storeState: StoreState
-      ) => Entity | undefined;
-    } & {
-      [K in keyof A as PayloadSelectorName<Extract<K, string>, Name>]: (
-        storeState: StoreState
-      ) => NotableEntities.PayloadFromAdjectiveFn<A[K]> | undefined;
-    };
+    ): Selectors<StoreState, Entity, A, Name>;
     getInitialState(): SliceState<Entity, A, Name>;
     reducers: {
       [K in keyof A as ReducerName<
@@ -239,7 +244,7 @@ export function createNotableEntities<
     return `select${capitalize(adjective)}${capitalize(name)}Payload`;
   }
 
-  function createSelectors(selectState: (storeState: any) => State) {
+  function getSelectors(selectState: (storeState: any) => State) {
     return Object.entries(adjectives).reduce(
       (result, [adjective, getEntityId]) => {
         type Payload = NotableEntities.PayloadFromAdjectiveFn<
@@ -311,8 +316,8 @@ export function createNotableEntities<
   );
 
   return {
-    createSelectors,
     getInitialState,
+    getSelectors,
     reducers,
   } as any;
 }

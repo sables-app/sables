@@ -55,28 +55,9 @@ const selectPurchasedBookCount = createSelector(
 selectPurchasedBookCount(store.getState());
 ```
 
-### enhanceSlice
+##### See also
 
-> `enhanceSlice(slice): EnhancedSlice;`
-
-Returns a new enhanced slice.
-Enhanced slices contain selectors for slice state, and enhanced action creators.
-Enhanced action creators can create actions with dependencies, and have additional utility functions attached.
-
-##### Example
-
-```ts
-const dogsSliceBasic = ReduxToolkit.createSlice({
-  name: "dogs",
-  initialState: {},
-  reducers: {},
-});
-
-const dogsSlice = enhanceSlice(dogsSliceBasic);
-
-dogsSlice.selector(store.getState());
-dogsSlice.selectDogsState(store.getState());
-```
+- [`createEntitySlice`](#createentityslice)
 
 ### DraftSlice.setReducer
 
@@ -181,6 +162,73 @@ const state = store.getState();
 // Both return `0`
 dogsSlice.selectDogsState(state).puppyCount;
 dogsSlice.selector(state).puppyCount;
+```
+
+### createEntitySlice
+
+> `createEntitySlice(adapterOptions?).setReducer(singular, plural, adjectives?);`
+
+Creates a slice to store a specific entity.
+
+The slice is created by composing the following functions together:
+
+- [`ReduxToolkit.createEntityAdapter`](https://redux-toolkit.js.org/api/createEntityAdapter)
+- [`entityAdapterToReducers`](#entityadaptertoreducers)
+- [`createNotableEntities`](#createnotableentities)
+- [`createSlice`](#createslice)
+- `entityAdapter.getSelectors`
+- `notableEntities.getSelectors`
+
+##### Example
+
+```ts
+type Book = { id: string; name: string };
+
+const booksSlice = createEntitySlice<Book>().setReducer(
+  "book",
+  "books",
+  {
+    best: (id: string) => id,
+  }
+);
+
+const { addBook, denoteBestBook } = booksSlice.actions;
+const { selectBestBook } = booksSlice.selectors;
+
+store.dispatch(
+  addBook({
+    id: "1",
+    name: "Goosebumps: Night of the Living Dummy",
+  })
+);
+
+store.dispatch(denoteBestBook("1"));
+
+// Returns: { id: "1", name: "Goosebumps: Night of the Living Dummy" }
+selectBestBook(store.getState());
+```
+
+### enhanceSlice
+
+> `enhanceSlice(slice): EnhancedSlice;`
+
+Returns a new enhanced slice.
+Enhanced slices contain selectors for slice state, and enhanced action creators.
+Enhanced action creators can create actions with dependencies, and have additional utility functions attached.
+
+##### Example
+
+```ts
+const dogsSliceBasic = ReduxToolkit.createSlice({
+  name: "dogs",
+  initialState: {},
+  reducers: {},
+});
+
+const dogsSlice = enhanceSlice(dogsSliceBasic);
+
+dogsSlice.selector(store.getState());
+dogsSlice.selectDogsState(store.getState());
 ```
 
 ### createAction
@@ -602,7 +650,7 @@ const booksSlice = createSlice("books", {
     .addCases(notableBooks.reducers)
 );
 // Selectors are created for each adjective
-const { selectBestBook } = notableBooks.createSelectors(
+const { selectBestBook } = notableBooks.getSelectors(
   booksSlice.selectBooksState
 );
 

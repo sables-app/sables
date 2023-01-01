@@ -155,7 +155,7 @@ describe("Entity", () => {
       );
 
       const { selectBestBook, selectWorstBook, selectFavoriteBook } =
-        notableBooks.createSelectors(booksSlice.selectBooksState);
+        notableBooks.getSelectors(booksSlice.selectBooksState);
       const store = configureStore({
         reducer: combineReducers({
           books: booksSlice.reducer,
