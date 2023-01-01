@@ -1,5 +1,14 @@
 # @sables/router
 
+## 0.2.5
+
+### Patch Changes
+
+- 76f8a8c: Update `createSideEffect` documentation
+- Updated dependencies [ef12f71]
+- Updated dependencies [76f8a8c]
+  - @sables/core@0.5.0
+
 ## 0.2.4
 
 ### Patch Changes
