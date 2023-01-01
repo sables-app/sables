@@ -1,0 +1,89 @@
+// Vitest Snapshot v1
+
+exports[`EntitySlice > createEntitySlice > creates a slice with entity logic 1`] = `
+{
+  "error": false,
+  "meta": {
+    Symbol(@sables/lazyMeta): {
+      "observers": Set {},
+      "slices": Set {
+        {
+          "actions": {
+            "addBook": [Function],
+            "addBooks": [Function],
+            "denoteBestBook": [Function],
+            "removeAllBooks": [Function],
+            "removeBook": [Function],
+            "removeBooks": [Function],
+            "setAllBooks": [Function],
+            "setBook": [Function],
+            "setBooks": [Function],
+            "updateBook": [Function],
+            "updateBooks": [Function],
+            "upsertBook": [Function],
+            "upsertBooks": [Function],
+          },
+          "caseReducers": {
+            "addBook": [Function],
+            "addBooks": [Function],
+            "denoteBestBook": [Function],
+            "removeAllBooks": [Function],
+            "removeBook": [Function],
+            "removeBooks": [Function],
+            "setAllBooks": [Function],
+            "setBook": [Function],
+            "setBooks": [Function],
+            "updateBook": [Function],
+            "updateBooks": [Function],
+            "upsertBook": [Function],
+            "upsertBooks": [Function],
+          },
+          "getInitialState": [Function],
+          "name": "books",
+          "reducer": [Function],
+          "selectBooksState": [Function],
+          "selector": [Function],
+          "selectors": {
+            "selectAll": [Function],
+            "selectBestBook": [Function],
+            "selectBestBookPayload": [Function],
+            "selectById": [Function],
+            "selectEntities": [Function],
+            "selectIds": [Function],
+            "selectTotal": [Function],
+          },
+        },
+      },
+    },
+  },
+  "payload": {
+    "id": "1",
+    "name": "Goosebumps: Night of the Living Dummy",
+  },
+  "type": "books/addBook",
+}
+`;
+
+exports[`EntitySlice > createEntitySlice > creates a slice with entity logic 2`] = `
+{
+  "books": {
+    "bestBookPayload": undefined,
+    "entities": {
+      "1": {
+        "id": "1",
+        "name": "Goosebumps: Night of the Living Dummy",
+      },
+    },
+    "ids": [
+      "1",
+    ],
+  },
+}
+`;
+
+exports[`EntitySlice > createEntitySlice > creates a slice with entity logic 3`] = `
+{
+  "id": "1",
+  "name": "Goosebumps: Night of the Living Dummy",
+}
+`;

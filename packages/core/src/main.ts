@@ -8,6 +8,7 @@ export * from "./Action.js";
 export * from "./constants.js";
 export * from "./EffectAPIContext.js";
 export * from "./Entity.js";
+export * from "./EntitySlice.js";
 export * from "./hooks/mod.js";
 export * from "./middleware/mod.js";
 export * from "./Observable.js";
