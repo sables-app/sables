@@ -434,7 +434,7 @@ export function sideEffectToRouteMiddleware<
   S extends SideEffect<any, any, EffectAPI>
 >(
   sideEffect: S,
-  assertRouteParams: (
+  assertRouteParams?: (
     params: NonNullable<RouteParams>
   ) => asserts params is ReturnType<S["actions"]["start"]>["payload"]
 ): RouteMiddleware<StartTransitionAction, EffectAPI> {
@@ -443,7 +443,7 @@ export function sideEffectToRouteMiddleware<
 
     const params = action.payload.nextRoute?.params || {};
 
-    await assertRouteParams(params);
+    await assertRouteParams?.(params);
 
     return sideEffect(effectAPI, params);
   };

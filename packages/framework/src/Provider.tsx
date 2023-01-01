@@ -78,6 +78,8 @@ function initialRoutesToConfigureManager<R extends Routes<DefaultEffectAPI>>(
  * @public
  */
 export function Provider(props: ProviderProps) {
+  // This doesn't need to be memoized, because `useConfigureManager`
+  // is memoized to the `Lifecycle` instance.
   const configureManager = isPropsWithConfigureManager(props)
     ? props.configureManager
     : initialRoutesToConfigureManager(props.initialRoutes);
