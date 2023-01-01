@@ -1,5 +1,16 @@
 # @sables/framework
 
+## 0.5.0
+
+### Minor Changes
+
+- 66c78ca: Widen `Entity` generic to allow entity types to be defined using `interface`.
+
+### Patch Changes
+
+- Updated dependencies [66c78ca]
+  - @sables/core@0.5.1
+
 ## 0.4.2
 
 ### Patch Changes
