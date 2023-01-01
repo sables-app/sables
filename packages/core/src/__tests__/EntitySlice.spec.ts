@@ -59,5 +59,28 @@ describe("EntitySlice", () => {
       // @ts-expect-error The selector shouldn't exist
       expect(booksSlice.selectors.selectWorstBook).toEqual(undefined);
     });
+
+    test("entity interface", async () => {
+      interface Foo1 {
+        bar: string;
+      }
+      type Foo2 = {
+        bar: string;
+      };
+
+      // @ts-expect-error Types created with `interface` aren't compatible
+      // with `Record<string, unknown>` by default.
+      assertType<Record<string, unknown>>({} as Foo1);
+
+      // Types created with `type` are compatible
+      // with `Record<string, unknown>` by default.
+      assertType<Record<string, unknown>>({} as Foo2);
+
+      // No type error should occur when a entity type created with `interface` is used.
+      createEntitySlice<Foo1>().setReducer("foo", "foos");
+
+      // No type error should occur when a entity type created with `type` is used.
+      createEntitySlice<Foo2>().setReducer("foo", "foos");
+    });
   });
 });

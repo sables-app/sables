@@ -27,7 +27,7 @@ export namespace EntityReducers {
     | K extends "upsertMany" ? `upsert${Capitalize<PluralName>}`    : never;
 
   export type Reducers<
-    Entity extends Record<string, unknown>,
+    Entity,
     SingularName extends string,
     PluralName extends string
   > = {

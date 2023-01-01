@@ -15,14 +15,14 @@ type EntityAdapterOptions<Entity> = Parameters<
 >[0];
 
 type EntitySliceState<
-  Entity extends Record<string, unknown>,
+  Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string
 > = ReduxToolkit.EntityState<Entity> &
   NotableEntities.SliceState<Entity, Adjectives, SingularName>;
 
 type EntitySliceReducers<
-  Entity extends Record<string, unknown>,
+  Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string,
   PluralName extends string
@@ -30,7 +30,7 @@ type EntitySliceReducers<
   EntityReducers.Reducers<Entity, SingularName, PluralName>;
 
 type EntitySliceSelectors<
-  Entity extends Record<string, unknown>,
+  Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string,
   PluralName extends string
@@ -42,7 +42,7 @@ type EntitySliceSelectors<
   SingularName
 >;
 type EntitySliceMixin<
-  Entity extends Record<string, unknown>,
+  Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string,
   PluralName extends string
@@ -56,7 +56,7 @@ type EntitySliceMixin<
  * @public
  */
 export type EntitySlice<
-  Entity extends Record<string, unknown>,
+  Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string,
   PluralName extends string
@@ -115,7 +115,7 @@ export type EntitySlice<
  *
  * @public
  */
-export function createEntitySlice<Entity extends Record<string, unknown>>(
+export function createEntitySlice<Entity>(
   adapterOptions?: EntityAdapterOptions<Entity>
 ) {
   return {
