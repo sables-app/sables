@@ -12,6 +12,7 @@ export * from "./constants.js";
 export * from "./Router.js";
 export * from "./effects.js";
 export * from "./hooks.js";
+export { defineParam, definePath } from "./Path.js";
 export * from "./RouteEffects.js";
 export * from "./Routes.js";
 export * from "./RoutesCollection.js";

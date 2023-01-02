@@ -1712,6 +1712,60 @@ createRoutes().setEffects(() =>
 );
 ```
 
+### definePath
+
+> `definePath\`/route/path/${":parameterName"}\``
+
+A [tagged template][] that enables strict typing of route parameters. Using `definePath` for routes with many parameters is recommended but optional.
+
+[tagged template]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates
+
+Sables Router considers route parameter values to be user input, so they aren't trusted.
+As a result, the types defined by `definePath` should only be used to check interface compatibility.
+For example, `definePath` types can be used to check whether an associated validation schema has correct property names.
+
+##### Example
+
+```ts
+const routes = createRoutes()
+  .set("root", "/")
+  .set("profile", definePath`/profiles/${":handle"}`);
+
+// No type error
+routes.Profile.build({ handle: "@ash.ketchum" });
+// @ts-expect-error The `build` method doesn't accept invalid params
+routes.Profile.build({ foo: "bar" });
+```
+
+##### See also
+
+- [`defineParam`](#defineparam)
+
+### defineParam
+
+> `defineParam(":parameterName")`
+
+A helper function to assist in defining paths using [`definePath`](#definepath).
+`defineParam` coerces TypeScript to infer a string literal type instead of `string`.
+Writing `defineParam(":parameterName")` is effectively the same as writing
+`":parameterName" as const`.
+
+##### Example
+
+```ts
+const profilePath = definePath`/profiles/${defineParam(
+  ":handle"
+)}`;
+
+const routes = createRoutes()
+  .set("root", "/")
+  .set("profile", profilePath);
+```
+
+##### See also
+
+- [`definePath`](#definepath)
+
 ### Route middleware signals
 
 A route middleware signal is an object thrown within a

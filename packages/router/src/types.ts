@@ -7,7 +7,6 @@ import type { SlicesToReducersMapObject } from "@sables/utils";
 
 import type * as ReduxToolkit from "@reduxjs/toolkit";
 import type * as History from "history";
-import type * as PathParser from "path-parser";
 import type * as Redux from "redux";
 import type * as ReduxFirstHistory from "redux-first-history";
 
@@ -17,7 +16,7 @@ import type {
   ROUTER_REDUCER_KEY,
   transitionStatuses,
 } from "./constants.js";
-import type { AnyRouteReference, RouteReference } from "./Routes.js";
+import type { AnyRouteReference } from "./Routes.js";
 import type { routeTransitionSlice } from "./routeTransitionSlice.js";
 
 /**

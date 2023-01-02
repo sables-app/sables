@@ -6,7 +6,6 @@ import {
 import { capitalize } from "@sables/utils";
 
 import { createPath } from "history";
-import { Path as ParserPath } from "path-parser";
 
 import {
   addRoutes as addRoutesEffect,
@@ -14,6 +13,18 @@ import {
   combineHandlers,
   forwardTo,
 } from "./effects.js";
+import {
+  assertNotWildCardRoutePath,
+  assertNotWildCardRouteTemplatePath,
+  assertWildCardRoutePath,
+  assertWildCardRouteTemplatePath,
+  createPathParser,
+  ExtractParamName,
+  isWildCardPath,
+  normalizeRoutePath,
+  PathFromParamName,
+  TemplatePath,
+} from "./Path.js";
 import {
   cloneRouteEffects,
   createRouteEffects,
@@ -62,11 +73,9 @@ function cloneRoutesMeta<EffectAPI extends DefaultEffectAPI>(
 /** @internal */
 function cloneRoutes<
   EffectAPI extends DefaultEffectAPI,
-  RoutesRID extends string = never
->(
-  routes: UntouchedRoutes<EffectAPI, RoutesRID>
-): UntouchedRoutes<EffectAPI, RoutesRID> {
-  const nextRoutes = createRoutes<EffectAPI, RoutesRID>();
+  Info extends RouteReferenceInfo<string, string> = never
+>(routes: UntouchedRoutes<EffectAPI, Info>): UntouchedRoutes<EffectAPI, Info> {
+  const nextRoutes = createRoutes<EffectAPI, Info>();
 
   nextRoutes[SYMBOL_ROUTES_META] = cloneRoutesMeta(routes[SYMBOL_ROUTES_META]);
 
@@ -79,10 +88,16 @@ function cloneRoutes<
   return Object.assign(nextRoutes, routeReferences);
 }
 
+/** @internal */
+export type RouteReferenceInfo<
+  RID extends string,
+  RawParamName extends string
+> = [RID, RawParamName];
+
 /** @internal declaration requirement */
 export interface RoutesMethods<
   EffectAPI extends DefaultEffectAPI,
-  RoutesRID extends string = never
+  Info extends RouteReferenceInfo<string, string> = never
 > {
   /**
    * @public
@@ -131,10 +146,10 @@ export interface RoutesMethods<
    *
    * @public
    */
-  set<RID extends RouteID>(
+  set<RID extends RouteID, RawParamName extends string>(
     id: RID,
-    path: RoutePathType
-  ): UntouchedRoutes<EffectAPI, RID | RoutesRID>;
+    path: RoutePathType | TemplatePath<RoutePathType, RawParamName>
+  ): UntouchedRoutes<EffectAPI, RouteReferenceInfo<RID, RawParamName> | Info>;
 
   /**
    * Sets route to forward to another location.
@@ -165,7 +180,7 @@ export interface RoutesMethods<
     getDestination: (
       params: RouteParams
     ) => PartialHistoryPathStrict | RouteHref
-  ): UntouchedRoutes<EffectAPI, RoutesRID>;
+  ): UntouchedRoutes<EffectAPI, Info>;
 
   /**
    * Sets a wildcard route to be matched for route transitions.
@@ -182,10 +197,13 @@ export interface RoutesMethods<
    *
    * @public
    */
-  setWildcard<RID extends RouteID>(
+  setWildcard<RID extends RouteID, RawParamName extends string>(
     id: RID,
-    path: WildCardPathType
-  ): Omit<UntouchedRoutes<EffectAPI, RID | RoutesRID>, WildcardLockedMethods>;
+    path: WildCardPathType | TemplatePath<WildCardPathType, RawParamName>
+  ): Omit<
+    UntouchedRoutes<EffectAPI, RouteReferenceInfo<RID, RawParamName> | Info>,
+    WildcardLockedMethods
+  >;
 
   /**
    * Sets wildcard route to add the given routes when matched.
@@ -219,7 +237,7 @@ export interface RoutesMethods<
   setRoutes(
     path: WildCardPathType,
     ...params: AddRoutesParams<EffectAPI>
-  ): Omit<UntouchedRoutes<EffectAPI, RoutesRID>, WildcardLockedMethods>;
+  ): Omit<UntouchedRoutes<EffectAPI, Info>, WildcardLockedMethods>;
 
   /**
    * Sets a Route Effects object to be used during route transitions.
@@ -243,20 +261,28 @@ export interface RoutesMethods<
    */
   setEffects(
     externalEffectsFn: ExternalEffectsFn<EffectAPI>
-  ): Routes<EffectAPI, RoutesRID>;
+  ): Routes<EffectAPI, Info>;
 
   /** @internal */
   [SYMBOL_ROUTES_META]: RoutesMeta<EffectAPI>;
 }
 
+/** @internal */
+export type RouteParamsFromParamName<ParamName extends string> = Record<
+  ParamName,
+  unknown
+>;
+
 /** @public */
 export type RouteReference<
   RID extends RouteID,
-  PathParams extends Record<string, unknown> = Record<string, unknown>
+  ParamName extends string = string,
+  Path extends AnyRoutePath = PathFromParamName<ParamName>,
+  PathParams extends RouteParamsFromParamName<ParamName> = RouteParamsFromParamName<ParamName>
 > = Readonly<{
   build(params?: PathParams | null): RouteHref;
   id: RID;
-  path: RoutePathType;
+  path: Path;
   test(href: MatchingHref): PathParams | null;
   match(href: MatchingHref): boolean;
   toString(): RID;
@@ -265,15 +291,30 @@ export type RouteReference<
 /** @public */
 export type AnyRouteReference = RouteReference<RouteID>;
 
-type RouteReferenceRecord<RIDs extends string = never> = {
-  readonly [K in RIDs as Capitalize<K>]: RouteReference<K>;
+type RouteIDFromInfo<Info> = Info extends RouteReferenceInfo<infer RID, string>
+  ? RID
+  : never;
+type RawParamNameFromInfo<Info> = Info extends RouteReferenceInfo<
+  string,
+  infer RawParamName
+>
+  ? RawParamName
+  : never;
+
+type RouteReferenceRecord<
+  Info extends RouteReferenceInfo<string, string> = never
+> = {
+  readonly [K in Info as Capitalize<RouteIDFromInfo<K>>]: RouteReference<
+    RouteIDFromInfo<K>,
+    ExtractParamName<RawParamNameFromInfo<K>>
+  >;
 };
 
 /** @internal */
 type UntouchedRoutes<
   EffectAPI extends DefaultEffectAPI,
-  RoutesRID extends string = never
-> = RoutesMethods<EffectAPI, RoutesRID> & RouteReferenceRecord<RoutesRID>;
+  Info extends RouteReferenceInfo<string, string> = never
+> = RoutesMethods<EffectAPI, Info> & RouteReferenceRecord<Info>;
 
 type LockedMethods = "set" | "setForwarding" | "setWildcard" | "setRoutes";
 type WildcardLockedMethods = "set" | "setForwarding";
@@ -281,28 +322,8 @@ type WildcardLockedMethods = "set" | "setForwarding";
 /** @public */
 export type Routes<
   EffectAPI extends DefaultEffectAPI,
-  RoutesRID extends string = never
-> = Omit<UntouchedRoutes<EffectAPI, RoutesRID>, LockedMethods>;
-
-function isWildCardPath(path: AnyRoutePath): path is WildCardPathType {
-  return path.endsWith("/*");
-}
-
-function assertWildCardRoutePath(
-  path: AnyRoutePath
-): asserts path is WildCardPathType {
-  if (!isWildCardPath(path)) {
-    throw new Error(`The provided route path must be a wildcard path.`);
-  }
-}
-
-function assertNotWildCardRoutePath(
-  path: AnyRoutePath
-): asserts path is RoutePathType {
-  if (isWildCardPath(path)) {
-    throw new Error(`The provided route path must not be a wildcard path.`);
-  }
-}
+  Info extends RouteReferenceInfo<string, string> = never
+> = Omit<UntouchedRoutes<EffectAPI, Info>, LockedMethods>;
 
 const EMPTY_ROUTE_EFFECT_HANDLERS: RouteEffectHandlers<any> = {
   middleware: async () => undefined,
@@ -331,23 +352,27 @@ const WILDCARD_ROUTES_ID_PREFIX = "__wildcardRoutes:";
  */
 export function createRoutes<
   EffectAPI extends DefaultEffectAPI,
-  RIDs extends string = never
->(): UntouchedRoutes<EffectAPI, RIDs> {
+  Info extends RouteReferenceInfo<string, string> = never
+>(): UntouchedRoutes<EffectAPI, Info> {
   const routes = {
-    set(id, path) {
-      assertNotWildCardRoutePath(path);
+    set(id, pathInput) {
+      const templatePath = normalizeRoutePath(pathInput);
 
-      return addRoute(id, path);
+      assertNotWildCardRouteTemplatePath(templatePath);
+
+      return addRoute(id, templatePath);
     },
     setForwarding(path, getDestination) {
       assertNotWildCardRoutePath(path);
 
       return addRouteWithEffect(path, forwardTo<EffectAPI>(getDestination));
     },
-    setWildcard(id, path) {
-      assertWildCardRoutePath(path);
+    setWildcard(id, pathInput) {
+      const templatePath = normalizeRoutePath(pathInput);
 
-      return addRoute(id, `${path}wildcard`);
+      assertWildCardRouteTemplatePath(templatePath);
+
+      return addRoute(id, templatePath);
     },
     setRoutes(path, ...addRoutesParams) {
       assertWildCardRoutePath(path);
@@ -406,15 +431,19 @@ export function createRoutes<
       routesById: new Map(),
       internalEffects: createRouteEffects<EffectAPI>(),
     },
-  } as UntouchedRoutes<EffectAPI, RIDs>;
+  } as UntouchedRoutes<EffectAPI, Info>;
 
-  function addRoute<RID extends RouteID>(id: RID, path: RoutePathType) {
+  function addRoute<
+    RID extends RouteID,
+    Path extends AnyRoutePath,
+    ParamName extends string
+  >(id: RID, templatePath: TemplatePath<Path, ParamName>) {
     const referenceKey = capitalize(id);
-    const parser = new ParserPath(path);
+    const parser = createPathParser(templatePath);
 
-    type Params = Record<string, unknown>;
+    type PathParams = RouteParamsFromParamName<ParamName>;
 
-    function build(params?: Params | null) {
+    function build(params?: PathParams | null) {
       return parser.build(params || {}) as RouteHref;
     }
 
@@ -422,12 +451,12 @@ export function createRoutes<
       return typeof value === "string" ? value : createPath(value);
     }
 
-    function test(href: MatchingHref): Params | null {
+    function test(href: MatchingHref): PathParams | null {
       if (!href) return null;
 
       const [hrefWithoutHash] = resolveHref(href).split("#");
 
-      return parser.test(hrefWithoutHash);
+      return parser.test(hrefWithoutHash) as PathParams | null;
     }
 
     function match(href: MatchingHref): boolean {
@@ -438,7 +467,7 @@ export function createRoutes<
       build,
       id,
       match,
-      path,
+      path: templatePath.path,
       test,
       toString: () => id,
     };
@@ -452,28 +481,28 @@ export function createRoutes<
   }
 
   function addRouteWithEffect<
-    M extends RouteMiddleware<PayloadAction<any>, EffectAPI>
+    MW extends RouteMiddleware<PayloadAction<any>, EffectAPI>
   >(
     path: RoutePathType | WildCardPathType,
-    effect: M
-  ): UntouchedRoutes<EffectAPI, RIDs>;
+    middleware: MW
+  ): UntouchedRoutes<EffectAPI, Info>;
   function addRouteWithEffect<
-    M extends RouteMiddleware<PayloadAction<any>, EffectAPI>
+    MW extends RouteMiddleware<PayloadAction<any>, EffectAPI>
   >(
     path: WildCardPathType,
-    effect: M
-  ): Omit<UntouchedRoutes<EffectAPI, RIDs>, WildcardLockedMethods>;
+    middleware: MW
+  ): Omit<UntouchedRoutes<EffectAPI, Info>, WildcardLockedMethods>;
   function addRouteWithEffect<
-    M extends RouteMiddleware<PayloadAction<any>, EffectAPI>
-  >(path: RoutePathType | WildCardPathType, effect: M) {
+    MW extends RouteMiddleware<PayloadAction<any>, EffectAPI>
+  >(path: RoutePathType | WildCardPathType, middleware: MW) {
     // Routes are typically created upon execution,
     // so this ID must be a deterministic to be used
     // in Cloudflare Workers.
     const routeID = `${WILDCARD_ROUTES_ID_PREFIX}${path}`;
 
     const nextRoutes:
-      | UntouchedRoutes<EffectAPI, RIDs>
-      | Omit<UntouchedRoutes<EffectAPI, RIDs>, WildcardLockedMethods> =
+      | UntouchedRoutes<EffectAPI, Info>
+      | Omit<UntouchedRoutes<EffectAPI, Info>, WildcardLockedMethods> =
       isWildCardPath(path)
         ? routes.setWildcard(routeID, path)
         : routes.set(routeID, path);
@@ -481,7 +510,10 @@ export function createRoutes<
     const nextRouteMeta = nextRoutes[SYMBOL_ROUTES_META];
     const nextInternalEffects = nextRouteMeta.internalEffects;
 
-    nextRouteMeta.internalEffects = nextInternalEffects.append(routeID, effect);
+    nextRouteMeta.internalEffects = nextInternalEffects.append(
+      routeID,
+      middleware
+    );
 
     return nextRoutes;
   }
@@ -521,8 +553,8 @@ export function createRoutes<
  */
 export function isRoutes<
   EffectAPI extends DefaultEffectAPI,
-  RIDs extends string
->(value: unknown): value is Routes<EffectAPI, RIDs> {
+  Info extends RouteReferenceInfo<string, string>
+>(value: unknown): value is Routes<EffectAPI, Info> {
   return (
     typeof value == "object" &&
     value !== null &&
