@@ -27,7 +27,7 @@
     "@sables/server": "~0.2.0",
     "@sables/vite-plugin-import-tags": "~0.1.0",
     "@types/prompts": "^2.4.2",
-    "@types/yargs": "^17.0.17",
+    "@types/yargs": "^17.0.18",
     "@vitejs/plugin-react-swc": "^3.0.1",
     "chalk": "^4.1.2",
     "execa": "^5.1.1",

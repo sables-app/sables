@@ -3,7 +3,12 @@ import {
   SYMBOL_ROUTES_COLLECTION_INSTANCE,
 } from "@sables/core";
 
-import { createRoutes, RouteReference, Routes } from "./Routes.js";
+import {
+  createRoutes,
+  RouteReference,
+  RouteReferenceInfo,
+  Routes,
+} from "./Routes.js";
 import type { MatchingHref, RouteID, RouteWithParams } from "./types.js";
 
 /** @internal */
@@ -29,7 +34,7 @@ export function createRoutesCollection<
 >(): RoutesCollection<EffectAPI> {
   let collection = new Set<Routes<EffectAPI>>();
   let defaultInitialRoutes:
-    | Routes<EffectAPI, typeof DEFAULT_ROOT_ID>
+    | Routes<EffectAPI, RouteReferenceInfo<typeof DEFAULT_ROOT_ID, string>>
     | undefined;
 
   const routesCollection: RoutesCollection<EffectAPI> = {
