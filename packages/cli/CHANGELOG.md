@@ -1,5 +1,12 @@
 # sables
 
+## 0.1.4
+
+### Patch Changes
+
+- b675072: chore(deps): Bump @types/yargs from 17.0.17 to 17.0.18
+  - @sables/server@0.2.6
+
 ## 0.1.3
 
 ### Patch Changes

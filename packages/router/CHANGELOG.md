@@ -1,5 +1,11 @@
 # @sables/router
 
+## 0.3.0
+
+### Minor Changes
+
+- 57d1253: Add support for strict route parameter types using [`definePath`](https://sables.dev/docs/api#definepath).
+
 ## 0.2.6
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @sables-app/boilerplate-single-page
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [57d1253]
+  - @sables/framework@0.6.0
+
 ## 0.1.4
 
 ### Patch Changes

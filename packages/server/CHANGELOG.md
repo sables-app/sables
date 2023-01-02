@@ -1,5 +1,13 @@
 # @sables/server
 
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [57d1253]
+  - @sables/framework@0.6.0
+  - @sables/ssr@0.1.6
+
 ## 0.2.5
 
 ### Patch Changes
