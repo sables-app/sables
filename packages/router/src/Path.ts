@@ -152,7 +152,6 @@ export function assertNotWildCardRoutePath(
 export function assertWildCardRouteTemplatePath<ParamName = any>(
   templatePath: TemplatePath<any, ParamName>
 ): asserts templatePath is TemplatePath<WildCardPathType, ParamName> {
-  console.log(templatePath.path);
   if (!isWildCardPath(templatePath.path)) {
     throw new Error(`The provided route path must be a wildcard path.`);
   }
