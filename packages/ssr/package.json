@@ -1,6 +1,6 @@
 {
   "name": "@sables/ssr",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Client-side integrations for server-side rendering and routing.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@sables/framework": "~0.5.0",
+    "@sables/framework": "~0.6.0",
     "rxjs": "^7.8.0"
   },
   "peerDependencies": {

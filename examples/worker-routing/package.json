@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@sables-app/boilerplate-worker-routing",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Server-side routing SPA on Cloudflare Workers",
   "author": "Morris Allison III (https://morris.xyz)",
   "type": "module",
@@ -14,8 +14,8 @@
     "serve": "npx wrangler dev --local"
   },
   "dependencies": {
-    "@sables/framework": "~0.5.0",
-    "@sables/server": "~0.2.5",
+    "@sables/framework": "~0.6.0",
+    "@sables/server": "~0.2.6",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1",
-    "sables": "~0.1.2",
+    "sables": "~0.1.4",
     "vite": "^4.0.2",
     "wrangler": "^2.1.15"
   },
