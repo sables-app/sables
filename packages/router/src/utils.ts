@@ -11,6 +11,7 @@ import { ensureLocation, pushLocation, replaceLocation } from "./actions.js";
 import { AnyRouteReference } from "./Routes.js";
 import { isRoutesCollection, RoutesCollection } from "./RoutesCollection.js";
 import type {
+  BuildHrefInput,
   BuildHrefOptions,
   BuildLinkParams,
   LocationChangeAction,
@@ -40,8 +41,8 @@ export function areLocationChangesRouterEquivalent(
 }
 
 /** @internal */
-export function isPartialHistoryPath(
-  value?: AnyRouteReference | PartialHistoryPathStrict | BuildHrefOptions
+export function isPartialHistoryPath<Route extends BuildHrefInput>(
+  value?: AnyRouteReference | PartialHistoryPathStrict | BuildHrefOptions<Route>
 ): value is PartialHistoryPathStrict {
   return (
     typeof value === "object" &&
@@ -61,7 +62,9 @@ const FALLBACK_HREF = "/";
  *
  * @public
  */
-export function buildHref(...args: BuildHrefOptions): RouteHref {
+export function buildHref<Route extends BuildHrefInput>(
+  ...args: BuildHrefOptions<Route>
+): RouteHref {
   const [route, params] = args;
 
   if (isPartialHistoryPath(route)) {
@@ -80,7 +83,9 @@ export function buildHref(...args: BuildHrefOptions): RouteHref {
  *
  * @public
  */
-export function buildLink(...args: BuildLinkParams): RouteLink {
+export function buildLink<Route extends BuildHrefInput>(
+  ...args: BuildLinkParams<Route>
+): RouteLink {
   const [dispatch, buildHrefArgs] = args;
   const href = buildHref(...buildHrefArgs);
 

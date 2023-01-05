@@ -3,7 +3,14 @@ import { useEffectAPI } from "@sables/core";
 import { MouseEventHandler, useCallback, useMemo, useRef } from "react";
 import { useDispatch } from "react-redux";
 
-import type { BuildHrefOptions, DynamicImportFn, RouteLink } from "./types.js";
+import { AnyRouteReference } from "./Routes.js";
+import type {
+  BuildHrefInput,
+  BuildHrefOptions,
+  DynamicImportFn,
+  PartialHistoryPathStrict,
+  RouteLink,
+} from "./types.js";
 import { buildLink, createDynamicImportRegistrar } from "./utils.js";
 
 /**
@@ -31,14 +38,12 @@ import { buildLink, createDynamicImportRegistrar } from "./utils.js";
  *
  * @public
  */
-export function useLink(...options: BuildHrefOptions): RouteLink {
-  const [route, params] = options;
+export function useLink<Route extends BuildHrefInput>(
+  ...options: BuildHrefOptions<Route>
+): RouteLink {
   const dispatch = useDispatch();
 
-  return useMemo(
-    () => buildLink(dispatch, [route, params]),
-    [route, params, dispatch]
-  );
+  return useMemo(() => buildLink(dispatch, options), [options, dispatch]);
 }
 
 /**
@@ -63,9 +68,11 @@ export function useLink(...options: BuildHrefOptions): RouteLink {
  *
  * @public
  */
-export function useLinkProps(
+export function useLinkProps<
+  Route extends AnyRouteReference | PartialHistoryPathStrict
+>(
   onClick?: MouseEventHandler<HTMLAnchorElement>,
-  ...options: BuildHrefOptions
+  ...options: BuildHrefOptions<Route>
 ) {
   const { href, ensureLocation } = useLink(...options);
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement>>(

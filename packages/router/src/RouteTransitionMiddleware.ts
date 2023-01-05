@@ -36,6 +36,7 @@ import {
   selectIsRouteTransitioning,
 } from "./selectors.js";
 import type {
+  BuildHrefInput,
   EndRouteTransitionReason,
   EndTransitionAction,
   LocationChangeAction,
@@ -68,8 +69,8 @@ export function createRouteTransitionMiddleware<
   const routesCollection = createRoutesCollection<EffectAPI>();
   const actions$ = new ActionSubject();
 
-  function destinationToLocation(
-    dest: NavigationDestination
+  function destinationToLocation<Route extends BuildHrefInput>(
+    dest: NavigationDestination<Route>
   ): RouteHref | PartialHistoryPathStrict {
     if (typeof dest == "string") {
       return dest;
@@ -84,7 +85,9 @@ export function createRouteTransitionMiddleware<
     return buildHref(dest);
   }
 
-  function destinationToHref(dest: NavigationDestination): RouteHref {
+  function destinationToHref<Route extends BuildHrefInput>(
+    dest: NavigationDestination<Route>
+  ): RouteHref {
     const location = destinationToLocation(dest);
 
     return typeof location == "string" ? location : buildHref(location);

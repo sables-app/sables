@@ -5,7 +5,12 @@ import {
   SYMBOL_EFFECT_API_ROUTES,
   SYMBOL_MANAGER_EFFECT_API,
 } from "@sables/core";
-import { BuildHrefOptions, buildLink, RoutesCollection } from "@sables/router";
+import {
+  BuildHrefInput,
+  BuildHrefOptions,
+  buildLink,
+  RoutesCollection,
+} from "@sables/router";
 import type { MutableReferenceObject } from "@sables/utils";
 
 import type * as History from "history";
@@ -39,8 +44,8 @@ export function createManagerInstance<
     [SYMBOL_EFFECT_API_ROUTES]: routesCollectionRef,
     [SYMBOL_MANAGER_EFFECT_API]: effectAPIRef,
     actions$,
-    buildLink(...args: BuildHrefOptions) {
-      return buildLink(dispatch, args);
+    buildLink<Route extends BuildHrefInput>(...args: BuildHrefOptions<Route>) {
+      return buildLink<Route>(dispatch, args);
     },
     dispatch,
     getState,
