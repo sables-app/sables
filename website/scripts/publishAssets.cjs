@@ -10,8 +10,12 @@ const mime = require("mime-types");
 const fs = require("fs-jetpack");
 
 function getContext() {
-  const { CLOUDFLARE_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET } =
-    process.env;
+  const {
+    CLOUDFLARE_ACCOUNT_ID,
+    R2_ACCESS_KEY_ID,
+    R2_SECRET_ACCESS_KEY,
+    R2_BUCKET,
+  } = process.env;
 
   return {
     accountId: CLOUDFLARE_ACCOUNT_ID,
