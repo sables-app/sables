@@ -7,6 +7,7 @@ import type {
   SYMBOL_MANAGER_EFFECT_API,
 } from "@sables/core";
 import type {
+  BuildHrefInput,
   BuildHrefOptions,
   CombinedRouterState,
   InitialLocation,
@@ -39,7 +40,9 @@ export type ManagerStore<
 
 /** @internal */
 export interface ManagerMethodsOnly {
-  buildLink: (...buildHrefArgs: BuildHrefOptions) => RouteLink;
+  buildLink<Route extends BuildHrefInput>(
+    ...buildHrefArgs: BuildHrefOptions<Route>
+  ): RouteLink;
   history: History.History;
 }
 

@@ -1,5 +1,5 @@
 import * as vitest from "vitest";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, test, vi } from "vitest";
 
 import {
   addRoutes,
@@ -13,6 +13,7 @@ import {
   forwardTo,
   RouteMiddlewareSignal,
 } from "../effects.js";
+import { definePath } from "../Path.js";
 import { createRoutes } from "../Routes.js";
 import { mockRouteEffectParams } from "./utils.js";
 
@@ -117,6 +118,45 @@ describe("effects", () => {
         await expect(
           forwardTo(() => routes.DefaultRoot)(...params)
         ).resolves.toBeUndefined();
+      });
+
+      function createTestRoutes() {
+        return createRoutes()
+          .set("appRoot", "/app")
+          .set("dogs", "/app/dogs/:name")
+          .set("cats", definePath`/app/cats/${":name"}`)
+          .setWildcard("birds", definePath`/app/birds/${"*"}`);
+      }
+
+      test("types", () => {
+        const routes = createTestRoutes();
+
+        // @ts Undefined paths aren't checked
+        {
+          forwardTo(() => [routes.AppRoot]);
+          forwardTo(() => [routes.AppRoot, {}]);
+          forwardTo(() => [routes.AppRoot, { foo: "bar" }]);
+
+          forwardTo(() => [routes.Dogs]);
+          forwardTo(() => [routes.Dogs, {}]);
+          forwardTo(() => [routes.Dogs, { foo: "bar" }]);
+        }
+
+        // @ts-expect-error Params are required
+        forwardTo(() => [routes.Cats]);
+        // @ts-expect-error Params are required
+        forwardTo(() => [routes.Cats, {}]);
+        // @ts-expect-error Invalid params
+        forwardTo(() => [routes.Cats, { foo: "bar" }]);
+        forwardTo(() => [routes.Cats, { name: "Max" }]);
+
+        // @ts-expect-error Params are required
+        forwardTo(() => [routes.Birds]);
+        // @ts-expect-error Params are required
+        forwardTo(() => [routes.Birds, {}]);
+        // @ts-expect-error Invalid params
+        forwardTo(() => [routes.Birds, { foo: "bar" }]);
+        forwardTo(() => [routes.Birds, { wildcard: "way/too/much" }]);
       });
     });
   });

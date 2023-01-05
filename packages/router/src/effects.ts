@@ -4,6 +4,7 @@ import { isSSREnv } from "@sables/utils";
 
 import type { Routes } from "./Routes.js";
 import type {
+  BuildHrefInput,
   DynamicImportFn,
   NavigationDestination,
   RouteEffectHandlers,
@@ -126,9 +127,11 @@ export class AddRoutesSignal<
  *
  * @public
  */
-export class ForwardRouteSignal extends RouteMiddlewareSignal {
+export class ForwardRouteSignal<
+  Route extends BuildHrefInput
+> extends RouteMiddlewareSignal {
   constructor(
-    public destination: NavigationDestination,
+    public destination: NavigationDestination<Route>,
     message = "Forwarding route."
   ) {
     super(message);
@@ -242,9 +245,10 @@ export function logTransition<
  * @public
  */
 export function forwardTo<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
+  Route extends BuildHrefInput = BuildHrefInput
 >(
-  getDestination: (params: RouteParams) => NavigationDestination
+  getDestination: (params: RouteParams) => NavigationDestination<Route>
 ): RouteMiddleware<StartTransitionAction, EffectAPI> {
   return async (action, effectAPI, abortSignal) => {
     if (abortSignal.aborted) return;

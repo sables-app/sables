@@ -16,7 +16,7 @@ import type {
   ROUTER_REDUCER_KEY,
   transitionStatuses,
 } from "./constants.js";
-import type { AnyRouteReference } from "./Routes.js";
+import type { AnyRouteReference, RouteReferenceParams } from "./Routes.js";
 import type { routeTransitionSlice } from "./routeTransitionSlice.js";
 
 /**
@@ -300,6 +300,9 @@ export type PartialHistoryPathStrict = {
  */
 export type PartialHistoryPath = Partial<History.Path>;
 
+/** @internal */
+export type BuildHrefInput = AnyRouteReference | PartialHistoryPathStrict;
+
 /**
  * Parameters used to build a hyperlink for a route.
  *
@@ -313,10 +316,12 @@ export type PartialHistoryPath = Partial<History.Path>;
  *
  * @public
  */
-export type BuildHrefOptions = [
-  route?: AnyRouteReference | PartialHistoryPathStrict,
-  params?: RouteParams
-];
+export type BuildHrefOptions<Route extends BuildHrefInput> =
+  Route extends AnyRouteReference
+    ? RouteReferenceParams<Route> extends Record<string, unknown>
+      ? [route: Route, params: RouteReferenceParams<Route>]
+      : [route: Route, params?: Record<string, unknown>]
+    : [route?: Route];
 
 /**
  * A representation of a location to be navigated to.
@@ -326,9 +331,9 @@ export type BuildHrefOptions = [
  *
  * @public
  */
-export type NavigationDestination =
+export type NavigationDestination<Route extends BuildHrefInput> =
   | AnyRouteReference
-  | BuildHrefOptions
+  | BuildHrefOptions<Route>
   | PartialHistoryPathStrict
   | RouteHref;
 
@@ -339,9 +344,9 @@ export type NavigationDestination =
  *
  * @public
  */
-export type BuildLinkParams = [
+export type BuildLinkParams<Route extends BuildHrefInput> = [
   dispatch: Redux.Dispatch,
-  buildHrefOptions: BuildHrefOptions
+  buildHrefOptions: BuildHrefOptions<Route>
 ];
 
 /** @internal */

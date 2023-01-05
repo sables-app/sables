@@ -1,4 +1,10 @@
-import { createAction, enhanceAction } from "@sables/core";
+import {
+  createAction,
+  DecoratedBasicActionCreator,
+  enhanceAction,
+  EnhancedStandardActionCreator,
+  PayloadAction,
+} from "@sables/core";
 
 import type { History } from "history";
 import { Action as HistoryAction } from "history";
@@ -15,7 +21,11 @@ import {
 import type { CallHistoryMethodAction } from "redux-first-history/build/es6/actions";
 
 import { routeTransitionSlice } from "./routeTransitionSlice.js";
-import { LocationChangeAction, NavigationDestination } from "./types.js";
+import {
+  BuildHrefInput,
+  LocationChangeAction,
+  NavigationDestination,
+} from "./types.js";
 
 /**
  * Utilities for the location change action.
@@ -132,6 +142,17 @@ export const pushLocation = enhanceAction(push, CALL_HISTORY_METHOD);
  */
 export const replaceLocation = enhanceAction(replace, CALL_HISTORY_METHOD);
 
+type EnsureLocationType = "sablesRouter/ensureLocation";
+
+type EnsureLocation = EnhancedStandardActionCreator<
+  DecoratedBasicActionCreator<
+    EnsureLocationType,
+    <Route extends BuildHrefInput>(
+      payload: NavigationDestination<Route>
+    ) => PayloadAction<NavigationDestination<Route>, EnsureLocationType>
+  >
+>;
+
 /**
  * An action creator. When its actions are dispatched, middleware will
  * checks if the current location matches the given destination.
@@ -142,9 +163,10 @@ export const replaceLocation = enhanceAction(replace, CALL_HISTORY_METHOD);
  *
  * @public
  */
-export const ensureLocation = createAction<NavigationDestination>(
-  "sablesRouter/ensureLocation"
-);
+export const ensureLocation = createAction<
+  NavigationDestination<BuildHrefInput>,
+  EnsureLocationType
+>("sablesRouter/ensureLocation") as EnsureLocation;
 
 /**
  * Used to add router slices during router initialization.
