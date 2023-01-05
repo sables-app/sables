@@ -35,7 +35,9 @@ export function isEnhancedActionCreator<
   A extends StandardAction<T> = StandardAction<T>
 >(
   actionCreator: BasicActionCreator<T, P, A>
-): actionCreator is EnhancedStandardActionCreator<StandardActionCreator<T, P, A>> {
+): actionCreator is EnhancedStandardActionCreator<
+  StandardActionCreator<T, P, A>
+> {
   return hasLazyMeta(actionCreator);
 }
 
