@@ -14,6 +14,9 @@ describe("Routes", () => {
           .setWildcard("invalidWildcard", definePath`/profiles/${":handle"}`);
       }).toThrowError();
 
+      // @ts-expect-error Routes using `definePath` must have a parameter
+      createRoutes().set("defineRouteWithoutParams", definePath`/stand/proud`);
+
       const routes = createRoutes()
         .set("root", "/")
         .set("profile", definePath`/profiles/${":handle"}`)
@@ -60,11 +63,34 @@ describe("Routes", () => {
       expect(wildcardPath).toMatchSnapshot();
 
       // The `build` accepts valid params
+      routes.Root.build();
+      routes.Root.build({});
+      routes.Root.build({ foo: "1" });
+
+      // The `build` accepts valid params
       routes.Profile.build({ handle: "@ash.ketchum" });
+      expect(() => {
+        // @ts-expect-error The `build` method requires params
+        routes.Profile.build();
+      }).toThrowError();
       expect(() => {
         // @ts-expect-error The `build` method doesn't accept invalid params
         routes.Profile.build({ foo: "bar" });
       }).toThrowError();
+      expect(() => {
+        // @ts-expect-error All defined parameters are required
+        routes.ValidWildcard.build({ bar: "foo" });
+      }).toThrowError();
+      expect(() => {
+        // @ts-expect-error All defined parameters are required
+        routes.ValidWildcard.build({ wildcard: "qux" });
+      }).toThrowError();
+      expect(() => {
+        // @ts-expect-error All defined parameters are required
+        routes.ValidWildcard.build({});
+      }).toThrowError();
+      // All defined parameters are required
+      routes.ValidWildcard.build({ bar: "foo", wildcard: "qux" });
 
       expect(routes.Profile).toMatchSnapshot();
       expect(routes.ValidWildcard).toMatchSnapshot();
@@ -73,9 +99,19 @@ describe("Routes", () => {
       // Strictly infers path types
       assertType<
         Readonly<{
-          build(
-            params?: Record<"handle", unknown> | null | undefined
-          ): `/${string}`;
+          build(params: Record<string, unknown> | void): `/${string}`;
+          id: "root";
+          path: `/${string}`;
+          test(href: MatchingHref): Record<string, unknown> | void | null;
+          match(href: MatchingHref): boolean;
+          toString(): "root";
+        }>
+      >(routes.Root);
+
+      // Strictly infers path types
+      assertType<
+        Readonly<{
+          build(params: Record<"handle", unknown>): `/${string}`;
           id: "profile";
           path: `/${string}`;
           test(href: MatchingHref): Record<"handle", unknown> | null;
@@ -87,12 +123,10 @@ describe("Routes", () => {
       // Strictly infers wildcard path types
       assertType<
         Readonly<{
-          build(
-            params?: Record<"wildcard" | "bar", unknown> | null | undefined
-          ): `/${string}`;
+          build(params: Record<"wildcard" | "bar", unknown>): `/${string}`;
           id: "validWildcard";
           path: `/${string}/*`;
-          test(href: MatchingHref): Record<"wildcard", unknown> | null;
+          test(href: MatchingHref): Record<"wildcard" | "bar", unknown> | null;
           match(href: MatchingHref): boolean;
           toString(): "validWildcard";
         }>

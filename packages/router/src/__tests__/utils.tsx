@@ -155,7 +155,7 @@ export function mockRouteEffectParams(vitest: typeof import("vitest")) {
     nextRoute: {
       id: "defaultRoot",
       path: "/",
-      params: null,
+      params: {},
     },
     transitionID: "abc123",
   });
