@@ -1,39 +1,57 @@
 import { ComponentProps, ComponentType, useMemo } from "react";
 
 import { useLinkProps } from "../hooks.js";
-import { AnyRouteReference } from "../Routes.js";
-import { PartialHistoryPathStrict, RouteParams } from "../types.js";
+import { AnyRouteReference, RouteReferenceParams } from "../Routes.js";
+import { PartialHistoryPathStrict } from "../types.js";
+
+/**
+ * This song & dance is necessary for `void` JSX props to be
+ * considered optional.
+ *
+ * @internal
+ */
+type LinkPropParams<Route extends AnyRouteReference> =
+  RouteReferenceParams<Route> extends Record<string, unknown>
+    ? {
+        /**
+         * A literal object of route parameter values used
+         * to build the hyperlink.
+         *
+         * @public
+         */
+        params: RouteReferenceParams<Route>;
+      }
+    : {
+        params?: Record<string, unknown>;
+      };
 
 /** @internal */
-type LinkProps = Omit<ComponentProps<"a">, "href"> & {
-  /**
-   * The presenter component used for rendering.
-   *
-   * @defaultValue `"a"`
-   *
-   * @public
-   */
-  as?: ComponentType<ComponentProps<"a">>;
-  /**
-   * A hash to append to the built hyperlink.
-   *
-   * @public
-   */
-  hash?: `#${string}`;
-  /**
-   * A literal object of route parameter values used
-   * to build the hyperlink.
-   *
-   * @public
-   */
-  params?: RouteParams;
-  /**
-   * A route reference to link to.
-   *
-   * @public
-   */
-  route: AnyRouteReference;
-};
+type LinkProps<Route extends AnyRouteReference> = Omit<
+  ComponentProps<"a">,
+  "href"
+> &
+  LinkPropParams<Route> & {
+    /**
+     * The presenter component used for rendering.
+     *
+     * @defaultValue `"a"`
+     *
+     * @public
+     */
+    as?: ComponentType<ComponentProps<"a">>;
+    /**
+     * A hash to append to the built hyperlink.
+     *
+     * @public
+     */
+    hash?: `#${string}`;
+    /**
+     * A route reference to link to.
+     *
+     * @public
+     */
+    route: Route;
+  };
 
 /**
  * A React component that renders an anchor component that navigates to given route when clicked.
@@ -52,7 +70,7 @@ type LinkProps = Omit<ComponentProps<"a">, "href"> & {
  *
  * @public
  */
-export function Link({
+export function Link<Route extends AnyRouteReference>({
   as,
   children,
   hash,
@@ -60,7 +78,7 @@ export function Link({
   params,
   route,
   ...componentProps
-}: LinkProps) {
+}: LinkProps<Route>) {
   const Component = as || "a";
   const historyPath = useMemo(
     (): PartialHistoryPathStrict => ({ pathname: route.build(params), hash }),

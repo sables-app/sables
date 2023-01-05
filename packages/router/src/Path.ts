@@ -47,7 +47,9 @@ type RawParamNameType = `:${string}` | typeof RAW_WILDCARD_PARAM_NAME;
 export type ExtractParamName<RawParamName> =
   RawParamName extends `:${infer ParamName}`
     ? ParamName
-    : typeof PARSER_WILDCARD_PARAM_NAME;
+    : RawParamName extends typeof RAW_WILDCARD_PARAM_NAME
+    ? typeof PARSER_WILDCARD_PARAM_NAME
+    : unknown;
 
 /**
  * A helper function to assist in defining paths using [`definePath`](#definepath).

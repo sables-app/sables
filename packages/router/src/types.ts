@@ -278,7 +278,7 @@ export type CombinedRouterState = Redux.StateFromReducersMapObject<
  *
  * @public
  */
-export type RouteParams = Record<string, unknown> | null;
+export type RouteParams = Record<string, unknown>;
 
 /**
  * A stricter `Partial<History.Path>` using template literal types

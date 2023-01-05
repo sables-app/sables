@@ -435,7 +435,7 @@ export function sideEffectToRouteMiddleware<
 >(
   sideEffect: S,
   assertRouteParams?: (
-    params: NonNullable<RouteParams>
+    params: RouteParams
   ) => asserts params is ReturnType<S["actions"]["start"]>["payload"]
 ): RouteMiddleware<StartTransitionAction, EffectAPI> {
   return async (action, effectAPI, abortSignal) => {

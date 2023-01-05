@@ -56,7 +56,7 @@ type ExternalEffectsFn<EffectAPI extends DefaultEffectAPI> =
 type RoutesMeta<EffectAPI extends DefaultEffectAPI> = {
   externalEffectsFn?: ExternalEffectsFn<EffectAPI>;
   internalEffects: UntouchedRouteEffects<EffectAPI, any>;
-  routesById: Map<string, RouteReference<RouteID>>;
+  routesById: Map<string, AnyRouteReference>;
 };
 
 /** @internal */
@@ -268,19 +268,20 @@ export interface RoutesMethods<
 }
 
 /** @internal */
-export type RouteParamsFromParamName<ParamName extends string> = Record<
-  ParamName,
-  unknown
->;
+export type RouteParamsFromParamName<ParamName> =
+  | (ParamName extends string ? never : void)
+  | Record<ParamName extends string ? ParamName : string, unknown>;
+
+/** @internal */
+type FallbackRouteParams = Record<string, unknown> | void;
 
 /** @public */
 export type RouteReference<
-  RID extends RouteID,
-  ParamName extends string = string,
-  Path extends AnyRoutePath = PathFromParamName<ParamName>,
-  PathParams extends RouteParamsFromParamName<ParamName> = RouteParamsFromParamName<ParamName>
+  RID extends RouteID = RouteID,
+  Path extends AnyRoutePath = AnyRoutePath,
+  PathParams extends FallbackRouteParams = FallbackRouteParams
 > = Readonly<{
-  build(params?: PathParams | null): RouteHref;
+  build(params: PathParams): RouteHref;
   id: RID;
   path: Path;
   test(href: MatchingHref): PathParams | null;
@@ -288,8 +289,17 @@ export type RouteReference<
   toString(): RID;
 }>;
 
-/** @public */
-export type AnyRouteReference = RouteReference<RouteID>;
+/** @internal */
+export type RouteReferenceParams<R> = R extends RouteReference<
+  any,
+  any,
+  infer PathParams
+>
+  ? PathParams
+  : never;
+
+/** @internal */
+export type AnyRouteReference = RouteReference;
 
 type RouteIDFromInfo<Info> = Info extends RouteReferenceInfo<infer RID, string>
   ? RID
@@ -301,12 +311,18 @@ type RawParamNameFromInfo<Info> = Info extends RouteReferenceInfo<
   ? RawParamName
   : never;
 
+type PathFromInfo<Info extends RouteReferenceInfo<string, string>> =
+  PathFromParamName<ExtractParamName<RawParamNameFromInfo<Info>>>;
+type RouteParamsFromInfo<Info extends RouteReferenceInfo<string, string>> =
+  RouteParamsFromParamName<ExtractParamName<RawParamNameFromInfo<Info>>>;
+
 type RouteReferenceRecord<
   Info extends RouteReferenceInfo<string, string> = never
 > = {
   readonly [K in Info as Capitalize<RouteIDFromInfo<K>>]: RouteReference<
     RouteIDFromInfo<K>,
-    ExtractParamName<RawParamNameFromInfo<K>>
+    PathFromInfo<K>,
+    RouteParamsFromInfo<K>
   >;
 };
 
@@ -443,7 +459,7 @@ export function createRoutes<
 
     type PathParams = RouteParamsFromParamName<ParamName>;
 
-    function build(params?: PathParams | null) {
+    function build(params: PathParams) {
       return parser.build(params || {}) as RouteHref;
     }
 
