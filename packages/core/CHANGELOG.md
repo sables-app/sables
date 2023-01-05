@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.6.0
+
+### Minor Changes
+
+- 4248daa: Export `Dictionary` from `@reduxjs/toolkit`.
+
 ## 0.5.2
 
 ### Patch Changes
