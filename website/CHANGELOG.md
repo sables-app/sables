@@ -1,5 +1,15 @@
 # @sables-app/website
 
+## 0.2.5
+
+### Patch Changes
+
+- Updated dependencies [004dd76]
+- Updated dependencies [d2c17ce]
+  - @sables/framework@0.7.0
+  - @sables/server@0.2.7
+  - @sables/ssr@0.1.7
+
 ## 0.2.4
 
 ### Patch Changes

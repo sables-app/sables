@@ -1,5 +1,17 @@
 # @sables/router
 
+## 0.4.0
+
+### Minor Changes
+
+- 004dd76: Propagate stricter route param types. Various APIs enforce stricter types for route params.
+- d2c17ce: Add stricter types for route params with `Link` components.
+
+### Patch Changes
+
+- Updated dependencies [4248daa]
+  - @sables/core@0.6.0
+
 ## 0.3.0
 
 ### Minor Changes
