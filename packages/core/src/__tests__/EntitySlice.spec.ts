@@ -41,7 +41,9 @@ describe("EntitySlice", () => {
       // @ts-expect-error The selector shouldn't exist
       booksSlice.selectors.selectWorstBook;
       // The selector should exist
-      booksSlice.selectors.selectAll;
+      assertType<(state: Record<string, unknown>) => Book[]>(
+        booksSlice.selectors.selectAllBooks
+      );
 
       expect(selectBestBook(store.getState())).toEqual(undefined);
 

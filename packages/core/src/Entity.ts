@@ -6,6 +6,21 @@ import { createSelector } from "./Selector.js";
 import { PayloadAction } from "./types.js";
 
 /** @internal */
+type ExtractEntityFromAdapter<T> = T extends ReduxToolkit.EntityStateAdapter<
+  infer Entity
+>
+  ? Entity
+  : never;
+
+/** @internal */
+type ExtractEntityFromSelector<T> = T extends ReduxToolkit.EntitySelectors<
+  infer Entity,
+  any
+>
+  ? Entity
+  : never;
+
+/** @internal */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace EntityReducers {
   // prettier-ignore
@@ -37,15 +52,43 @@ export namespace EntityReducers {
       PluralName
     >]: ReduxToolkit.EntityStateAdapter<Entity>[K];
   };
+}
 
-  export type ExtractEntityFromAdapter<T> =
-    T extends ReduxToolkit.EntityStateAdapter<infer Entity> ? Entity : never;
+/** @internal */
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace EntitySelectors {
+  // prettier-ignore
+  export type SelectorName<
+    K,
+    SingularName extends string,
+    PluralName extends string
+  > =
+    | K extends "selectAll"      ? `selectAll${Capitalize<PluralName>}`          : never
+    | K extends "selectById"     ? `select${Capitalize<SingularName>}ById`       : never
+    | K extends "selectTotal"    ? `select${Capitalize<SingularName>}Count`      : never
+    | K extends "selectEntities" ? `select${Capitalize<SingularName>}Dictionary` : never
+    | K extends "selectIds"      ? `select${Capitalize<SingularName>}Ids`        : never;
+
+  export type Selectors<
+    Entity,
+    SingularName extends string,
+    PluralName extends string
+  > = {
+    [K in keyof ReduxToolkit.EntitySelectors<
+      Entity,
+      Record<string, unknown>
+    > as SelectorName<
+      K,
+      SingularName,
+      PluralName
+    >]: ReduxToolkit.EntitySelectors<Entity, Record<string, unknown>>[K];
+  };
 }
 
 /**
- * Creates unique names for entity adapter actions.
+ * Assigns distinctive names to entity adapter case reducers.
  *
- * @see {@link https://sables.dev/api#entityadaptertoreducers `entityAdapterToReducers` documentation}
+ * @see {@link https://sables.dev/api#distinctentityreducers `distinctEntityReducers` documentation}
  *
  * @example
  *
@@ -61,7 +104,7 @@ export namespace EntityReducers {
  *   dogsEntityAdapter.getInitialState()
  * ).setReducer((builder) =>
  *   builder.addCases(
- *     entityAdapterToReducers(dogsEntityAdapter, "dog")
+ *     distinctEntityReducers(dogsEntityAdapter, "dog")
  *   )
  * );
  *
@@ -70,33 +113,86 @@ export namespace EntityReducers {
  *
  * @public
  */
-export function entityAdapterToReducers<
+export function distinctEntityReducers<
   Adapter extends ReduxToolkit.EntityStateAdapter<any>,
   SingularName extends string,
   PluralName extends string = `${SingularName}s`
 >(
   adapter: Adapter,
-  singularName: SingularName,
+  singular: SingularName,
   plural?: PluralName
 ): EntityReducers.Reducers<
-  EntityReducers.ExtractEntityFromAdapter<Adapter>,
+  ExtractEntityFromAdapter<Adapter>,
   SingularName,
   PluralName
 > {
-  const pluralName = plural ?? `${singularName}s`;
+  const singularName = capitalize(singular);
+  const pluralName = capitalize(plural ?? `${singular}s`);
+
   return {
-    [`add${capitalize(singularName)}`]: adapter.addOne,
-    [`add${capitalize(pluralName)}`]: adapter.addMany,
-    [`set${capitalize(singularName)}`]: adapter.setOne,
-    [`set${capitalize(pluralName)}`]: adapter.setMany,
-    [`setAll${capitalize(pluralName)}`]: adapter.setAll,
-    [`remove${capitalize(singularName)}`]: adapter.removeOne,
-    [`remove${capitalize(pluralName)}`]: adapter.removeMany,
-    [`removeAll${capitalize(pluralName)}`]: adapter.removeAll,
-    [`update${capitalize(singularName)}`]: adapter.updateOne,
-    [`update${capitalize(pluralName)}`]: adapter.updateMany,
-    [`upsert${capitalize(singularName)}`]: adapter.upsertOne,
-    [`upsert${capitalize(pluralName)}`]: adapter.upsertMany,
+    [`add${singularName}`]: adapter.addOne,
+    [`add${pluralName}`]: adapter.addMany,
+    [`set${singularName}`]: adapter.setOne,
+    [`set${pluralName}`]: adapter.setMany,
+    [`setAll${pluralName}`]: adapter.setAll,
+    [`remove${singularName}`]: adapter.removeOne,
+    [`remove${pluralName}`]: adapter.removeMany,
+    [`removeAll${pluralName}`]: adapter.removeAll,
+    [`update${singularName}`]: adapter.updateOne,
+    [`update${pluralName}`]: adapter.updateMany,
+    [`upsert${singularName}`]: adapter.upsertOne,
+    [`upsert${pluralName}`]: adapter.upsertMany,
+  } as any;
+}
+
+/**
+ * Assigns distinctive names to entity adapter selectors.
+ *
+ * @see {@link https://sables.dev/api#distinctentityselectors `distinctEntitySelectors` documentation}
+ *
+ * @example
+ *
+ * interface Book {
+ *   id: number;
+ *   name: string;
+ * }
+ *
+ * const booksEntityAdapter = createEntityAdapter<Book>();
+ * const booksSlice = createSlice(
+ *   "books",
+ *   booksEntityAdapter.getInitialState()
+ * ).setReducer((builder) => builder);
+ *
+ * // `selectBookCount` is equal to `selectTotal` from Redux Toolkit
+ * const { selectBookCount } = distinctEntitySelectors(
+ *   booksEntityAdapter.getSelectors(booksSlice.selector),
+ *   "book"
+ * );
+ *
+ * @public
+ */
+export function distinctEntitySelectors<
+  Selectors extends ReduxToolkit.EntitySelectors<any, any>,
+  SingularName extends string,
+  PluralName extends string = `${SingularName}s`
+>(
+  selectors: Selectors,
+  singular: SingularName,
+  plural?: PluralName
+): EntitySelectors.Selectors<
+  ExtractEntityFromSelector<Selectors>,
+  SingularName,
+  PluralName
+> {
+  const singularName = capitalize(singular);
+  const pluralName = capitalize(plural ?? `${singular}s`);
+
+  return {
+    [`selectAll${pluralName}`]: selectors.selectAll,
+    [`select${singularName}ById`]: selectors.selectById,
+    [`select${singularName}Count`]: selectors.selectTotal,
+    [`select${singularName}Dictionary`]: selectors.selectEntities,
+    [`select${singularName}Ids`]: selectors.selectIds,
   } as any;
 }
 
@@ -205,13 +301,9 @@ export function createNotableEntities<
   _adapter: Adapter,
   singularName: Name,
   adjectives: A
-): NotableEntities.Instance<
-  EntityReducers.ExtractEntityFromAdapter<Adapter>,
-  A,
-  Name
-> {
+): NotableEntities.Instance<ExtractEntityFromAdapter<Adapter>, A, Name> {
   type State = NotableEntities.SliceState<
-    EntityReducers.ExtractEntityFromAdapter<Adapter>,
+    ExtractEntityFromAdapter<Adapter>,
     A,
     Name
   >;
