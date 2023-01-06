@@ -1,5 +1,17 @@
 # @sables/framework
 
+## 0.8.0
+
+### Minor Changes
+
+- 31bdf2c: Add `distinctEntitySelectors` to assign distinctive names to entity adapter selectors. Update `createEntitySlice` to use `distinctEntitySelectors`.
+
+### Patch Changes
+
+- Updated dependencies [31bdf2c]
+  - @sables/core@0.7.0
+  - @sables/router@0.4.1
+
 ## 0.7.0
 
 ### Minor Changes

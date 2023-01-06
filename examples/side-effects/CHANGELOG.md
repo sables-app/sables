@@ -1,5 +1,13 @@
 # @sables-app/example-side-effects
 
+## 0.1.8
+
+### Patch Changes
+
+- 31bdf2c: Add `distinctEntitySelectors` to assign distinctive names to entity adapter selectors. Update `createEntitySlice` to use `distinctEntitySelectors`.
+- Updated dependencies [31bdf2c]
+  - @sables/framework@0.8.0
+
 ## 0.1.7
 
 ### Patch Changes
