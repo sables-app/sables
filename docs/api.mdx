@@ -2259,33 +2259,86 @@ manager.subscribeTo(locationChangeLogger);
 
 ### Provider
 
-> `<Provider configureManager={configureManager}>{children}</Provider>`
+> `<Provider>{children}</Provider>`
 
 The top-level context provider for Sables Framework.
 
+<div className="highlight-info">
+
 > This provider also includes [`react-redux`'s `Provider`](https://react-redux.js.org/api/provider) to provide the Redux store to the application.
 
-#### configureManager
+</div>
 
-> configureManager?: ConfigureManagerFn;
+##### Props
 
-A function that configures a new `Manager` instance for use in the application. Please view [`defineConfigureManager`](#defineconfiguremanager).
+`Provider` accepts a `children` prop, and optionally either a `configureManager` function, _or_ an `initialRoutes` object.
 
-##### Example
+<dl>
+
+<div>
+<dt>`configureManager?: ConfigureManagerFn;`</dt>
+<dd>
+
+- A function that configures a new `Manager` instance for use in the application.
+- Please view [`defineConfigureManager`](#defineconfiguremanager) for more details.
+
+</dd>
+</div>
+
+<div>
+<dt>`initialRoutes: ReactNode;`</dt>
+<dd>
+
+- Sets the initial routes used for route transitions.
+- Please view [`createRoutes`](#createroutes) for more details.
+
+</dd>
+</div>
+
+</dl>
+
+##### Examples
+
+_With application defaults:_
 
 ```tsx
-function MyComponent() {
-  useObservable(({ actions$ }) =>
-    // Log every dispatched action
-    actions$.pipe(tap(console.log))
-  );
-
-  return <h1>Welcome to Sables!</h1>;
-}
-
 function App() {
   return (
     <Provider>
+      <MyComponent />
+    </Provider>
+  );
+}
+```
+
+_With a `configureManager` function:_
+
+```tsx
+const configureManager = defineConfigureManager(
+  ({ initialLocation }) => {
+    return createManager({ initialLocation });
+  }
+);
+
+function App() {
+  return (
+    <Provider configureManager={configureManager}>
+      <MyComponent />
+    </Provider>
+  );
+}
+```
+
+_With an `initialRoutes` object:_
+
+```tsx
+const initialRoutes = createRoutes()
+  .set("appRoot", "/app")
+  .set("users", "/app/users");
+
+function App() {
+  return (
+    <Provider initialRoutes={initialRoutes}>
       <MyComponent />
     </Provider>
   );
@@ -2301,7 +2354,10 @@ A utility function to assist in defining hooks for customized Effect API objects
 ##### Example
 
 ```ts
-import { ExtendEffectAPI } from "@sables/framework";
+import {
+  defineEffectAPIHook,
+  ExtendEffectAPI,
+} from "@sables/framework";
 
 const customLogFn = console.log;
 

@@ -147,6 +147,21 @@ function Wrapper({ children }: { children: ReactNode }) {
             margin: 0,
           },
         },
+        ".highlight-info": {
+          blockquote: {
+            border: "1px solid #3d70d4",
+            background: "#364d7926",
+            borderRadius: "0.25rem",
+            color: "#91b8ff",
+            "::before": {
+              content: '"INFO"',
+              display: "block",
+              fontWeight: "700",
+              fontSize: "0.875rem",
+              margin: "1rem 0 -0.5rem 0",
+            },
+          },
+        },
       })}
     >
       {children}
