@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.7.0
+
+### Minor Changes
+
+- 31bdf2c: Add `distinctEntitySelectors` to assign distinctive names to entity adapter selectors. Update `createEntitySlice` to use `distinctEntitySelectors`.
+
 ## 0.6.0
 
 ### Minor Changes
