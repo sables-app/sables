@@ -1,13 +1,25 @@
 import * as ReduxToolkit from "@reduxjs/toolkit";
 import * as vitest from "vitest";
-import { beforeAll, beforeEach, describe, expect, it, test } from "vitest";
+import {
+  assertType,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  test,
+} from "vitest";
 
 import {
   combineReducers,
   configureStore,
   createEntityAdapter,
 } from "../../deps.js";
-import { createNotableEntities, entityAdapterToReducers } from "../Entity.js";
+import {
+  createNotableEntities,
+  distinctEntityReducers,
+  distinctEntitySelectors,
+} from "../Entity.js";
 import { createSlice } from "../Slice.js";
 import { createTestStore } from "./utils.js";
 
@@ -23,12 +35,12 @@ describe("Entity", () => {
     });
   });
 
-  describe("entityAdapterToReducers", () => {
+  describe("distinctEntityReducers", () => {
     let bookReducers: ReturnType<typeof createTestConstructs>["bookReducers"];
     let booksSlice: ReturnType<typeof createTestConstructs>["booksSlice"];
 
     function createTestConstructs() {
-      const bookReducers = entityAdapterToReducers(booksAdapter, "book");
+      const bookReducers = distinctEntityReducers(booksAdapter, "book");
       const booksSlice = createSlice(
         "books",
         booksAdapter.getInitialState()
@@ -72,7 +84,7 @@ describe("Entity", () => {
       expect(booksSelectors.selectAll(store.getState())).toMatchSnapshot();
     });
 
-    it("renames actions and reducers from entity adapters", () => {
+    it("assigns reducers from entity adapters to distinct names", () => {
       expect(
         booksSlice.actions.addBook({
           bookId: "3",
@@ -139,8 +151,8 @@ describe("Entity", () => {
   });
 
   describe("createNotableEntities", () => {
-    it("creates actions and reducers for notable entities", () => {
-      const bookReducers = entityAdapterToReducers(booksAdapter, "book");
+    it("creates action creators and reducers for notable entities", () => {
+      const bookReducers = distinctEntityReducers(booksAdapter, "book");
       const notableBooks = createNotableEntities(booksAdapter, "book", {
         best: ({ id }: { id: string; reason: string }) => id,
         worst: (id: string) => id,
@@ -210,6 +222,39 @@ describe("Entity", () => {
       expect(selectFavoriteBook(store.getState())).toMatchSnapshot(
         "selectFavoriteBook2"
       );
+    });
+  });
+
+  describe("distinctEntitySelectors", () => {
+    it("assigns selectors from entity adapters to distinct names", () => {
+      const bookReducers = distinctEntityReducers(booksAdapter, "book");
+      const booksSlice = createSlice(
+        "books",
+        booksAdapter.getInitialState()
+      ).setReducer((builder) => builder.addCases(bookReducers));
+
+      const {
+        selectAllBooks,
+        selectBookById,
+        selectBookCount,
+        selectBookDictionary,
+        selectBookIds,
+      } = distinctEntitySelectors(
+        booksAdapter.getSelectors(booksSlice.selector),
+        "book"
+      );
+
+      const { store, insertSlices } = createTestStore(vitest);
+
+      insertSlices(booksSlice);
+
+      assertType<Book[]>(selectAllBooks(store.getState()));
+      assertType<Book | undefined>(selectBookById(store.getState(), "fake-id"));
+      assertType<number>(selectBookCount(store.getState()));
+      assertType<ReduxToolkit.Dictionary<Book>>(
+        selectBookDictionary(store.getState())
+      );
+      assertType<ReduxToolkit.EntityId[]>(selectBookIds(store.getState()));
     });
   });
 });

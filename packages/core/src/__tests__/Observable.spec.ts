@@ -4,7 +4,7 @@ import { assertType, describe, expect, test } from "vitest";
 
 import { createEntityAdapter } from "../../deps.js";
 import { createAction } from "../Action.js";
-import { entityAdapterToReducers } from "../Entity.js";
+import { distinctEntityReducers } from "../Entity.js";
 import { createSideEffect } from "../Observable.js";
 import { createSelector } from "../Selector.js";
 import { createSlice } from "../Slice.js";
@@ -30,7 +30,7 @@ describe("Observable", () => {
         "dogs",
         dogsEntityAdapter.getInitialState()
       ).setReducer((builder) =>
-        builder.addCases(entityAdapterToReducers(dogsEntityAdapter, "dog"))
+        builder.addCases(distinctEntityReducers(dogsEntityAdapter, "dog"))
       );
 
       const Fei: Dog = {

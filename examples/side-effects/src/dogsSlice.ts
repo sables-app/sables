@@ -1,7 +1,7 @@
 import {
   createEntityAdapter,
   createSlice,
-  entityAdapterToReducers,
+  distinctEntityReducers,
 } from "@sables/framework";
 
 export interface Dog {
@@ -20,5 +20,5 @@ export const dogsSlice = createSlice(
   "dogs",
   dogsEntityAdapter.getInitialState()
 ).setReducer((builder) =>
-  builder.addCases(entityAdapterToReducers(dogsEntityAdapter, "dog"))
+  builder.addCases(distinctEntityReducers(dogsEntityAdapter, "dog"))
 );

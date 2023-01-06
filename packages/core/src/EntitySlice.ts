@@ -3,8 +3,10 @@ import type * as ReduxToolkit from "@reduxjs/toolkit";
 import { createEntityAdapter } from "../deps.js";
 import {
   createNotableEntities,
-  entityAdapterToReducers,
+  distinctEntityReducers,
+  distinctEntitySelectors,
   EntityReducers,
+  EntitySelectors,
   NotableEntities,
 } from "./Entity.js";
 import { createSlice } from "./Slice.js";
@@ -41,7 +43,7 @@ type EntitySliceSelectors<
   Adjectives,
   SingularName
 > &
-  ReduxToolkit.EntitySelectors<Entity, ReduxToolkit.EntityState<Entity>>;
+  EntitySelectors.Selectors<Entity, SingularName, PluralName>;
 type EntitySliceMixin<
   Entity,
   Adjectives extends NotableEntities.Adjectives,
@@ -76,7 +78,7 @@ export type EntitySlice<
  * The slice is created by composing the following functions together:
  *
  * - `createEntityAdapter`
- * - `entityAdapterToReducers`
+ * - `distinctEntityReducers`
  * - `createNotableEntities`
  * - `createSlice`
  * - `entityAdapter.getSelectors`
@@ -110,7 +112,8 @@ export type EntitySlice<
  * selectBestBook(store.getState());
  *
  * @see {createEntityAdapter}
- * @see {entityAdapterToReducers}
+ * @see {distinctEntityReducers}
+ * @see {distinctEntitySelectors}
  * @see {createNotableEntities}
  * @see {createSlice}
  *
@@ -139,7 +142,7 @@ export function createEntitySlice<Entity>(
     > {
       const pluralName = plural ?? (`${singularName}s` as const);
       const entityAdapter = createEntityAdapter<Entity>(adapterOptions);
-      const adapterReducers = entityAdapterToReducers(
+      const adapterReducers = distinctEntityReducers(
         entityAdapter,
         singularName,
         pluralName
@@ -161,7 +164,11 @@ export function createEntitySlice<Entity>(
       );
 
       const selectors = {
-        ...entityAdapter.getSelectors(slice.selector),
+        ...distinctEntitySelectors(
+          entityAdapter.getSelectors(slice.selector),
+          singularName,
+          pluralName
+        ),
         ...notableEntities.getSelectors(slice.selector),
       };
 

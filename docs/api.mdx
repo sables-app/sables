@@ -173,7 +173,8 @@ Creates a slice to store a specific entity.
 The slice is created by composing the following functions together:
 
 - [`ReduxToolkit.createEntityAdapter`](https://redux-toolkit.js.org/api/createEntityAdapter)
-- [`entityAdapterToReducers`](#entityadaptertoreducers)
+- [`distinctEntityReducers`](#distinctentityreducers)
+- [`distinctEntitySelectors`](#distinctentityselectors)
 - [`createNotableEntities`](#createnotableentities)
 - [`createSlice`](#createslice)
 - `entityAdapter.getSelectors`
@@ -498,11 +499,11 @@ const getDataObservableCreator = createSideEffectObservable(
 store.dispatch(getData.start());
 ```
 
-### entityAdapterToReducers
+### distinctEntityReducers
 
-> `entityAdapterToReducers(entityStateAdapter, singularName, pluralName?): ReducersMap;`
+> `distinctEntityReducers(entityStateAdapter, singularName, pluralName?): ReducersMap;`
 
-Creates unique names for entity adapter actions.
+Assigns distinctive names to entity adapter case reducers.
 
 ##### Example
 
@@ -519,7 +520,7 @@ const dogsSlice = createSlice(
   dogsEntityAdapter.getInitialState()
 ).setReducer((builder) =>
   builder.addCases(
-    entityAdapterToReducers(dogsEntityAdapter, "dog")
+    distinctEntityReducers(dogsEntityAdapter, "dog")
   )
 );
 
@@ -545,7 +546,7 @@ const cactiSlice = createSlice(
   cactiAdapter.getInitialState()
 ).setReducer((builder) =>
   builder.addCases(
-    entityAdapterToReducers(cactiAdapter, "cactus", "cacti")
+    distinctEntityReducers(cactiAdapter, "cactus", "cacti")
   )
 );
 
@@ -573,7 +574,7 @@ store.dispatch(
 
 #### Reducer names
 
-If `"book"` is used as the entity's `singularName`, then the following reducers are created:
+If `"book"` is used as the entity's `singularName`, then the following properties are assigned:
 
 <div className="table-width-tight">
 
@@ -591,6 +592,49 @@ If `"book"` is used as the entity's `singularName`, then the following reducers 
 | `updateBooks`    | ←   | `updateMany`  |
 | `upsertBook`     | ←   | `upsertOne`   |
 | `upsertBooks`    | ←   | `upsertMany`  |
+
+</div>
+
+### distinctEntitySelectors
+
+> `distinctEntitySelectors(entitySelectors, singularName, pluralName?): DistinctEntitySelectors;`
+
+Assigns distinctive names to entity adapter selectors.
+
+##### Example
+
+```ts
+interface Book {
+  id: number;
+  name: string;
+}
+
+const booksEntityAdapter = createEntityAdapter<Book>();
+const booksSlice = createSlice(
+  "books",
+  booksEntityAdapter.getInitialState()
+).setReducer((builder) => builder);
+
+// `selectBookCount` is equal to `selectTotal` from Redux Toolkit
+const { selectBookCount } = distinctEntitySelectors(
+  booksEntityAdapter.getSelectors(booksSlice.selector),
+  "book"
+);
+```
+
+#### Selector names
+
+If `"book"` is used as the entity's `singularName`, then the following properties are assigned:
+
+<div className="table-width-tight">
+
+| Unique Name            |     | Original Name    |
+| ---------------------- | --- | ---------------- |
+| `selectBookById`       | ←   | `selectById`     |
+| `selectAllBooks`       | ←   | `selectAll`      |
+| `selectBookCount`      | ←   | `selectTotal`    |
+| `selectBookDictionary` | ←   | `selectEntities` |
+| `selectBookIds`        | ←   | `selectIds`      |
 
 </div>
 
@@ -626,7 +670,7 @@ const booksAdapter = createEntityAdapter<Book>({
   selectId: (book) => book.bookId,
   sortComparer: (a, b) => a.title.localeCompare(b.title),
 });
-const booksReducers = entityAdapterToReducers(
+const booksReducers = distinctEntityReducers(
   booksAdapter,
   "book"
 );
