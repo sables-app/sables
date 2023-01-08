@@ -1,6 +1,6 @@
 {
   "name": "@sables/boilerplate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A collection of example Sables apps prepared as boilerplates.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
@@ -18,11 +18,11 @@
   "main": "./main.js",
   "devDependencies": {
     "@manypkg/get-packages": "^1.1.3",
-    "@sables-app/boilerplate-node-rendering": "^0.1.9",
-    "@sables-app/boilerplate-router-only": "^0.1.4",
-    "@sables-app/boilerplate-single-page": "^0.1.8",
-    "@sables-app/boilerplate-worker-rendering": "^0.1.9",
-    "@sables-app/boilerplate-worker-routing": "^0.1.9",
+    "@sables-app/boilerplate-node-rendering": "^0.2.1",
+    "@sables-app/boilerplate-router-only": "^0.2.1",
+    "@sables-app/boilerplate-single-page": "^0.2.1",
+    "@sables-app/boilerplate-worker-rendering": "^0.2.1",
+    "@sables-app/boilerplate-worker-routing": "^0.2.1",
     "fs-jetpack": "^5.1.0"
   },
   "scripts": {
