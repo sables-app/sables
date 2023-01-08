@@ -31,6 +31,5 @@
   "exports": {
     "./index.html": "./dist/client/index.html",
     "./package.json": "./package.json"
-  },
-  "sablesBoilerplate": true
+  }
 }
