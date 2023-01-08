@@ -43,15 +43,37 @@ type EntitySliceSelectors<
   Adjectives,
   SingularName
 > &
-  EntitySelectors.Selectors<Entity, SingularName, PluralName>;
+  EntitySelectors.Selectors<Entity, SingularName, PluralName> &
+  ReduxToolkit.EntitySelectors<Entity, Record<string, unknown>>;
 type EntitySliceMixin<
   Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string,
   PluralName extends string
 > = {
+  entityAdapter: ReduxToolkit.EntityAdapter<Entity>;
   selectors: EntitySliceSelectors<Entity, Adjectives, SingularName, PluralName>;
 };
+
+/** @internal */
+function getEntityReducers<
+  Adapter extends ReduxToolkit.EntityStateAdapter<any>
+>(adapter: Adapter) {
+  return {
+    addOne: adapter.addOne,
+    addMany: adapter.addMany,
+    setOne: adapter.setOne,
+    setMany: adapter.setMany,
+    setAll: adapter.setAll,
+    removeOne: adapter.removeOne,
+    removeMany: adapter.removeMany,
+    removeAll: adapter.removeAll,
+    updateOne: adapter.updateOne,
+    updateMany: adapter.updateMany,
+    upsertOne: adapter.upsertOne,
+    upsertMany: adapter.upsertMany,
+  } as const;
+}
 
 /**
  * @see {createEntitySlice}
@@ -147,7 +169,6 @@ export function createEntitySlice<Entity>(
         singularName,
         pluralName
       );
-
       const notableEntities = createNotableEntities(
         entityAdapter,
         singularName,
@@ -157,21 +178,21 @@ export function createEntitySlice<Entity>(
         ...entityAdapter.getInitialState(),
         ...notableEntities.getInitialState(),
       };
-
       const slice = createSlice(pluralName, initialState).setReducer(
         (builder) =>
-          builder.addCases({ ...adapterReducers, ...notableEntities.reducers })
+          builder.addCases({
+            ...getEntityReducers(entityAdapter),
+            ...adapterReducers,
+            ...notableEntities.reducers,
+          })
       );
-
+      const adapterSelectors = entityAdapter.getSelectors(slice.selector);
       const selectors = {
-        ...distinctEntitySelectors(
-          entityAdapter.getSelectors(slice.selector),
-          singularName,
-          pluralName
-        ),
+        ...adapterSelectors,
+        ...distinctEntitySelectors(adapterSelectors, singularName, pluralName),
         ...notableEntities.getSelectors(slice.selector),
       };
-
+      (slice as any).entityAdapter = entityAdapter;
       (slice as any).selectors = selectors;
 
       return slice as any;
