@@ -1,6 +1,6 @@
 {
   "name": "@sables/framework",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Application-first Web Framework.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
@@ -19,8 +19,8 @@
   "main": "./dist/main.js",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.0",
-    "@sables/core": "~0.7.0",
-    "@sables/router": "~0.4.1",
+    "@sables/core": "~0.9.0",
+    "@sables/router": "~0.9.0",
     "@sables/utils": "~0.1.0",
     "@types/redux-logger": "^3.0.9",
     "history": "^5.3.0",

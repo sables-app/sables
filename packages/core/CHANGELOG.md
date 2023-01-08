@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.9.0
+
+### Minor Changes
+
+- fd33a77: Expose entity adapter on entity slices.
+
 ## 0.7.1
 
 ### Patch Changes

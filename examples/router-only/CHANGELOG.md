@@ -1,5 +1,11 @@
 # @sables-app/boilerplate-router-only
 
+## 0.2.1
+
+### Patch Changes
+
+- @sables/router@0.9.0
+
 ## 0.1.4
 
 ### Patch Changes
