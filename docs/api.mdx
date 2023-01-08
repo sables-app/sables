@@ -721,6 +721,10 @@ A higher-order component that assigns props to the given component.
 ```ts
 const Link = withProps("a", { className: "link" });
 const ButtonLink = withProps(Link, { role: "button" });
+const A11yButtonLink = withProps(
+  ButtonLink,
+  (props) => ({ "aria-label": props.title })
+);
 ```
 
 ### createSelector

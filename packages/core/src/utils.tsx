@@ -92,6 +92,9 @@ export function createEffectAPIDefaults<
   };
 }
 
+type WithPropsTransform<Props> = (props: Props) => Props;
+type WithPropsInput<Props> = Props | WithPropsTransform<Props>;
+
 /**
  * A higher-order component that assigns props to the given component.
  *
@@ -99,17 +102,33 @@ export function createEffectAPIDefaults<
  *
  * @example
  *
- * const FooLink = withProps("a", { className: "foo" });
- * const ButtonFooLink = withProps(LinkWithClassName, { role: "button" });
+ * const Link = withProps("a", { className: "link" });
+ * const ButtonLink = withProps(Link, { role: "button" });
+ * const A11yButtonLink = withProps(
+ *   ButtonLink,
+ *   (props) => ({ "aria-label": props.title })
+ * );
  *
  * @public
  */
 export function withProps<C extends ElementType>(
   Component: C,
-  baseProps: ComponentProps<C>
+  input: WithPropsInput<ComponentProps<C>>
 ): FunctionComponent<ComponentProps<C>> {
-  function ComponentWithProps(props: ComponentProps<C>) {
-    return <Component {...baseProps} {...props} />;
+  type Props = ComponentProps<C>;
+
+  function isWithPropsTransform(
+    value: WithPropsInput<Props>
+  ): value is WithPropsTransform<Props> {
+    return typeof value == "function";
+  }
+
+  function resolveProps(props: Props) {
+    return isWithPropsTransform(input) ? input(props) : { ...input, ...props };
+  }
+
+  function ComponentWithProps(props: Props) {
+    return <Component {...resolveProps(props)} />;
   }
 
   const originalDisplayName =
