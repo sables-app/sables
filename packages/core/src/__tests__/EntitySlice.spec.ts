@@ -16,6 +16,9 @@ describe("EntitySlice", () => {
       // @ts-expect-error The action doesn't accept invalid values
       booksSlice.actions.addBook(true);
 
+      // Actions from Redux Toolkit should exist
+      booksSlice.actions.addMany([]);
+
       const { store } = createTestStore(vitest);
 
       expect(store.getState()).toEqual(undefined);

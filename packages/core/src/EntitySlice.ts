@@ -29,7 +29,8 @@ type EntitySliceReducers<
   SingularName extends string,
   PluralName extends string
 > = NotableEntities.Instance<Entity, Adjectives, SingularName>["reducers"] &
-  EntityReducers.Reducers<Entity, SingularName, PluralName>;
+  EntityReducers.Reducers<Entity, SingularName, PluralName> &
+  ReduxToolkit.EntityStateAdapter<Entity>;
 
 type EntitySliceSelectors<
   Entity,
