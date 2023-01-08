@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.7.1
+
+### Patch Changes
+
+- 9903795: Export `Selector` from `reselect`
+
 ## 0.7.0
 
 ### Minor Changes

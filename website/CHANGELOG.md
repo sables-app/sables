@@ -1,5 +1,11 @@
 # @sables-app/website
 
+## 0.2.7
+
+### Patch Changes
+
+- e1b0ddf: Improve `Provider` props description
+
 ## 0.2.6
 
 ### Patch Changes

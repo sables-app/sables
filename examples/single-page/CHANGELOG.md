@@ -1,5 +1,11 @@
 # @sables-app/boilerplate-single-page
 
+## 0.1.8
+
+### Patch Changes
+
+- b1c2893: Add boilerplate packages to `@sables/boilerplate` as `devDependencies`.
+
 ## 0.1.7
 
 ### Patch Changes
