@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.10.0
+
+### Minor Changes
+
+- cf721c6: Update `withProps` to accept a transform function.
+
 ## 0.9.1
 
 ### Patch Changes
