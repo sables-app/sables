@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.9.1
+
+### Patch Changes
+
+- 4bfe027: Add missing reducer types to `EntitySlice`
+
 ## 0.9.0
 
 ### Minor Changes
