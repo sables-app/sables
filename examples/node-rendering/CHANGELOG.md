@@ -1,5 +1,13 @@
 # @sables-app/boilerplate-node-rendering
 
+## 0.2.2
+
+### Patch Changes
+
+- @sables/framework@0.10.0
+- @sables/server@0.2.10
+- @sables/ssr@0.1.10
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @sables-app/boilerplate-worker-routing
 
+## 0.2.2
+
+### Patch Changes
+
+- @sables/framework@0.10.0
+- @sables/server@0.2.10
+
 ## 0.2.1
 
 ### Patch Changes
