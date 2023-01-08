@@ -1,5 +1,12 @@
 # sables
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [b1c2893]
+  - @sables/boilerplate@0.2.0
+
 ## 0.1.4
 
 ### Patch Changes

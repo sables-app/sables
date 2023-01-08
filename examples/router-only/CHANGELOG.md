@@ -1,5 +1,11 @@
 # @sables-app/boilerplate-router-only
 
+## 0.1.4
+
+### Patch Changes
+
+- b1c2893: Add boilerplate packages to `@sables/boilerplate` as `devDependencies`.
+
 ## 0.1.3
 
 ### Patch Changes

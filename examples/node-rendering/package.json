@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@sables-app/boilerplate-node-rendering",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Server-side rendering SPA on Node.js",
   "author": "Morris Allison III (https://morris.xyz)",
   "type": "module",
@@ -27,7 +27,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "sables": "~0.1.4",
+    "sables": "~0.1.5",
     "vite": "^4.0.2"
   },
   "exports": {

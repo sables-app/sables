@@ -1,5 +1,12 @@
 # @sables-app/docs
 
+## 0.1.6
+
+### Patch Changes
+
+- e1b0ddf: Improve `Provider` props description
+- 4d4cfc3: Correct double nested `p` tags.
+
 ## 0.1.5
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@sables-app/boilerplate-worker-routing",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Server-side routing SPA on Cloudflare Workers",
   "author": "Morris Allison III (https://morris.xyz)",
   "type": "module",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1",
-    "sables": "~0.1.4",
+    "sables": "~0.1.5",
     "vite": "^4.0.2",
     "wrangler": "^2.1.15"
   },
