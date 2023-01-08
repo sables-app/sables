@@ -92,8 +92,8 @@ export function createEffectAPIDefaults<
   };
 }
 
-type WithPropsTransform<Props> = (props: Props) => Props;
-type WithPropsInput<Props> = Props | WithPropsTransform<Props>;
+type WithPropsTransformHook<Props> = (props: Props) => Props;
+type WithPropsInput<Props> = Props | WithPropsTransformHook<Props>;
 
 /**
  * A higher-order component that assigns props to the given component.
@@ -117,18 +117,18 @@ export function withProps<C extends ElementType>(
 ): FunctionComponent<ComponentProps<C>> {
   type Props = ComponentProps<C>;
 
-  function isWithPropsTransform(
+  function isWithPropsTransformHook(
     value: WithPropsInput<Props>
-  ): value is WithPropsTransform<Props> {
+  ): value is WithPropsTransformHook<Props> {
     return typeof value == "function";
   }
 
-  function resolveProps(props: Props) {
-    return isWithPropsTransform(input) ? input(props) : { ...input, ...props };
-  }
+  const useProps = isWithPropsTransformHook(input)
+    ? input
+    : (props: Props) => ({ ...input, ...props });
 
   function ComponentWithProps(props: Props) {
-    return <Component {...resolveProps(props)} />;
+    return <Component {...useProps(props)} />;
   }
 
   const originalDisplayName =
