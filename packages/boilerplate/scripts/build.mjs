@@ -39,8 +39,17 @@ async function generateBoilerplateFromExample(distDir, boilerplate) {
 
 async function getBoilerplates() {
   const workspaces = await getPackages();
-  const boilerplatePackages = workspaces.packages.filter(
-    ({ packageJson }) => !!packageJson.sablesBoilerplate
+  /**
+   * @type {import("@changesets/types").PackageJSON}
+   */
+  const pkgJSON = JSON.parse(
+    await fs.readAsync(path.resolve(__dirname, "../package.json"))
+  );
+  const boilerplatePackageNames = Object.keys(
+    pkgJSON.devDependencies || {}
+  ).filter((packageName) => packageName.startsWith("@sables-app/boilerplate-"));
+  const boilerplatePackages = workspaces.packages.filter(({ packageJson }) =>
+    boilerplatePackageNames.includes(packageJson.name)
   );
 
   /**
