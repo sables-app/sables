@@ -1,5 +1,12 @@
 # @sables/core
 
+## 0.11.0
+
+### Minor Changes
+
+- 3cf28c4: Add `useActionCallback` hook.
+- 3cf28c4: Rename `useWithDispatch` to `useAction`.
+
 ## 0.10.0
 
 ### Minor Changes

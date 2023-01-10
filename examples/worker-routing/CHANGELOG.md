@@ -1,5 +1,14 @@
 # @sables-app/boilerplate-worker-routing
 
+## 0.2.3
+
+### Patch Changes
+
+- 8bc83da: chore(deps-dev): Bump vite from 4.0.3 to 4.0.4
+- Updated dependencies [8bc83da]
+  - @sables/server@0.2.11
+  - @sables/framework@0.11.0
+
 ## 0.2.2
 
 ### Patch Changes

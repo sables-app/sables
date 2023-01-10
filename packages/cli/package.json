@@ -1,6 +1,6 @@
 {
   "name": "sables",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Tooling for generating apps and building artifacts.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@humanwhocodes/module-importer": "^1.0.1",
-    "@sables/boilerplate": "~0.2.0",
-    "@sables/server": "~0.2.6",
+    "@sables/boilerplate": "~0.2.3",
+    "@sables/server": "~0.2.11",
     "@sables/vite-plugin-import-tags": "~0.1.0",
     "@types/prompts": "^2.4.2",
     "@types/yargs": "^17.0.18",

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@sables-app/docs",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Documentation for Sables.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "CC BY 4.0",
