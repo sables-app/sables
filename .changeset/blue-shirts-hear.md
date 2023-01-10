@@ -7,7 +7,6 @@
 "@sables-app/boilerplate-worker-routing": patch
 "sables": patch
 "@sables/server": patch
-"@sables-app/website": patch
 ---
 
 chore(deps-dev): Bump vite from 4.0.3 to 4.0.4
