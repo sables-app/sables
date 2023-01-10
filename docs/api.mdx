@@ -721,10 +721,9 @@ A higher-order component that assigns props to the given component.
 ```ts
 const Link = withProps("a", { className: "link" });
 const ButtonLink = withProps(Link, { role: "button" });
-const A11yButtonLink = withProps(
-  ButtonLink,
-  (props) => ({ "aria-label": props.title })
-);
+const A11yButtonLink = withProps(ButtonLink, (props) => ({
+  "aria-label": props.title,
+}));
 ```
 
 ### createSelector
@@ -805,9 +804,9 @@ function MyComponent() {
 }
 ```
 
-### useWithDispatch
+### useAction
 
-> `useWithDispatch(...actionCreators): BoundActionCreator[];`
+> `useAction(...actionCreators): BoundActionCreator[];`
 
 A React hook that binds the given action creators to the dispatch
 function available in the context.
@@ -818,13 +817,37 @@ function available in the context.
 const sayHello = createAction("sayHello");
 
 function MyComponent() {
-  const [dispatchSayHello] = useWithDispatch(sayHello);
+  const [dispatchSayHello] = useAction(sayHello);
 
   return (
     <button
       type="button"
       onClick={() => dispatchSayHello()}
     >
+      Hello!
+    </button>
+  );
+}
+```
+
+### useActionCallback
+
+> `useActionCallback(actionCreator, payload): () => void;`
+
+A React hook that binds the given payload action creator to the dispatch
+function available in the context. When called, an action is
+dispatched with the given payload.
+
+##### Example
+
+```tsx
+const sayHello = createAction<string>("sayHello");
+
+function MyComponent() {
+  const sayHelloMary = useActionCallback(sayHello, "Mary");
+
+  return (
+    <button type="button" onClick={sayHelloMary}>
       Hello!
     </button>
   );

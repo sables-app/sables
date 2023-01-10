@@ -40,6 +40,10 @@ Sables is an application-first Web framework focused on distributed routing logi
 - [Getting Started guide](https://sables.dev/docs/getting-started)
 - [API Reference](https://sables.dev/docs/api)
 
+### Versioning
+
+Sables adheres to [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
+
 ### License
 
 Copyright &copy; 2022 [Morris Allison III](http://morris.xyz).
