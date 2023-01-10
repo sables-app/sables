@@ -1,5 +1,13 @@
 # @sables/server
 
+## 0.2.11
+
+### Patch Changes
+
+- 8bc83da: chore(deps-dev): Bump vite from 4.0.3 to 4.0.4
+  - @sables/framework@0.11.0
+  - @sables/ssr@0.1.11
+
 ## 0.2.10
 
 ### Patch Changes

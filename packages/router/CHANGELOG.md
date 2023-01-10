@@ -1,5 +1,13 @@
 # @sables/router
 
+## 0.11.0
+
+### Patch Changes
+
+- Updated dependencies [3cf28c4]
+- Updated dependencies [3cf28c4]
+  - @sables/core@0.11.0
+
 ## 0.10.0
 
 ### Patch Changes

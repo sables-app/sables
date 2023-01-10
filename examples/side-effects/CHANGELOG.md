@@ -1,5 +1,12 @@
 # @sables-app/example-side-effects
 
+## 0.1.11
+
+### Patch Changes
+
+- 8bc83da: chore(deps-dev): Bump vite from 4.0.3 to 4.0.4
+  - @sables/framework@0.11.0
+
 ## 0.1.10
 
 ### Patch Changes
