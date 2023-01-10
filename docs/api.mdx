@@ -2126,7 +2126,7 @@ Creates a new [Manager](#manager) object.
 
 #### effectAPI
 
-> `EffectApiCreator<StoreState, EffectAPI>;`
+> `effectAPI?: EffectApiCreator<StoreState, EffectAPI>;`
 
 Extends the Manager's Effect API object.
 
@@ -2149,14 +2149,50 @@ function configureManager({ initialLocation }) {
 
 - [Effect API](#effect-api)
 
+#### history
+
+> `history?: History.BrowserHistory | History.MemoryHistory;`
+
+A pre-configured `History` instance.
+
+This option is typically only used when there's a need to
+override history in tests, or to use `MemoryHistory` inside
+a browser environment.
+
+<div className="highlight-info">
+
+> If this option is set, the `initialLocation` option is not used.
+
+</div>
+
+##### Example
+
+```ts
+import { createMemoryHistory } from "history";
+
+function configureManager({ initialLocation }) {
+  return createManager({
+    history: createMemoryHistory({
+      initialEntries: [initialLocation],
+    }),
+  });
+}
+```
+
 #### initialLocation
 
-> `InitialLocation;`
+> `initialLocation?: InitialLocation;`
 
 The initial location used in location history.
 
 This value should either be passed from the parameters of a `configureManager`
 function, or be set to the desired default location.
+
+<div className="highlight-info">
+
+> The option is not used if the `history` option is set.
+
+</div>
 
 ##### Default value
 
@@ -2174,7 +2210,7 @@ function configureManager({ initialLocation }) {
 
 #### initialRoutes
 
-> `Routes<EffectAPI>;`
+> `initialRoutes?: Routes<EffectAPI>;`
 
 Sets the initial routes used for route transitions.
 
@@ -2196,13 +2232,17 @@ function configureManager() {
 
 #### reducers
 
-> `GetReducersMap<StoreState>;`
+> `reducers?: GetReducersMap<StoreState>;`
 
 Sets the initial reducer map for the Redux store reducer.
+
+<div className="highlight-info">
 
 > Instead of manually constructing the reducer map, it's recommended
 > to make use of action dependencies to have slices automatically inserted
 > instead. Please refer to the [`actionCreator.dependsUpon`](#actioncreatordependsupon) method for details.
+
+</div>
 
 ##### Default value
 

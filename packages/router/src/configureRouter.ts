@@ -12,6 +12,7 @@ import {
 } from "@sables/utils";
 
 import type * as ReduxToolkit from "@reduxjs/toolkit";
+import type * as History from "history";
 import { createBrowserHistory, createMemoryHistory } from "history";
 import type * as Redux from "redux";
 import { createReduxHistoryContext, RouterState } from "redux-first-history";
@@ -55,27 +56,42 @@ function assertInitialRouterState(
   }
 }
 
+type ConfigureRouterOptions<EffectAPI extends DefaultEffectAPI> = {
+  effectAPIRef?: MutableReferenceObject<EffectAPI>;
+  history?: History.BrowserHistory | History.MemoryHistory;
+  initialLocation?: InitialLocation;
+  onError?: (error: unknown) => void;
+};
+
+function getRouterHistory<EffectAPI extends DefaultEffectAPI>({
+  history,
+  initialLocation,
+}: ConfigureRouterOptions<EffectAPI>): History.BrowserHistory | History.MemoryHistory {
+  if (history) {
+    return history;
+  }
+
+  if (isSSREnv() || typeof document == "undefined") {
+    const initialEntries = initialLocation ? [initialLocation] : undefined;
+
+    return createMemoryHistory({ initialEntries });
+  }
+
+  return createBrowserHistory();
+}
+
 /**
  * @internal
  */
 export function configureRouter<
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
->({
-  effectAPIRef = createMutableRef<EffectAPI>(EFFECT_API_REF_MESSAGE),
-  initialLocation,
-  onError,
-}: {
-  effectAPIRef?: MutableReferenceObject<EffectAPI>;
-  initialLocation?: InitialLocation;
-  onError?: (error: unknown) => void;
-}) {
-  const initialEntries = initialLocation ? [initialLocation] : undefined;
-  const shouldUseMemoryHistory = isSSREnv() || typeof document == "undefined";
-  const history = shouldUseMemoryHistory
-    ? createMemoryHistory({ initialEntries })
-    : createBrowserHistory();
+>(options: ConfigureRouterOptions<EffectAPI>) {
+  const {
+    effectAPIRef = createMutableRef<EffectAPI>(EFFECT_API_REF_MESSAGE),
+    onError,
+  } = options;
   const historyContext = createReduxHistoryContext({
-    history,
+    history: getRouterHistory(options),
     routerReducerKey: ROUTER_REDUCER_KEY,
   });
   const routerSlice = createRouterSlice(historyContext.routerReducer);
