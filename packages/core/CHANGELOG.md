@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.12.1
+
+### Patch Changes
+
+- 4b468df: Fix incorrect inferred case reducer types when using `builder.addMatcher` without `builder.addDefaultCase`.
+
 ## 0.11.0
 
 ### Minor Changes
