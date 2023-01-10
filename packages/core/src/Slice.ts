@@ -207,10 +207,13 @@ namespace SliceBuilder {
 }
 
 type CaseReducersFromSliceReducerBuilder<B> =
-  // First attempt to infer `CaseReducers` from `SliceReducerBuilderBase`
+  // First attempt to infer `CaseReducers` from the return value of `addDefaultCase`
   // prettier-ignore
   B extends SliceReducerBuilderBase<any, infer C, any> ? C :
-  // Then attempt to infer `CaseReducers` from `SliceReducerBuilder`
+  // Then attempt to infer `CaseReducers` from the return value of `addMatcher`
+  // prettier-ignore
+  B extends Omit<SliceReducerBuilder<any, infer C, any>, "addCase" | "addCases"> ? C :
+  // Lastly, attempt to infer `CaseReducers` from the return value of `addCase` and `addCases`
   // prettier-ignore
   B extends SliceReducerBuilder<any, infer C, any> ? C : never;
 

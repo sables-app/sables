@@ -6,7 +6,11 @@ import { assertType, beforeEach, describe, expect, it, test } from "vitest";
 import { SYMBOL_LAZY_META } from "../constants.js";
 import { createAction } from "../main.js";
 import { createSlice } from "../Slice.js";
-import { EnhancedActionCreatorWithPayload, PayloadAction } from "../types.js";
+import {
+  EnhancedActionCreatorWithPayload,
+  PayloadAction,
+  PayloadActionCreator,
+} from "../types.js";
 import { createTestStore } from "./utils.js";
 
 describe("createSlice", () => {
@@ -172,6 +176,10 @@ describe("createSlice", () => {
       return finalBuilder;
     });
 
+    assertType<PayloadActionCreator<string[], "books/buyBooks">>(
+      slice.actions.buyBooks
+    );
+
     const action = slice.actions.buyBooks([
       "Goosebumps: Night of the Living Dummy",
       "Goosebumps: Welcome to Dead House",
@@ -201,5 +209,48 @@ describe("createSlice", () => {
       "Goosebumps: Night of the Living Dummy",
       "Goosebumps: Welcome to Dead House",
     ]);
+  });
+
+  test("createSlice with addMatcher", () => {
+    const increaseBookCount = createAction<number>("increaseBookCount");
+    const slice = createSlice("books", { purchasedBookCount: 0 }).setReducer(
+      (initialBuilder) => {
+        const fff = initialBuilder
+          .addCase("buyBooks", (state, action: PayloadAction<string[]>) => {
+            state.purchasedBookCount += action.payload.length;
+          })
+          .addMatcher(increaseBookCount.match, (state, action) => {
+            state.purchasedBookCount += action.payload;
+          });
+
+          return fff;
+      }
+    );
+
+    assertType<PayloadActionCreator<string[], "books/buyBooks">>(
+      slice.actions.buyBooks
+    );
+  });
+
+  test("createSlice with addMatcher and addDefaultCase", () => {
+    const increaseBookCount = createAction<number>("increaseBookCount");
+    const slice = createSlice("books", { purchasedBookCount: 0 }).setReducer(
+      (initialBuilder) => {
+        return initialBuilder
+          .addCase("buyBooks", (state, action: PayloadAction<string[]>) => {
+            state.purchasedBookCount += action.payload.length;
+          })
+          .addMatcher(increaseBookCount.match, (state, action) => {
+            state.purchasedBookCount += action.payload;
+          })
+          .addDefaultCase((state) => {
+            return state;
+          });
+      }
+    );
+
+    assertType<PayloadActionCreator<string[], "books/buyBooks">>(
+      slice.actions.buyBooks
+    );
   });
 });
