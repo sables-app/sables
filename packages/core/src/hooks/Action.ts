@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { PayloadActionCreator } from "@reduxjs/toolkit";
+import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { bindSideEffect } from "../Observable.js";
@@ -33,7 +34,7 @@ type BoundActionCreators<Tuple extends [...AnyActionCreator[]]> = {
  * const sayHello = createAction("sayHello");
  *
  * function MyComponent() {
- *   const [dispatchSayHello] = useWithDispatch(sayHello);
+ *   const [dispatchSayHello] = useAction(sayHello);
  *
  *   return (
  *     <button type="button" onClick={() => dispatchSayHello()}>
@@ -44,9 +45,9 @@ type BoundActionCreators<Tuple extends [...AnyActionCreator[]]> = {
  *
  * @public
  */
-export function useWithDispatch<
-  T extends [...actionCreators: AnyActionCreator[]]
->(...actionCreators: T): BoundActionCreators<T> {
+export function useAction<T extends [...actionCreators: AnyActionCreator[]]>(
+  ...actionCreators: T
+): BoundActionCreators<T> {
   const dispatch = useDispatch();
 
   const boundActionCreators = useMemo(() => {
@@ -55,9 +56,44 @@ export function useWithDispatch<
         dispatch(actionCreator(...params));
       };
     });
-  }, [actionCreators, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [...actionCreators, dispatch]);
 
   return boundActionCreators as BoundActionCreators<T>;
+}
+
+/**
+ * A React hook that binds the given payload action creator to the dispatch
+ * function available in the context. When called, an action is
+ * dispatched with the given payload.
+ *
+ * @example
+ *
+ * const sayHello = createAction<string>("sayHello");
+ *
+ * function MyComponent() {
+ *   const sayHelloMary = useActionCallback(sayHello, "Mary");
+ *
+ *   return (
+ *     <button type="button" onClick={sayHelloMary}>
+ *       Hello!
+ *     </button>
+ *   );
+ * }
+ *
+ * @public
+ */
+export function useActionCallback<AC extends PayloadActionCreator<any>>(
+  ...args: ReturnType<AC>["payload"] extends undefined
+    ? [actionCreator: AC]
+    : [actionCreator: AC, payload: ReturnType<AC>["payload"]]
+): () => void {
+  const [actionCreator, payload] = args;
+  const dispatch = useDispatch();
+
+  return useCallback(() => {
+    dispatch(actionCreator(payload));
+  }, [dispatch, actionCreator, payload]);
 }
 
 /**
