@@ -1,5 +1,12 @@
 # @sables-app/example-side-effects
 
+## 0.1.12
+
+### Patch Changes
+
+- Updated dependencies [cccbc6e]
+  - @sables/framework@0.12.0
+
 ## 0.1.11
 
 ### Patch Changes
