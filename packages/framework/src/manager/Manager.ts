@@ -16,6 +16,7 @@ import { createMutableRef, isDebugEnv, isDevEnv } from "@sables/utils";
 
 import type * as ReduxToolkit from "@reduxjs/toolkit";
 import type { CurriedGetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware.d.js";
+import type * as History from "history";
 import type * as Redux from "redux";
 import { combineReducers } from "redux";
 import * as reduxLogger from "redux-logger";
@@ -69,10 +70,42 @@ export interface CreateManagerOptions<
    */
   effectAPI?: EffectApiCreator<StoreState, EffectAPI>;
   /**
+   * A pre-configured `History` instance.
+   *
+   * This option is typically only used when there's a need to
+   * override history in tests, or to use `MemoryHistory` inside
+   * a browser environment.
+   *
+   * @see {@link https://github.com/remix-run/history/tree/main/docs/api-reference.md History API reference}
+   *
+   * @remarks
+   *
+   * If this option is set, the `initialLocation` option is not used.
+   *
+   * @example
+   *
+   * import { createMemoryHistory } from "history";
+   *
+   * function configureManager({ initialLocation }) {
+   *   return createManager({
+   *     history: createMemoryHistory({
+   *       initialEntries: [initialLocation],
+   *     }),
+   *   });
+   * }
+   *
+   * @public
+   */
+  history?: History.BrowserHistory | History.MemoryHistory;
+  /**
    * The initial location used in location history.
    *
    * This value should either be passed from the parameters of a `configureManager`
    * function, or be set to the desired default location.
+   *
+   * @remarks
+   *
+   * The option is not used if the `history` option is set.
    *
    * @defaultValue `"/"`
    *
@@ -179,6 +212,7 @@ export function createManager<
     devTools = isDev && !isDebugging,
     effectAPI: getEffectAPI = defaultGetEffectAPI,
     enhancers,
+    history: historyOption,
     initialLocation,
     initialRoutes,
     middleware,
@@ -194,7 +228,11 @@ export function createManager<
     routerMiddleware,
     routerReducersMap,
     routesCollection,
-  } = configureRouter({ effectAPIRef, initialLocation });
+  } = configureRouter({
+    effectAPIRef,
+    history: historyOption,
+    initialLocation,
+  });
 
   routesCollection.addInitial(initialRoutes);
 
