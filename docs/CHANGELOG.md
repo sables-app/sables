@@ -1,5 +1,11 @@
 # @sables-app/docs
 
+## 0.2.1
+
+### Patch Changes
+
+- cccbc6e: Add `history` option to `createManager`.
+
 ## 0.2.0
 
 ### Minor Changes

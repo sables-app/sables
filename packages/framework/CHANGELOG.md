@@ -1,5 +1,16 @@
 # @sables/framework
 
+## 0.12.0
+
+### Minor Changes
+
+- cccbc6e: Add `history` option to `createManager`.
+
+### Patch Changes
+
+- Updated dependencies [cccbc6e]
+  - @sables/router@0.12.0
+
 ## 0.11.0
 
 ### Patch Changes

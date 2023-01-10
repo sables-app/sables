@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@sables-app/boilerplate-router-only",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Client-only SPA using only Sables Router",
   "author": "Morris Allison III (https://morris.xyz)",
   "type": "module",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
-    "@sables/router": "~0.11.0",
+    "@sables/router": "~0.12.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",
