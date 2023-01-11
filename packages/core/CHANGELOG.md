@@ -1,5 +1,16 @@
 # @sables/core
 
+## 0.13.0
+
+### Minor Changes
+
+- bb1f6ca: Add `extendAction` function.
+- 775312a: Re-export `AnyAction`, `Dispatch`, and `Middleware` types from Redux for convenience.
+
+### Patch Changes
+
+- bb1f6ca: Copy action dependencies when extending actions in `createSideEffectActions`.
+
 ## 0.12.1
 
 ### Patch Changes

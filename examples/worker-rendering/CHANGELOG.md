@@ -1,5 +1,13 @@
 # @sables-app/boilerplate-worker-rendering
 
+## 0.2.5
+
+### Patch Changes
+
+- @sables/framework@0.13.0
+- @sables/server@0.2.13
+- @sables/ssr@0.1.13
+
 ## 0.2.4
 
 ### Patch Changes

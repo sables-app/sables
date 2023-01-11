@@ -1,5 +1,11 @@
 # @sables-app/example-side-effects
 
+## 0.1.13
+
+### Patch Changes
+
+- @sables/framework@0.13.0
+
 ## 0.1.12
 
 ### Patch Changes
