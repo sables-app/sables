@@ -22,9 +22,9 @@ import {
 type RouteEffectAction = StartTransitionAction | EndTransitionAction;
 
 type RouteEffectsMeta<EffectAPI extends DefaultEffectAPI> = {
-  effects: Set<{
+  middleware: Set<{
     referenceKey: HandlerName<RouteEffectHookName, RouteID>;
-    effectReference: RouteEffectReference<RouteID, EffectAPI, any>;
+    middlewareReference: RouteMiddlewareReference<RouteID, EffectAPI, any>;
   }>;
   listeners: Set<{
     listenerReference: RouteListenerReference<RouteID, EffectAPI, any>;
@@ -53,6 +53,15 @@ export interface RouteEffectsMethods<
   > = HandlerMeta<RouteEffectHookName, never, AnyPayloadAction>
 > {
   /**
+   * @internal
+   */
+  _clone(
+    mutateRouteEffectMeta?: (
+      nextRouteEffectsMeta: RouteEffectsMeta<EffectAPI>
+    ) => void
+  ): UntouchedRouteEffects<EffectAPI, Handlers>;
+
+  /**
    * Adds a route middleware for the given route to the end of the stack.
    *
    * @example
@@ -66,7 +75,7 @@ export interface RouteEffectsMethods<
    * @public
    */
   append<RID extends RouteID>(
-    routeID: RID,
+    routeInput: RouteInput<RID>,
     effect: RouteMiddleware<StartTransitionAction, EffectAPI>
   ): UntouchedRouteEffects<
     EffectAPI,
@@ -113,7 +122,7 @@ export interface RouteEffectsMethods<
    * @public
    */
   prepend<RID extends RouteID>(
-    id: RID,
+    routeInput: RouteInput<RID>,
     effect: RouteMiddleware<StartTransitionAction, EffectAPI>
   ): UntouchedRouteEffects<
     EffectAPI,
@@ -163,7 +172,7 @@ export interface RouteEffectsMethods<
    * @public
    */
   onComplete<RID extends RouteID>(
-    id: RID,
+    routeInput: RouteInput<RID>,
     effect: RouteListener<EndTransitionAction, EffectAPI>
   ): UntouchedRouteEffects<EffectAPI, Handlers>;
 
@@ -204,7 +213,7 @@ export interface RouteEffectsMethods<
    * @public
    */
   onEnd<RID extends RouteID>(
-    id: RID,
+    routeInput: RouteInput<RID>,
     effect: RouteListener<EndTransitionAction, EffectAPI>
   ): UntouchedRouteEffects<EffectAPI, Handlers>;
 
@@ -245,7 +254,7 @@ export interface RouteEffectsMethods<
    * @public
    */
   onExit<RID extends RouteID>(
-    id: RID,
+    routeInput: RouteInput<RID>,
     effect: RouteListener<EndTransitionAction, EffectAPI>
   ): UntouchedRouteEffects<EffectAPI, Handlers>;
 
@@ -286,7 +295,7 @@ export interface RouteEffectsMethods<
    * @public
    */
   onFailure<RID extends RouteID>(
-    id: RID,
+    routeInput: RouteInput<RID>,
     effect: RouteListener<EndTransitionAction, EffectAPI>
   ): UntouchedRouteEffects<EffectAPI, Handlers>;
 
@@ -327,7 +336,7 @@ export interface RouteEffectsMethods<
    * @public
    */
   onInterrupt<RID extends RouteID>(
-    id: RID,
+    routeInput: RouteInput<RID>,
     effect: RouteListener<EndTransitionAction, EffectAPI>
   ): UntouchedRouteEffects<EffectAPI, Handlers>;
 
@@ -368,7 +377,7 @@ export interface RouteEffectsMethods<
    * @public
    */
   onStart<RID extends RouteID>(
-    id: RID,
+    routeInput: RouteInput<RID>,
     effect: RouteListener<StartTransitionAction, EffectAPI>
   ): UntouchedRouteEffects<EffectAPI, Handlers>;
 
@@ -417,7 +426,7 @@ type HandlerMetaAction<H> = H extends HandlerMeta<
   ? Action
   : never;
 
-type RouteEffectReference<
+type RouteMiddlewareReference<
   RID extends RouteID,
   EffectAPI extends DefaultEffectAPI,
   Action extends AnyPayloadAction
@@ -435,7 +444,7 @@ type RouteListenerReference<
   readonly eventName: RouteEffectHookName;
 };
 
-type RouteEffectReferenceRecord<
+type RouteEffectsHandlers<
   EffectAPI extends DefaultEffectAPI,
   Handlers extends HandlerMeta<
     RouteEffectHookName,
@@ -446,7 +455,11 @@ type RouteEffectReferenceRecord<
   readonly [K in Handlers as HandlerName<
     HandlerMetaHookName<K>,
     HandlerMetaRID<K>
-  >]: RouteEffectReference<HandlerMetaRID<K>, EffectAPI, HandlerMetaAction<K>>;
+  >]: RouteMiddlewareReference<
+    HandlerMetaRID<K>,
+    EffectAPI,
+    HandlerMetaAction<K>
+  >;
 };
 
 type ReadonlyRouteEffectsMethods<EffectAPI extends DefaultEffectAPI> = {
@@ -473,8 +486,9 @@ export type UntouchedRouteEffects<
     AnyPayloadAction
   > = HandlerMeta<RouteEffectHookName, never, PayloadAction<never>>
 > = RouteEffectsMethods<EffectAPI, Handlers> &
-  ReadonlyRouteEffectsMethods<EffectAPI> &
-  RouteEffectReferenceRecord<EffectAPI, Handlers>;
+  ReadonlyRouteEffectsMethods<EffectAPI> & {
+    handlers: RouteEffectsHandlers<EffectAPI, Handlers>;
+  };
 
 /**
  * @see {createRouteEffects}
@@ -485,44 +499,19 @@ export type RouteEffects<EffectAPI extends DefaultEffectAPI> = {
   [SYMBOL_ROUTE_EFFECTS_META]: RouteEffectsMeta<EffectAPI>;
 } & ReadonlyRouteEffectsMethods<EffectAPI>;
 
+/** @internal */
+type RouteInput<RID extends RouteID> = RID | { id: RID };
+
+/** @internal */
+function resolveRouteId<RID extends RouteID>(routeInput: RouteInput<RID>) {
+  return typeof routeInput == "string" ? routeInput : routeInput.id;
+}
+
 function getHandlerName<RID extends RouteID, H extends RouteEffectHookName>(
   id: RID,
   hookName: H
 ): HandlerName<H, RID> {
   return `${capitalize(id)}${capitalize(hookName)}`;
-}
-
-function cloneRouteEffectMeta<EffectAPI extends DefaultEffectAPI>(
-  routesMeta: RouteEffectsMeta<EffectAPI>
-): RouteEffectsMeta<EffectAPI> {
-  return {
-    effects: new Set(routesMeta.effects),
-    listeners: new Set(routesMeta.listeners),
-  };
-}
-
-/** @internal */
-export function cloneRouteEffects<
-  EffectAPI extends DefaultEffectAPI,
-  Handlers extends HandlerMeta<
-    RouteEffectHookName,
-    RouteID,
-    RouteEffectAction
-  > = HandlerMeta<RouteEffectHookName, never, RouteEffectAction>
->(
-  routeEffects: UntouchedRouteEffects<EffectAPI, Handlers>
-): UntouchedRouteEffects<EffectAPI, Handlers> {
-  const nextRouteEffects = createRouteEffects<EffectAPI, Handlers>();
-
-  nextRouteEffects[SYMBOL_ROUTE_EFFECTS_META] = cloneRouteEffectMeta(
-    routeEffects[SYMBOL_ROUTE_EFFECTS_META]
-  );
-
-  const effectReferences = Object.fromEntries(
-    nextRouteEffects[SYMBOL_ROUTE_EFFECTS_META].effects.entries()
-  );
-
-  return Object.assign(nextRouteEffects, effectReferences);
 }
 
 /**
@@ -554,7 +543,7 @@ export function cloneRouteEffects<
  *   .prepend("legacyRoot", forwardTo("/"))
  *   // Lazy-load routes when a location matches the Profiles wildcard route
  *   .append(
- *     initialRoutes.Profiles.id,
+ *     initialRoutes.Profiles,
  *     addRoutes(() => import("./profileRoutes.js"))
  *   );
  *
@@ -572,17 +561,20 @@ export function createRouteEffects<
     routeHookName: RouteEffectHookName,
     routeID?: RouteID
   ) {
-    const handlerEffects: RouteEffectReference<string, EffectAPI, any>[] = [];
-    const currentEffects = [...routeEffects[SYMBOL_ROUTE_EFFECTS_META].effects];
+    const handlerEffects: RouteMiddlewareReference<string, EffectAPI, any>[] =
+      [];
+    const currentEffects = [
+      ...routeEffects[SYMBOL_ROUTE_EFFECTS_META].middleware,
+    ];
 
-    for (const { effectReference } of currentEffects) {
-      const { id, type: hookName } = effectReference;
+    for (const { middlewareReference } of currentEffects) {
+      const { id, type: hookName } = middlewareReference;
 
       if (
         hookName === routeHookName &&
         (id === ALL_ROUTES_KEY || id === routeID)
       ) {
-        handlerEffects.push(effectReference);
+        handlerEffects.push(middlewareReference);
       }
     }
 
@@ -620,66 +612,111 @@ export function createRouteEffects<
 
   type AddEffectMode = typeof addEffectModes[keyof typeof addEffectModes];
 
+  function _clone(
+    mutateRouteEffectMeta?: (
+      nextRouteEffectsMeta: RouteEffectsMeta<EffectAPI>
+    ) => void
+  ): UntouchedRouteEffects<EffectAPI, Handlers> {
+    function createNextRouteEffectsMeta(): RouteEffectsMeta<EffectAPI> {
+      const routeEffectMeta = routeEffects[SYMBOL_ROUTE_EFFECTS_META];
+      const nextRouteEffectsMeta: RouteEffectsMeta<EffectAPI> = {
+        middleware: new Set(routeEffectMeta.middleware),
+        listeners: new Set(routeEffectMeta.listeners),
+      };
+
+      mutateRouteEffectMeta?.(nextRouteEffectsMeta);
+
+      return nextRouteEffectsMeta;
+    }
+
+    function createHandlers(nextRouteEffectsMeta: RouteEffectsMeta<EffectAPI>) {
+      return Object.fromEntries(
+        [...nextRouteEffectsMeta.middleware].map(
+          ({ referenceKey, middlewareReference }) => {
+            const { id, type } = middlewareReference;
+            const handler = getRouteMiddlewareHandler(type, id);
+
+            return [referenceKey, Object.assign(handler, { id, type })];
+          }
+        )
+      ) as RouteEffectsHandlers<EffectAPI, Handlers>;
+    }
+
+    const nextRouteEffects = createRouteEffects<EffectAPI, Handlers>();
+    const nextRouteEffectsMeta = createNextRouteEffectsMeta();
+
+    nextRouteEffects[SYMBOL_ROUTE_EFFECTS_META] = nextRouteEffectsMeta;
+    nextRouteEffects.handlers = createHandlers(nextRouteEffectsMeta);
+
+    return nextRouteEffects;
+  }
+
   const routeEffects = {
-    append(id, effect) {
-      return addEffect(addEffectModes.APPEND, id, hookNames.MIDDLEWARE, effect);
+    _clone,
+    append(routeInput, effect) {
+      return addMiddleware(
+        addEffectModes.APPEND,
+        routeInput,
+        hookNames.MIDDLEWARE,
+        effect
+      );
     },
     appendAll(effect) {
-      return addEffect(
+      return addMiddleware(
         addEffectModes.APPEND,
         ALL_ROUTES_KEY,
         hookNames.MIDDLEWARE,
         effect
       );
     },
-    prepend(id, effect) {
-      return addEffect(
+    prepend(routeInput, effect) {
+      return addMiddleware(
         addEffectModes.PREPEND,
-        id,
+        routeInput,
         hookNames.MIDDLEWARE,
         effect
       );
     },
     prependAll(effect) {
-      return addEffect(
+      return addMiddleware(
         addEffectModes.PREPEND,
         ALL_ROUTES_KEY,
         hookNames.MIDDLEWARE,
         effect
       );
     },
-    onComplete(id, listener) {
-      return addListener(id, hookNames.COMPLETE, listener);
+    onComplete(routeInput, listener) {
+      return addListener(routeInput, hookNames.COMPLETE, listener);
     },
     onCompleteAll(listener) {
       return addListener(ALL_ROUTES_KEY, hookNames.COMPLETE, listener);
     },
-    onEnd(id, listener) {
-      return addListener(id, hookNames.END, listener);
+    onEnd(routeInput, listener) {
+      return addListener(routeInput, hookNames.END, listener);
     },
     onEndAll(listener) {
       return addListener(ALL_ROUTES_KEY, hookNames.END, listener);
     },
-    onExit(id, listener) {
-      return addListener(id, hookNames.EXIT, listener);
+    onExit(routeInput, listener) {
+      return addListener(routeInput, hookNames.EXIT, listener);
     },
     onExitAll(listener) {
       return addListener(ALL_ROUTES_KEY, hookNames.EXIT, listener);
     },
-    onFailure(id, listener) {
-      return addListener(id, hookNames.FAILURE, listener);
+    onFailure(routeInput, listener) {
+      return addListener(routeInput, hookNames.FAILURE, listener);
     },
     onFailureAll(listener) {
       return addListener(ALL_ROUTES_KEY, hookNames.FAILURE, listener);
     },
-    onInterrupt(id, listener) {
-      return addListener(id, hookNames.INTERRUPT, listener);
+    onInterrupt(routeInput, listener) {
+      return addListener(routeInput, hookNames.INTERRUPT, listener);
     },
     onInterruptAll(listener) {
       return addListener(ALL_ROUTES_KEY, hookNames.INTERRUPT, listener);
     },
-    onStart(id, listener) {
-      return addListener(id, hookNames.START, listener);
+    onStart(routeInput, listener) {
+      return addListener(routeInput, hookNames.START, listener);
     },
     onStartAll(listener) {
       return addListener(ALL_ROUTES_KEY, hookNames.START, listener);
@@ -696,62 +733,60 @@ export function createRouteEffects<
       };
     },
     [SYMBOL_ROUTE_EFFECTS_META]: {
-      effects: new Set(),
+      middleware: new Set(),
       listeners: new Set(),
     },
   } as UntouchedRouteEffects<EffectAPI, Handlers>;
 
-  function addEffect<RID extends RouteID, Action extends RouteEffectAction>(
+  function wrapFunction<T extends (...args: any[]) => any>(fn: T) {
+    return function wrappedFn(...args: Parameters<T>) {
+      return fn(...args);
+    };
+  }
+
+  function addMiddleware<RID extends RouteID, Action extends RouteEffectAction>(
     mode: AddEffectMode,
-    id: RID,
+    routeInput: RouteInput<RID>,
     hookName: RouteEffectHookName,
     effect: RouteMiddleware<Action, EffectAPI>
   ) {
+    const id = resolveRouteId(routeInput);
     const referenceKey = getHandlerName(id, hookName);
-    const wrappedEffect = (...args: Parameters<typeof effect>) =>
-      effect(...args);
-    const effectReference: RouteEffectReference<RID, EffectAPI, Action> =
-      Object.assign(wrappedEffect, { id, type: hookName });
-    const nextRouteEffects = cloneRouteEffects(routeEffects);
-
-    {
-      const routeEffectsMeta = nextRouteEffects[SYMBOL_ROUTE_EFFECTS_META];
-      const effectToAdd = { referenceKey, effectReference };
+    const nextRouteEffects = routeEffects._clone((nextRouteEffectsMeta) => {
+      const effectToAdd = {
+        referenceKey,
+        middlewareReference: Object.assign(wrapFunction(effect), {
+          id,
+          type: hookName,
+        }),
+      };
+      const middleware = [...nextRouteEffectsMeta.middleware];
 
       if (mode === addEffectModes.APPEND) {
-        routeEffectsMeta.effects.add(effectToAdd);
+        middleware.push(effectToAdd);
       } else if (mode === addEffectModes.PREPEND) {
-        routeEffectsMeta.effects = new Set([
-          effectToAdd,
-          ...routeEffectsMeta.effects,
-        ]);
+        middleware.unshift(effectToAdd);
       }
-    }
 
-    const routeEffectFacade: typeof effect = async (...args) => {
-      await getRouteMiddlewareHandler(hookName, id)(...args);
-    };
-
-    Object.assign(nextRouteEffects, {
-      [referenceKey]: routeEffectFacade,
+      nextRouteEffectsMeta.middleware = new Set(middleware);
     });
 
     return nextRouteEffects;
   }
 
   function addListener<RID extends RouteID, Action extends RouteEffectAction>(
-    id: RID,
+    routeInput: RouteInput<RID>,
     hookName: RouteEffectHookName,
     listener: RouteListener<Action, EffectAPI>
   ) {
-    const wrappedListener = (...args: Parameters<typeof listener>) =>
-      listener(...args);
-    const listenerReference: RouteListenerReference<RID, EffectAPI, Action> =
-      Object.assign(wrappedListener, { id, eventName: hookName });
-    const nextRouteEffects = cloneRouteEffects(routeEffects);
-
-    nextRouteEffects[SYMBOL_ROUTE_EFFECTS_META].listeners.add({
-      listenerReference,
+    const id = resolveRouteId(routeInput);
+    const nextRouteEffects = routeEffects._clone((nextRouteEffectsMeta) => {
+      nextRouteEffectsMeta.listeners.add({
+        listenerReference: Object.assign(wrapFunction(listener), {
+          id,
+          eventName: hookName,
+        }),
+      });
     });
 
     return nextRouteEffects;

@@ -1,0 +1,49 @@
+// Vitest Snapshot v1
+
+exports[`RoutesEffects > createRoutesEffects > appending route middleware 1`] = `
+{
+  "_clone": [Function],
+  "_getHandlersByRouteID": [Function],
+  "append": [Function],
+  "appendAll": [Function],
+  "handlers": {
+    "ProfileMiddleware": [Function],
+    "RootMiddleware": [Function],
+  },
+  "onComplete": [Function],
+  "onCompleteAll": [Function],
+  "onEnd": [Function],
+  "onEndAll": [Function],
+  "onExit": [Function],
+  "onExitAll": [Function],
+  "onFailure": [Function],
+  "onFailureAll": [Function],
+  "onInterrupt": [Function],
+  "onInterruptAll": [Function],
+  "onStart": [Function],
+  "onStartAll": [Function],
+  "prepend": [Function],
+  "prependAll": [Function],
+  Symbol(@sables/routeEffectsMeta): {
+    "listeners": Set {
+      {
+        "listenerReference": [Function],
+      },
+    },
+    "middleware": Set {
+      {
+        "middlewareReference": [Function],
+        "referenceKey": "RootMiddleware",
+      },
+      {
+        "middlewareReference": [Function],
+        "referenceKey": "ProfileMiddleware",
+      },
+      {
+        "middlewareReference": [Function],
+        "referenceKey": "ProfileMiddleware",
+      },
+    },
+  },
+}
+`;
