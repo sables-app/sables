@@ -11,12 +11,9 @@ import { getSlicesFromSelector } from "../utils.js";
  *
  * @remarks
  *
- * **This method is optional.**
- *
- * When slices are properly set as dependencies of actions,
- * the usage of this hook isn't necessary. However, using this
- * hook will help cover developer mistakes when a slice isn't
- * set as dependency by accident.
+ * It's unnecessary to use this hook for JIT slice insertion to function.
+ * However, using it over the `react-redux` variant may help cover developer
+ * mistakes where a slice isn't set as an action dependency.
  *
  * @example
  *

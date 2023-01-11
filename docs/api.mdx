@@ -775,12 +775,13 @@ const selectBooks = createSelector(
 
 An enhanced version of [`useSelector` from react-redux](https://react-redux.js.org/api/hooks#useselector) that asynchronously inserts slices from selector dependencies.
 
-> _This method is optional._
->
-> When slices are properly set as dependencies of actions,
-> the usage of this hook isn't necessary. However, using this
-> hook will help cover developer mistakes when a slice isn't
-> set as dependency by accident.
+<div className="highlight-info">
+
+> It's unnecessary to use this hook for JIT slice insertion to function.
+> However, using it over the `react-redux` variant may help cover developer
+> mistakes where a slice isn't set as an action dependency.
+
+</div>
 
 ##### Example
 
