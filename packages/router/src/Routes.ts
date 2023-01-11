@@ -1,4 +1,5 @@
 import {
+  AnyPayloadAction,
   DefaultEffectAPI,
   PayloadAction,
   SYMBOL_ROUTES_META,
@@ -497,19 +498,19 @@ export function createRoutes<
   }
 
   function addRouteWithEffect<
-    MW extends RouteMiddleware<PayloadAction<any>, EffectAPI>
+    MW extends RouteMiddleware<AnyPayloadAction, EffectAPI>
   >(
     path: RoutePathType | WildCardPathType,
     middleware: MW
   ): UntouchedRoutes<EffectAPI, Info>;
   function addRouteWithEffect<
-    MW extends RouteMiddleware<PayloadAction<any>, EffectAPI>
+    MW extends RouteMiddleware<AnyPayloadAction, EffectAPI>
   >(
     path: WildCardPathType,
     middleware: MW
   ): Omit<UntouchedRoutes<EffectAPI, Info>, WildcardLockedMethods>;
   function addRouteWithEffect<
-    MW extends RouteMiddleware<PayloadAction<any>, EffectAPI>
+    MW extends RouteMiddleware<AnyPayloadAction, EffectAPI>
   >(path: RoutePathType | WildCardPathType, middleware: MW) {
     // Routes are typically created upon execution,
     // so this ID must be a deterministic to be used

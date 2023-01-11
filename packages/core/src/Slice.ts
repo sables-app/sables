@@ -9,6 +9,7 @@ import { SYMBOL_LAZY_META, SYMBOL_LAZY_SELECTOR } from "./constants.js";
 import { hasLazyMeta } from "./main.js";
 import type {
   ActionCreator,
+  AnyPayloadAction,
   AnySlice,
   BaseSliceLazySelector,
   EnhancedActionCreatorWithPayload,
@@ -142,7 +143,7 @@ export function enhanceSlice<S extends ReduxToolkit.Slice>(
 namespace SliceBuilder {
   export type ActionTypeCase = [
     actionType: string,
-    reducer: ReduxToolkit.CaseReducer<any, PayloadAction<any>>
+    reducer: ReduxToolkit.CaseReducer<any, AnyPayloadAction>
   ];
 
   /**
@@ -150,7 +151,7 @@ namespace SliceBuilder {
    */
   export type ActionCreatorCase = [
     actionCreator: ActionCreator<any, any[]>,
-    reducer: ReduxToolkit.CaseReducer<any, PayloadAction<any>>
+    reducer: ReduxToolkit.CaseReducer<any, AnyPayloadAction>
   ];
 
   export type ActionMatcher<A extends Redux.AnyAction> = (
@@ -238,7 +239,7 @@ interface SliceReducerBuilder<
    */
   addCase<
     Type extends string,
-    R extends ReduxToolkit.CaseReducer<State, PayloadAction<any>>
+    R extends ReduxToolkit.CaseReducer<State, AnyPayloadAction>
   >(
     actionType: Type,
     caseReducer: R
@@ -439,6 +440,7 @@ type DraftSlice<State, Name extends string = string> = {
    *
    * @public
    */
+  // TODO - Rename to `reducer`
   setReducer<
     B extends SliceReducerBuilderBase<
       State,

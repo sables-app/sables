@@ -277,6 +277,30 @@ const enhancedWakeCat = enhanceAction(wakeCat);
 enhancedWakeCat.match(wakeCat());
 ```
 
+### extendAction
+
+> `extendAction(actionCreator, actionTransformer): ActionCreator;`
+
+Creates a new action creator by extending the given enhanced action creator.
+
+Action dependencies are copied onto the new action creator.
+
+##### Example
+
+```ts
+const showAlert = createAction<string>("showAlert");
+const showAlertWithId = extendAction(
+  showAlert,
+  (action) => ({
+    ...action,
+    meta: {
+      ...action.meta,
+      alertId: nanoid(),
+    },
+  })
+);
+```
+
 ### actionCreator.dependsUpon
 
 > `EnhancedActionCreator.dependsUpon(...actionDependencies): this;`

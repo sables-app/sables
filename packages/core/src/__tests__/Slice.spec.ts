@@ -46,6 +46,15 @@ describe("createSlice", () => {
     expect(states[2]).toEqual({ dogs: { puppyCount: 2 } });
   });
 
+  describe("enhanced actions", () => {
+    it("has the slice as an action dependency", async () => {
+      const actionLazyMeta = dogsSlice.actions.adoptPuppies[SYMBOL_LAZY_META];
+
+      expect(actionLazyMeta.slices.size).toBe(1);
+      expect(actionLazyMeta.slices.has(dogsSlice)).toBe(true);
+    });
+  });
+
   it("sets a selector", async () => {
     expect(dogsSlice.selector).toEqual(expect.any(Function));
   });
@@ -223,7 +232,7 @@ describe("createSlice", () => {
             state.purchasedBookCount += action.payload;
           });
 
-          return fff;
+        return fff;
       }
     );
 

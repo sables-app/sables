@@ -1,4 +1,5 @@
 import type {
+  AnyPayloadAction,
   DefaultEffectAPI,
   EnhancedSlice,
   PayloadAction,
@@ -11,9 +12,11 @@ import type * as Redux from "redux";
 import type * as ReduxFirstHistory from "redux-first-history";
 
 import type {
+  END_TRANSITION_ACTION_TYPE,
   endRouteTransitionReasons,
   hookNames,
   ROUTER_REDUCER_KEY,
+  START_TRANSITION_ACTION_TYPE,
   transitionStatuses,
 } from "./constants.js";
 import type { AnyRouteReference, RouteReferenceParams } from "./Routes.js";
@@ -135,7 +138,7 @@ export type LocationChangeAction<A extends History.Action = History.Action> =
  * @public
  */
 export interface RouteMiddleware<
-  Action extends PayloadAction<any> = PayloadAction<any>,
+  Action extends AnyPayloadAction = AnyPayloadAction,
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
 > {
   (
@@ -152,7 +155,7 @@ export interface RouteMiddleware<
  * @public
  */
 export interface RouteListener<
-  Action extends PayloadAction<any> = PayloadAction<any>,
+  Action extends AnyPayloadAction = AnyPayloadAction,
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
 > {
   (action: Action, effectAPI: EffectAPI): unknown;
@@ -217,11 +220,15 @@ export type EndRouteTransitionActionPayload = {
 };
 
 /** @internal */
-export type StartTransitionAction =
-  PayloadAction<StartRouteTransitionActionPayload>;
+export type StartTransitionAction = PayloadAction<
+  StartRouteTransitionActionPayload,
+  typeof START_TRANSITION_ACTION_TYPE
+>;
 /** @internal */
-export type EndTransitionAction =
-  PayloadAction<EndRouteTransitionActionPayload>;
+export type EndTransitionAction = PayloadAction<
+  EndRouteTransitionActionPayload,
+  typeof END_TRANSITION_ACTION_TYPE
+>;
 
 /**
  * Route Transition slice state

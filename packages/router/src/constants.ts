@@ -33,3 +33,8 @@ export const hookNames = {
   MIDDLEWARE: "middleware",
   START: "start",
 } as const;
+
+/** @internal */
+export const START_TRANSITION_ACTION_TYPE = "sables/transitionRoute/start";
+/** @internal */
+export const END_TRANSITION_ACTION_TYPE = "sables/transitionRoute/end";

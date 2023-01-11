@@ -1,4 +1,5 @@
 import {
+  AnyPayloadAction,
   DefaultEffectAPI,
   PayloadAction,
   SYMBOL_ROUTE_EFFECTS_META,
@@ -39,7 +40,7 @@ type HandlerName<
 export type HandlerMeta<
   H extends RouteEffectHookName,
   RID extends RouteID,
-  Action extends PayloadAction<any>
+  Action extends AnyPayloadAction
 > = [RID, H, Action];
 
 /** @internal */
@@ -48,8 +49,8 @@ export interface RouteEffectsMethods<
   Handlers extends HandlerMeta<
     RouteEffectHookName,
     RouteID,
-    PayloadAction<any>
-  > = HandlerMeta<RouteEffectHookName, never, PayloadAction<any>>
+    AnyPayloadAction
+  > = HandlerMeta<RouteEffectHookName, never, AnyPayloadAction>
 > {
   /**
    * Adds a route middleware for the given route to the end of the stack.
@@ -397,14 +398,14 @@ export interface RouteEffectsMethods<
 type HandlerMetaRID<H> = H extends HandlerMeta<
   RouteEffectHookName,
   infer RID,
-  PayloadAction<any>
+  AnyPayloadAction
 >
   ? RID
   : never;
 type HandlerMetaHookName<H> = H extends HandlerMeta<
   infer HN,
   RouteID,
-  PayloadAction<any>
+  AnyPayloadAction
 >
   ? HN
   : never;
@@ -419,7 +420,7 @@ type HandlerMetaAction<H> = H extends HandlerMeta<
 type RouteEffectReference<
   RID extends RouteID,
   EffectAPI extends DefaultEffectAPI,
-  Action extends PayloadAction<any>
+  Action extends AnyPayloadAction
 > = RouteMiddleware<Action, EffectAPI> & {
   readonly id: RID;
   readonly type: RouteEffectHookName;
@@ -428,18 +429,18 @@ type RouteEffectReference<
 type RouteListenerReference<
   RID extends RouteID,
   EffectAPI extends DefaultEffectAPI,
-  Action extends PayloadAction<any>
+  Action extends AnyPayloadAction
 > = RouteListener<Action, EffectAPI> & {
   readonly id: RID;
   readonly eventName: RouteEffectHookName;
 };
 
-type RouteReferenceRecord<
+type RouteEffectReferenceRecord<
   EffectAPI extends DefaultEffectAPI,
   Handlers extends HandlerMeta<
     RouteEffectHookName,
     RouteID,
-    PayloadAction<any>
+    AnyPayloadAction
   > = HandlerMeta<RouteEffectHookName, never, PayloadAction<never>>
 > = {
   readonly [K in Handlers as HandlerName<
@@ -469,11 +470,11 @@ export type UntouchedRouteEffects<
   Handlers extends HandlerMeta<
     RouteEffectHookName,
     RouteID,
-    PayloadAction<any>
+    AnyPayloadAction
   > = HandlerMeta<RouteEffectHookName, never, PayloadAction<never>>
 > = RouteEffectsMethods<EffectAPI, Handlers> &
   ReadonlyRouteEffectsMethods<EffectAPI> &
-  RouteReferenceRecord<EffectAPI, Handlers>;
+  RouteEffectReferenceRecord<EffectAPI, Handlers>;
 
 /**
  * @see {createRouteEffects}
