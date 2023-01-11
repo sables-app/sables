@@ -27,7 +27,6 @@ import {
   TemplatePath,
 } from "./Path.js";
 import {
-  cloneRouteEffects,
   createRouteEffects,
   RouteEffects,
   UntouchedRouteEffects,
@@ -66,7 +65,7 @@ function cloneRoutesMeta<EffectAPI extends DefaultEffectAPI>(
 ): RoutesMeta<EffectAPI> {
   return {
     externalEffectsFn: routesMeta.externalEffectsFn,
-    internalEffects: cloneRouteEffects(routesMeta.internalEffects),
+    internalEffects: routesMeta.internalEffects._clone(),
     routesById: new Map(routesMeta.routesById.entries()),
   };
 }

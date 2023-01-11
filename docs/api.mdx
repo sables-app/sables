@@ -1224,7 +1224,7 @@ createRouteEffects()
   .prepend("legacyRoot", forwardTo("/"))
   // Lazy-load routes when a location matches the Profiles wildcard route
   .append(
-    initialRoutes.Profiles.id,
+    initialRoutes.Profiles,
     addRoutes(() => import("./profileRoutes.js"))
   );
 ```
@@ -1257,7 +1257,7 @@ _`RouteEffects` methods include:_
 
 #### RouteEffects.append
 
-> `RouteEffects.append(routeID, routeMiddleware): RouteEffects;`
+> `RouteEffects.append(routeInput, routeMiddleware): RouteEffects;`
 
 Adds middleware for the given route to the end of the stack.
 
@@ -1267,7 +1267,7 @@ Adds middleware for the given route to the end of the stack.
 const routes = createRoutes().set("root", "/");
 
 createRouteEffects().append(
-  routes.Root.id,
+  routes.Root,
   delayTransition(5000)
 );
 ```
@@ -1288,7 +1288,7 @@ createRouteEffects().appendAll(delayTransition(5000));
 
 #### RouteEffects.prepend
 
-> `RouteEffects.prepend(routeID, routeMiddleware): RouteEffects;`
+> `RouteEffects.prepend(routeInput, routeMiddleware): RouteEffects;`
 
 Adds middleware for the given route to the beginning of the stack.
 
@@ -1319,7 +1319,7 @@ createRouteEffects().prependAll(delayTransition(5000));
 
 #### RouteEffects.onComplete
 
-> `RouteEffects.onComplete(routeID, routeListener): RouteEffects;`
+> `RouteEffects.onComplete(routeInput, routeListener): RouteEffects;`
 
 Adds a route listener that's called when a route transition for the given route completes.
 
@@ -1351,7 +1351,7 @@ createRouteEffects().onCompleteAll(() => {
 
 #### RouteEffects.onEnd
 
-> `RouteEffects.onEnd(routeID, routeListener): RouteEffects;`
+> `RouteEffects.onEnd(routeInput, routeListener): RouteEffects;`
 
 Adds a route listener that's called when a route transition for the given route ends.
 
@@ -1383,7 +1383,7 @@ createRouteEffects().onEndAll(() => {
 
 #### RouteEffects.onExit
 
-> `RouteEffects.onExit(routeID, routeListener): RouteEffects;`
+> `RouteEffects.onExit(routeInput, routeListener): RouteEffects;`
 
 Adds a route listener that's called when a route transition for the given route exits.
 
@@ -1415,7 +1415,7 @@ createRouteEffects().onExitAll(() => {
 
 #### RouteEffects.onFailure
 
-> `RouteEffects.onFailure(routeID, routeListener): RouteEffects;`
+> `RouteEffects.onFailure(routeInput, routeListener): RouteEffects;`
 
 Adds a route listener that's called when a route transition for the given route fails.
 
@@ -1447,7 +1447,7 @@ createRouteEffects().onFailureAll(() => {
 
 #### RouteEffects.onInterrupt
 
-> `RouteEffects.onInterrupt(routeID, routeListener): RouteEffects;`
+> `RouteEffects.onInterrupt(routeInput, routeListener): RouteEffects;`
 
 Adds a route listener that's called when a route transition for the given route interrupts.
 
@@ -1479,7 +1479,7 @@ createRouteEffects().onInterruptAll(() => {
 
 #### RouteEffects.onStart
 
-> `RouteEffects.onStart(routeID, routeListener): RouteEffects;`
+> `RouteEffects.onStart(routeInput, routeListener): RouteEffects;`
 
 Adds a route listener that's called when a route transition for the given route starts.
 
