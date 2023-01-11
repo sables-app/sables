@@ -1,5 +1,19 @@
 # @sables/router
 
+## 0.13.0
+
+### Minor Changes
+
+- 8656adb: Allow `RouteReference` objects to be used with route effects methods.
+
+### Patch Changes
+
+- bb1f6ca: Add stricter types for actions on `RouteEffects` methods.
+- Updated dependencies [bb1f6ca]
+- Updated dependencies [775312a]
+- Updated dependencies [bb1f6ca]
+  - @sables/core@0.13.0
+
 ## 0.12.1
 
 ### Patch Changes
