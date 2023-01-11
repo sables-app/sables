@@ -1,8 +1,4 @@
-import {
-  AnyPayloadAction,
-  DefaultEffectAPI,
-  SideEffect,
-} from "@sables/core";
+import { AnyPayloadAction, DefaultEffectAPI, SideEffect } from "@sables/core";
 import { SYMBOL_EFFECT_API_EFFECT_STATE } from "@sables/core";
 import { isSSREnv } from "@sables/utils";
 

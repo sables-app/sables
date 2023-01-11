@@ -66,7 +66,9 @@ type ConfigureRouterOptions<EffectAPI extends DefaultEffectAPI> = {
 function getRouterHistory<EffectAPI extends DefaultEffectAPI>({
   history,
   initialLocation,
-}: ConfigureRouterOptions<EffectAPI>): History.BrowserHistory | History.MemoryHistory {
+}: ConfigureRouterOptions<EffectAPI>):
+  | History.BrowserHistory
+  | History.MemoryHistory {
   if (history) {
     return history;
   }
