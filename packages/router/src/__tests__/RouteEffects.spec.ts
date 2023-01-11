@@ -6,7 +6,7 @@ import { createRoutes } from "../Routes.js";
 
 describe("RoutesEffects", () => {
   describe("createRoutesEffects", () => {
-    test.only("appending route middleware", () => {
+    test("appending route middleware", () => {
       const routes = createRoutes()
         .set("root", "/")
         .set("profile", "/profiles/:handle")
