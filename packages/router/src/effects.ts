@@ -1,4 +1,4 @@
-import { DefaultEffectAPI, PayloadAction, SideEffect } from "@sables/core";
+import { AnyPayloadAction, DefaultEffectAPI, SideEffect } from "@sables/core";
 import { SYMBOL_EFFECT_API_EFFECT_STATE } from "@sables/core";
 import { isSSREnv } from "@sables/utils";
 
@@ -169,7 +169,7 @@ export class ExitTransitionSignal extends RouteMiddlewareSignal {
  * @public
  */
 export async function exitTransition<
-  Action extends PayloadAction<any> = PayloadAction<any>,
+  Action extends StartTransitionAction = StartTransitionAction,
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
 >(_action: Action, _effectAPI: EffectAPI, abortSignal: AbortSignal) {
   if (abortSignal.aborted) return;
@@ -193,7 +193,7 @@ export async function exitTransition<
  * @public
  */
 export function delayTransition<
-  Action extends PayloadAction<any> = PayloadAction<any>,
+  Action extends StartTransitionAction = StartTransitionAction,
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
 >(ms: number): RouteMiddleware<Action, EffectAPI> {
   return async (_action, _effectAPI, abortSignal) => {
@@ -219,7 +219,7 @@ export function delayTransition<
  * @public
  */
 export function logTransition<
-  Action extends PayloadAction<any> = PayloadAction<any>,
+  Action extends StartTransitionAction = StartTransitionAction,
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
 >(...values: unknown[]): RouteMiddleware<Action, EffectAPI> {
   return async (_action, _effectAPI, abortSignal) => {
@@ -357,7 +357,7 @@ export function addRoutes<
  * @public
  */
 export function chainMiddleware<
-  Action extends PayloadAction<any> = PayloadAction<any>,
+  Action extends StartTransitionAction = StartTransitionAction,
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
 >(
   ...effects: RouteMiddleware<Action, EffectAPI>[]
@@ -385,7 +385,7 @@ export function chainMiddleware<
  * @public
  */
 export function combineListeners<
-  Action extends PayloadAction<any> = PayloadAction<any>,
+  Action extends AnyPayloadAction = AnyPayloadAction,
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
 >(
   ...listeners: RouteListener<Action, EffectAPI>[]

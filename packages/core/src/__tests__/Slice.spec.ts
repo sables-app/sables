@@ -46,6 +46,15 @@ describe("createSlice", () => {
     expect(states[2]).toEqual({ dogs: { puppyCount: 2 } });
   });
 
+  describe("enhanced actions", () => {
+    it("has the slice as an action dependency", async () => {
+      const actionLazyMeta = dogsSlice.actions.adoptPuppies[SYMBOL_LAZY_META];
+
+      expect(actionLazyMeta.slices.size).toBe(1);
+      expect(actionLazyMeta.slices.has(dogsSlice)).toBe(true);
+    });
+  });
+
   it("sets a selector", async () => {
     expect(dogsSlice.selector).toEqual(expect.any(Function));
   });
@@ -214,17 +223,14 @@ describe("createSlice", () => {
   test("createSlice with addMatcher", () => {
     const increaseBookCount = createAction<number>("increaseBookCount");
     const slice = createSlice("books", { purchasedBookCount: 0 }).setReducer(
-      (initialBuilder) => {
-        const fff = initialBuilder
+      (initialBuilder) =>
+        initialBuilder
           .addCase("buyBooks", (state, action: PayloadAction<string[]>) => {
             state.purchasedBookCount += action.payload.length;
           })
           .addMatcher(increaseBookCount.match, (state, action) => {
             state.purchasedBookCount += action.payload;
-          });
-
-          return fff;
-      }
+          })
     );
 
     assertType<PayloadActionCreator<string[], "books/buyBooks">>(

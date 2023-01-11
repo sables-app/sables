@@ -5,7 +5,11 @@ import {
   PayloadAction,
 } from "@sables/core";
 
-import { endRouteTransitionReasons } from "./constants.js";
+import {
+  END_TRANSITION_ACTION_TYPE,
+  endRouteTransitionReasons,
+  START_TRANSITION_ACTION_TYPE,
+} from "./constants.js";
 import type {
   EndRouteTransitionActionPayload,
   LocationChangeAction,
@@ -27,11 +31,12 @@ function createInitialState(): RouteTransitionState {
 export const transitionRoute = createSideEffectActions(
   createAction<
     StartRouteTransitionActionPayload,
-    "sables/transitionRoute/start"
-  >("sables/transitionRoute/start"),
-  createAction<EndRouteTransitionActionPayload, "sables/transitionRoute/end">(
-    "sables/transitionRoute/end"
-  )
+    typeof START_TRANSITION_ACTION_TYPE
+  >(START_TRANSITION_ACTION_TYPE),
+  createAction<
+    EndRouteTransitionActionPayload,
+    typeof END_TRANSITION_ACTION_TYPE
+  >(END_TRANSITION_ACTION_TYPE)
 );
 
 /** @internal */

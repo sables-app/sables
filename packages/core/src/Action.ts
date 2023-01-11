@@ -11,6 +11,7 @@ import type {
   ActionMeta,
   BasicActionCreator,
   BasicPayloadActionCreator,
+  DecoratedBasicActionCreator,
   EnhancedStandardActionCreator,
   ObservableCreator,
   PayloadAction,
@@ -174,6 +175,71 @@ export function enhanceAction<
   return enhancedActionCreator;
 }
 
+/** @internal */
+type AnyEnhancedStandardActionCreator = EnhancedStandardActionCreator<
+  DecoratedBasicActionCreator<any, (...args: any[]) => any>
+>;
+
+/** @internal */
+function getActionDependencies(
+  actionCreator: AnyEnhancedStandardActionCreator
+): ActionDependency[] {
+  const { observers, slices } = actionCreator[SYMBOL_LAZY_META];
+
+  return [...observers, ...slices];
+}
+
+/** @internal */
+function copyActionDependencies(
+  from: AnyEnhancedStandardActionCreator,
+  to: AnyEnhancedStandardActionCreator
+) {
+  to.dependsUpon(...getActionDependencies(from));
+}
+
+/**
+ * Create a new action creator by extending the given action creator.
+ *
+ * @remarks
+ *
+ * Action dependencies are copied onto the new action creator.
+ *
+ * @example
+ *
+ * const showAlert = createAction<string>("showAlert");
+ * const showAlertWithId = extendAction(
+ *   showAlert,
+ *   (action) => ({
+ *     ...action,
+ *     meta: {
+ *       ...action.meta,
+ *       alertId: nanoid(),
+ *     },
+ *   })
+ * );
+ *
+ * @public
+ */
+export function extendAction<AC extends AnyEnhancedStandardActionCreator>(
+  actionCreator: AC,
+  actionTransformer: (enhancedAction: ReturnType<AC>) => ReturnType<AC>
+): AC {
+  type Type = typeof actionCreator["type"];
+  type Params = Parameters<typeof actionCreator>;
+  type Action = ReturnType<AC>;
+
+  const nextActionCreator = enhanceAction<Type, Params, Action>(
+    function nextActionCreator(...args) {
+      return actionTransformer(actionCreator(...args));
+    },
+    actionCreator.type
+  ) as AC;
+
+  copyActionDependencies(actionCreator, nextActionCreator);
+
+  return nextActionCreator;
+}
+
 /**
  * Creates an enhanced action creator that adheres
  * to Flux Standard Action conventions.
@@ -225,22 +291,18 @@ export function createSideEffectActions<
   type T = SideEffectActions<StartActionCreator, EndActionCreator>;
   type StartAction = ReturnType<T["start"]>;
   type EndAction = ReturnType<T["end"]>;
-  type StartPayload = StartAction["payload"];
   type EndPayload = EndAction["payload"];
-  const startType = startBase.type;
   const endType = endBase.type;
 
-  const startActionCreator: T["start"] = enhanceAction(
-    (payload: StartPayload) => {
-      const actionBase = startBase(payload);
-      const meta: ActionMeta = {
+  const startActionCreator: T["start"] = extendAction(
+    startBase,
+    (actionBase) => ({
+      ...actionBase,
+      meta: {
         ...actionBase.meta,
         [PROPERTY_EFFECT_ACTIONS_ID]: nanoid(),
-      };
-
-      return { ...actionBase, meta };
-    },
-    startType
+      },
+    })
   );
 
   const endActionCreator: T["end"] = enhanceAction(
@@ -257,6 +319,8 @@ export function createSideEffectActions<
     },
     endType
   );
+
+  copyActionDependencies(endBase, endActionCreator);
 
   const match: T["match"] = function match(
     action?: Redux.Action

@@ -2,11 +2,15 @@ import { filter, firstValueFrom, take, tap, toArray } from "rxjs";
 import * as vitest from "vitest";
 import { assertType, describe, expect, it, test } from "vitest";
 
-import { createAction, enhanceAction } from "../Action.js";
+import {
+  createAction,
+  createSideEffectActions,
+  enhanceAction,
+} from "../Action.js";
 import { SYMBOL_LAZY_META } from "../constants.js";
 import { createObservable } from "../Observable.js";
 import { createSlice } from "../Slice.js";
-import { PayloadActionCreator } from "../types.js";
+import { PayloadAction, PayloadActionCreator } from "../types.js";
 import { createTestStore } from "./utils.js";
 
 describe("Action", () => {
@@ -88,7 +92,7 @@ describe("Action", () => {
     it("enhances the given action creator", () => {
       const enhancedWakeCat = enhanceAction(wakeCat);
 
-      expect(enhancedWakeCat.match(wakeCat())).toEqual(true);
+      expect(enhancedWakeCat.match(wakeCat())).toBe(true);
     });
 
     test("enhanced action creator types", () => {
@@ -250,6 +254,104 @@ describe("Action", () => {
       doSomething(new Error());
       // It should match a string type
       assertType<string>(doSomething.type);
+    });
+  });
+
+  describe("createSideEffectActions", () => {
+    function getStubs() {
+      const slice = createSlice("test", {}).setReducer((builder) =>
+        builder
+          .addCase("start", (state, action: PayloadAction<Date>) => state)
+          // `undefined` is used instead of `void`, because Redux Toolkit's types
+          // don't handle `void` union types properly.
+          .addCase(
+            "end",
+            (state, action: PayloadAction<undefined | Error>) => state
+          )
+      );
+      const sideEffectActions = createSideEffectActions(
+        slice.actions.start,
+        slice.actions.end
+      );
+      const startAction = sideEffectActions.start(new Date());
+      const endAction = sideEffectActions.end(
+        new Error("Side effect failed."),
+        startAction
+      );
+
+      return {
+        endAction,
+        sideEffectActions,
+        slice,
+        startAction,
+      };
+    }
+
+    describe("action creator extension", () => {
+      it("creates new action creators", () => {
+        const { endAction, sideEffectActions, slice, startAction } = getStubs();
+
+        expect(sideEffectActions.start).not.toBe(slice.actions.start);
+        expect(sideEffectActions.end).not.toBe(slice.actions.end);
+      });
+
+      it("reuses the same action types", () => {
+        const { endAction, sideEffectActions, slice, startAction } = getStubs();
+
+        expect(sideEffectActions.start.type).toBe(slice.actions.start.type);
+        expect(sideEffectActions.end.type).toBe(slice.actions.end.type);
+        expect(sideEffectActions.start.toString()).toBe(
+          slice.actions.start.toString()
+        );
+        expect(sideEffectActions.end.toString()).toBe(
+          slice.actions.end.toString()
+        );
+      });
+
+      it("doesn't reuse lazy meta", () => {
+        const { endAction, sideEffectActions, slice, startAction } = getStubs();
+
+        expect(sideEffectActions.start[SYMBOL_LAZY_META]).not.toBe(
+          slice.actions.start[SYMBOL_LAZY_META]
+        );
+        expect(sideEffectActions.end[SYMBOL_LAZY_META]).not.toBe(
+          slice.actions.end[SYMBOL_LAZY_META]
+        );
+      });
+
+      it("copies action dependencies to the new action creators", () => {
+        const { endAction, sideEffectActions, slice, startAction } = getStubs();
+
+        expect(sideEffectActions.start[SYMBOL_LAZY_META].slices.size).toBe(1);
+        expect(sideEffectActions.end[SYMBOL_LAZY_META].slices.size).toBe(1);
+
+        expect(
+          sideEffectActions.start[SYMBOL_LAZY_META].observers.entries()
+        ).toStrictEqual(
+          slice.actions.start[SYMBOL_LAZY_META].observers.entries()
+        );
+        expect(
+          sideEffectActions.end[SYMBOL_LAZY_META].observers.entries()
+        ).toStrictEqual(
+          slice.actions.end[SYMBOL_LAZY_META].observers.entries()
+        );
+        expect(
+          sideEffectActions.start[SYMBOL_LAZY_META].slices.entries()
+        ).toStrictEqual(slice.actions.start[SYMBOL_LAZY_META].slices.entries());
+        expect(
+          sideEffectActions.end[SYMBOL_LAZY_META].slices.entries()
+        ).toStrictEqual(slice.actions.end[SYMBOL_LAZY_META].slices.entries());
+      });
+
+      describe("extended action creators", () => {
+        it("creates actions that match with the original actions ", () => {
+          const { endAction, sideEffectActions, slice, startAction } =
+            getStubs();
+
+          expect(slice.actions.start.match(startAction)).toBe(true);
+          expect(slice.actions.end.match(endAction)).toBe(true);
+        });
+      });
     });
   });
 });

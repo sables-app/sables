@@ -34,6 +34,9 @@ export interface PayloadAction<Payload = void, Type extends string = string> {
   type: Type;
 }
 
+/** @internal */
+export type AnyPayloadAction = PayloadAction<any, any>;
+
 /**
  * A Flux Standard Action with extra properties.
  *
