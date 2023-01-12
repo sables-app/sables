@@ -1,6 +1,7 @@
 export {
   advanceLocation,
   chooseLocation,
+  ensureLocation,
   locationChange,
   pushLocation,
   replaceLocation,
