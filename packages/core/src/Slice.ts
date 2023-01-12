@@ -390,6 +390,7 @@ function createSliceReducerBuilder<
 }
 
 /** @public */
+// TODO - Make a valid slice with a noop reducer
 type DraftSlice<State, Name extends string = string> = {
   /**
    *

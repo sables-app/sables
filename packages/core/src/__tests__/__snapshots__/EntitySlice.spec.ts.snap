@@ -89,6 +89,7 @@ exports[`EntitySlice > createEntitySlice > creates a slice with entity logic 1`]
             "selectAll": [Function],
             "selectAllBooks": [Function],
             "selectBestBook": [Function],
+            "selectBestBookId": [Function],
             "selectBestBookPayload": [Function],
             "selectBookById": [Function],
             "selectBookCount": [Function],

@@ -718,12 +718,18 @@ const booksSlice = createSlice("books", {
     .addCases(notableBooks.reducers)
 );
 // Selectors are created for each adjective
-const { selectBestBook } = notableBooks.getSelectors(
-  booksSlice.selectBooksState
-);
+const {
+  selectBestBook,
+  selectBestBookId,
+  selectBestBookPayload,
+} = notableBooks.getSelectors(booksSlice.selectBooksState);
 
 // Returns `Book | undefined`
 selectBestBook(store.getState());
+// Returns `string | undefined`
+selectBestBookId(store.getState());
+// Returns `{ id: string; reason: string; }`
+selectBestBookPayload(store.getState());
 
 // Action creators are created for each adjective
 const { denoteBestBook } = booksSlice.actions;

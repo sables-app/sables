@@ -166,8 +166,13 @@ describe("Entity", () => {
         builder.addCases(bookReducers).addCases(notableBooks.reducers)
       );
 
-      const { selectBestBook, selectWorstBook, selectFavoriteBook } =
-        notableBooks.getSelectors(booksSlice.selectBooksState);
+      const {
+        selectBestBook,
+        selectWorstBook,
+        selectFavoriteBook,
+        selectBestBookPayload,
+        selectBestBookId,
+      } = notableBooks.getSelectors(booksSlice.selectBooksState);
       const store = configureStore({
         reducer: combineReducers({
           books: booksSlice.reducer,
@@ -189,10 +194,13 @@ describe("Entity", () => {
         "selectFavoriteBook1"
       );
 
-      const denoteBestBookAction = booksSlice.actions.denoteBestBook({
+      const bestBookPayload = {
         id: "1",
         reason: "It's awesome!",
-      });
+      };
+
+      const denoteBestBookAction =
+        booksSlice.actions.denoteBestBook(bestBookPayload);
       const denoteWorstBookAction = booksSlice.actions.denoteWorstBook("2");
       const denoteFavoriteBookAction =
         booksSlice.actions.denoteFavoriteBook("3");
@@ -221,6 +229,12 @@ describe("Entity", () => {
       );
       expect(selectFavoriteBook(store.getState())).toMatchSnapshot(
         "selectFavoriteBook2"
+      );
+      expect(selectBestBookPayload(store.getState())).toStrictEqual(
+        bestBookPayload
+      );
+      expect(selectBestBookId(store.getState())).toStrictEqual(
+        bestBookPayload.id
       );
     });
   });
