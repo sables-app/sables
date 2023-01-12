@@ -1,5 +1,13 @@
 # @sables/router
 
+## 0.14.0
+
+### Patch Changes
+
+- b202033: Add missing `ensureLocation` export.
+- Updated dependencies [f27b4c0]
+  - @sables/core@0.14.0
+
 ## 0.13.0
 
 ### Minor Changes
