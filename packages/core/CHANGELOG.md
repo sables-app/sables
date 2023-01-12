@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.14.0
+
+### Minor Changes
+
+- f27b4c0: Update notable entities to create selectors for selecting entity IDs, e.g. `selectBestBookId()`.
+
 ## 0.13.0
 
 ### Minor Changes

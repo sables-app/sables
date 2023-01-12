@@ -1,6 +1,6 @@
 {
   "name": "@sables/core",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "The foundation of Sables, focusing on Redux-based state management.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
