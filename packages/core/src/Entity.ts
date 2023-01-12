@@ -236,6 +236,11 @@ export namespace NotableEntities {
     Name extends string
   > = `select${Capitalize<Extract<TAdjective, string>>}${Capitalize<Name>}`;
 
+  export type IdSelectorName<
+    Adjective extends string,
+    Name extends string
+  > = `select${Capitalize<Extract<Adjective, string>>}${Capitalize<Name>}Id`;
+
   export type PayloadSelectorName<
     Adjective extends string,
     Name extends string
@@ -252,6 +257,10 @@ export namespace NotableEntities {
     [K in keyof A as EntitySelectorName<Extract<K, string>, Name>]: (
       storeState: StoreState
     ) => Entity | undefined;
+  } & {
+    [K in keyof A as IdSelectorName<Extract<K, string>, Name>]: (
+      storeState: StoreState
+    ) => ReduxToolkit.EntityId | undefined;
   } & {
     [K in keyof A as PayloadSelectorName<Extract<K, string>, Name>]: (
       storeState: StoreState
@@ -329,6 +338,13 @@ export function createNotableEntities<
     return `select${capitalize(adjective)}${capitalize(name)}`;
   }
 
+  function getIdSelectorName(
+    adjective: string,
+    name: string
+  ): NotableEntities.IdSelectorName<typeof adjective, typeof name> {
+    return `select${capitalize(adjective)}${capitalize(name)}Id`;
+  }
+
   function getPayloadSelectorName(
     adjective: string,
     name: string
@@ -346,6 +362,7 @@ export function createNotableEntities<
           adjective,
           singularName
         );
+        const idSelectorName = getIdSelectorName(adjective, singularName);
         const payloadSelectorName = getPayloadSelectorName(
           adjective,
           singularName
@@ -355,15 +372,15 @@ export function createNotableEntities<
           selectState,
           (state) => (state as any)[statePropertyName]
         );
+        const idSelector = createSelector(payloadSelector, (payload) => {
+          return payload !== undefined
+            ? getEntityId(payload as Payload)
+            : undefined;
+        });
         const entitySelector = createSelector(
           selectState,
-          payloadSelector,
-          (sliceState, payload) => {
-            const id =
-              payload !== undefined
-                ? getEntityId(payload as Payload)
-                : undefined;
-
+          idSelector,
+          (sliceState, id) => {
             return id ? sliceState.entities[id] : undefined;
           }
         );
@@ -371,6 +388,7 @@ export function createNotableEntities<
         return {
           ...result,
           [entitySelectorName]: entitySelector,
+          [idSelectorName]: idSelector,
           [payloadSelectorName]: payloadSelector,
         };
       },
