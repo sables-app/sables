@@ -28,10 +28,10 @@ describe("integration", () => {
   test("setRoutes", async () => {
     let invokedImporters: Set<string> | undefined = undefined;
     const aboutDogsRouteEffect = vi.fn();
-    const aboutRouteEffects = createRouteEffects().append(
-      "aboutDogs",
-      aboutDogsRouteEffect
-    );
+    const aboutRouteEffectsAddListener = vi.fn();
+    const aboutRouteEffects = createRouteEffects()
+      .append("aboutDogs", aboutDogsRouteEffect)
+      .onAdd(aboutRouteEffectsAddListener);
 
     const aboutRouteEffectsImporter = mockImporter(
       vitest,
@@ -73,6 +73,8 @@ describe("integration", () => {
       await waitForRouteTransition();
       // Wait for `initialRouteEffects` to be resolved
       await Promise.resolve();
+      // Wait for `initialRouteEffects.onAdd` to be resolved
+      await Promise.resolve();
     }
     assertCurrentRouteID(initialRoutes.AppRoot.id);
 
@@ -101,6 +103,14 @@ describe("integration", () => {
     expect(invokedImporters).toHaveProperty("size", 2);
     expect(invokedImporters).toMatchSnapshot();
     expect(aboutDogsRouteEffect).not.toHaveBeenCalled();
+    expect(aboutRouteEffectsAddListener).not.toHaveBeenCalled();
+    {
+      // Wait for route effects add handler to resolve
+      await Promise.resolve();
+      // Wait for route effects add handler to be invoked
+      await Promise.resolve();
+    }
+    expect(aboutRouteEffectsAddListener).toHaveBeenCalledOnce();
     {
       // Wait for history replacement transition to end
       await waitForRouteTransition();

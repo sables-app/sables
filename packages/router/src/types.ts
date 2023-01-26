@@ -11,6 +11,7 @@ import type * as History from "history";
 import type * as Redux from "redux";
 import type * as ReduxFirstHistory from "redux-first-history";
 
+import type { initRouteEffects } from "./actions.js";
 import type {
   END_TRANSITION_ACTION_TYPE,
   endRouteTransitionReasons,
@@ -220,10 +221,14 @@ export type EndRouteTransitionActionPayload = {
 };
 
 /** @internal */
+export type InitRouteEffectsAction = ReturnType<typeof initRouteEffects>;
+
+/** @internal */
 export type StartTransitionAction = PayloadAction<
   StartRouteTransitionActionPayload,
   typeof START_TRANSITION_ACTION_TYPE
 >;
+
 /** @internal */
 export type EndTransitionAction = PayloadAction<
   EndRouteTransitionActionPayload,

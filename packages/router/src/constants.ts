@@ -24,7 +24,11 @@ export const endRouteTransitionReasons = {
 export const ALL_ROUTES_KEY = "@@sablesAllRoutes";
 
 /** @internal */
+export const NO_ROUTES_KEY = "@@sablesNoRoutes";
+
+/** @internal */
 export const hookNames = {
+  ADD: "add",
   COMPLETE: "complete",
   END: "end",
   EXIT: "exit",

@@ -1242,24 +1242,25 @@ Route Effects object methods can be chained, and return a new object when called
 
 _`RouteEffects` methods include:_
 
-| Name                          | Type       | Target     | When                  |
-| ----------------------------- | ---------- | ---------- | --------------------- |
-| `RouteEffects.append`         | Middleware | one route  | middleware chain      |
-| `RouteEffects.appendAll`      | Middleware | all routes | middleware chain      |
-| `RouteEffects.prepend`        | Middleware | one route  | middleware chain      |
-| `RouteEffects.prependAll`     | Middleware | all routes | middleware chain      |
-| `RouteEffects.onComplete`     | Listener   | one route  | transition completes  |
-| `RouteEffects.onCompleteAll`  | Listener   | any route  | transition completes  |
-| `RouteEffects.onEnd`          | Listener   | one route  | transition ends       |
-| `RouteEffects.onEndAll`       | Listener   | any route  | transition ends       |
-| `RouteEffects.onExit`         | Listener   | one route  | transition exits      |
-| `RouteEffects.onExitAll`      | Listener   | any route  | transition exits      |
-| `RouteEffects.onFailure`      | Listener   | one route  | transition fails      |
-| `RouteEffects.onFailureAll`   | Listener   | any route  | transition fails      |
-| `RouteEffects.onInterrupt`    | Listener   | one route  | transition interrupts |
-| `RouteEffects.onInterruptAll` | Listener   | any route  | transition interrupts |
-| `RouteEffects.onStart`        | Listener   | one route  | transition starts     |
-| `RouteEffects.onStartAll`     | Listener   | any route  | transition starts     |
+| Name                          | Type       | Target     | When                    |
+| ----------------------------- | ---------- | ---------- | ----------------------- |
+| `RouteEffects.append`         | Middleware | one route  | middleware chain        |
+| `RouteEffects.appendAll`      | Middleware | all routes | middleware chain        |
+| `RouteEffects.prepend`        | Middleware | one route  | middleware chain        |
+| `RouteEffects.prependAll`     | Middleware | all routes | middleware chain        |
+| `RouteEffects.onComplete`     | Listener   | one route  | transition completes    |
+| `RouteEffects.onCompleteAll`  | Listener   | any route  | transition completes    |
+| `RouteEffects.onEnd`          | Listener   | one route  | transition ends         |
+| `RouteEffects.onEndAll`       | Listener   | any route  | transition ends         |
+| `RouteEffects.onExit`         | Listener   | one route  | transition exits        |
+| `RouteEffects.onExitAll`      | Listener   | any route  | transition exits        |
+| `RouteEffects.onFailure`      | Listener   | one route  | transition fails        |
+| `RouteEffects.onFailureAll`   | Listener   | any route  | transition fails        |
+| `RouteEffects.onInterrupt`    | Listener   | one route  | transition interrupts   |
+| `RouteEffects.onInterruptAll` | Listener   | any route  | transition interrupts   |
+| `RouteEffects.onStart`        | Listener   | one route  | transition starts       |
+| `RouteEffects.onStartAll`     | Listener   | any route  | transition starts       |
+| `RouteEffects.onAdd`          | Listener   | no routes  | route effects are added |
 
 #### RouteEffects.append
 
@@ -1287,8 +1288,6 @@ Adds middleware for all routes to the end of the stack.
 ##### Example
 
 ```ts
-const routes = createRoutes().set("root", "/");
-
 createRouteEffects().appendAll(delayTransition(5000));
 ```
 
@@ -1318,8 +1317,6 @@ Adds middleware for all routes to the beginning of the stack.
 ##### Example
 
 ```ts
-const routes = createRoutes().set("root", "/");
-
 createRouteEffects().prependAll(delayTransition(5000));
 ```
 
@@ -1348,8 +1345,6 @@ Adds a route listener that's called when a route transition for any route comple
 ##### Example
 
 ```ts
-const routes = createRoutes().set("root", "/");
-
 createRouteEffects().onCompleteAll(() => {
   console.log("A route transition completed.");
 });
@@ -1380,8 +1375,6 @@ Adds a route listener that's called when a route transition for any route ends.
 ##### Example
 
 ```ts
-const routes = createRoutes().set("root", "/");
-
 createRouteEffects().onEndAll(() => {
   console.log("A route transition ended.");
 });
@@ -1412,8 +1405,6 @@ Adds a route listener that's called when a route transition for any route exits.
 ##### Example
 
 ```ts
-const routes = createRoutes().set("root", "/");
-
 createRouteEffects().onExitAll(() => {
   console.log("A route transition exited.");
 });
@@ -1444,8 +1435,6 @@ Adds a route listener that's called when a route transition for any route fails.
 ##### Example
 
 ```ts
-const routes = createRoutes().set("root", "/");
-
 createRouteEffects().onFailureAll(() => {
   console.log("A route transition failed.");
 });
@@ -1476,8 +1465,6 @@ Adds a route listener that's called when a route transition for any route interr
 ##### Example
 
 ```ts
-const routes = createRoutes().set("root", "/");
-
 createRouteEffects().onInterruptAll(() => {
   console.log("A route transition was interrupted.");
 });
@@ -1508,10 +1495,24 @@ Adds a route listener that's called when a route transition for the given route 
 ##### Example
 
 ```ts
-const routes = createRoutes().set("root", "/");
-
 createRouteEffects().onStartAll(() => {
   console.log("A route transition started.");
+});
+```
+
+#### RouteEffects.onAdd
+
+> `RouteEffects.onAdd(routeListener): RouteEffects;`
+
+Adds a listener that's called when the route effects object
+is added to the router. The listener is only be called once
+in an application's lifecycle.
+
+##### Example
+
+```ts
+createRouteEffects().onAdd(() => {
+  console.log("Route effects were added to the route.");
 });
 ```
 

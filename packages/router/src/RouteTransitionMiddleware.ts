@@ -178,7 +178,18 @@ export function createRouteTransitionMiddleware<
         action.payload.location
       );
 
+      // For consistency, the middleware only invokes handlers from the
+      // routes object associated with the matched route.
+      //
+      // If this wasn't case, and the middleware invoked handlers for every
+      // added routes object, then the order of the invocations would be
+      // nondeterministic, because the order would be determined by when the
+      // routes object were added to the routes collection.
+      //
+      // Said order is nondeterministic, because the order is determined
+      // by which routes the end-user transitions to.
       const effectHandlers = await routes?._getHandlersByRouteID(
+        effectAPI,
         nextRoute?.id,
         createDynamicImportRegistrar(effectAPI)
       );
