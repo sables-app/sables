@@ -119,13 +119,13 @@ export function distinctEntityReducers<
   PluralName extends string = `${SingularName}s`
 >(
   adapter: Adapter,
-  singular: SingularName,
-  plural?: PluralName
+  name: SingularName | [SingularName, PluralName]
 ): EntityReducers.Reducers<
   ExtractEntityFromAdapter<Adapter>,
   SingularName,
   PluralName
 > {
+  const [singular, plural] = typeof name === "string" ? [name] : name;
   const singularName = capitalize(singular);
   const pluralName = capitalize(plural ?? `${singular}s`);
 
@@ -177,13 +177,13 @@ export function distinctEntitySelectors<
   PluralName extends string = `${SingularName}s`
 >(
   selectors: Selectors,
-  singular: SingularName,
-  plural?: PluralName
+  name: SingularName | [SingularName, PluralName]
 ): EntitySelectors.Selectors<
   ExtractEntityFromSelector<Selectors>,
   SingularName,
   PluralName
 > {
+  const [singular, plural] = typeof name === "string" ? [name] : name;
   const singularName = capitalize(singular);
   const pluralName = capitalize(plural ?? `${singular}s`);
 

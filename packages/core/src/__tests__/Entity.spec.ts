@@ -1,4 +1,4 @@
-import * as ReduxToolkit from "@reduxjs/toolkit";
+import type * as ReduxToolkit from "@reduxjs/toolkit";
 import * as vitest from "vitest";
 import {
   assertType,

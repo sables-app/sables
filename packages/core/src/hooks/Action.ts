@@ -1,4 +1,4 @@
-import { PayloadActionCreator } from "@reduxjs/toolkit";
+import type { PayloadActionCreator } from "@reduxjs/toolkit";
 import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 

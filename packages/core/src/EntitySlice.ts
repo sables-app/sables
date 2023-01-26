@@ -95,6 +95,16 @@ export type EntitySlice<
 > &
   EntitySliceMixin<Entity, Adjectives, SingularName, PluralName>;
 
+type NormalizeAdjectives<Adjectives> =
+  Adjectives extends NotableEntities.Adjectives
+    ? Adjectives
+    : // eslint-disable-next-line @typescript-eslint/ban-types
+      {};
+
+type ReduxToolkitReducer<State> = ReturnType<
+  typeof ReduxToolkit.createReducer<State>
+>;
+
 /**
  * Creates a slice to store a specific entity.
  *
@@ -113,10 +123,7 @@ export type EntitySlice<
  *
  * const booksSlice = createEntitySlice<Book>().setReducer(
  *   "book",
- *   "books",
- *   {
- *     best: (id: string) => id,
- *   }
+ *   { best: (id: string) => id }
  * );
  *
  * const { addBook, denoteBestBook } = booksSlice.actions;
@@ -151,25 +158,27 @@ export function createEntitySlice<Entity>(
       SingularName extends string,
       PluralName extends string = `${SingularName}s`
     >(
-      singularName: SingularName,
-      plural: PluralName,
-      adjectives?: Adjectives
+      name: SingularName | [SingularName, PluralName],
+      adjectives?: Adjectives,
+      createReducerExtension?: (
+        initialState: EntitySliceState<
+          Entity,
+          NormalizeAdjectives<Adjectives>,
+          SingularName
+        >
+      ) => ReduxToolkitReducer<
+        EntitySliceState<Entity, NormalizeAdjectives<Adjectives>, SingularName>
+      >
     ): EntitySlice<
       Entity,
-      Adjectives extends NotableEntities.Adjectives
-        ? Adjectives
-        : // eslint-disable-next-line @typescript-eslint/ban-types
-          {},
+      NormalizeAdjectives<Adjectives>,
       SingularName,
       PluralName
     > {
+      const [singularName, plural] = typeof name === "string" ? [name] : name;
       const pluralName = plural ?? (`${singularName}s` as const);
       const entityAdapter = createEntityAdapter<Entity>(adapterOptions);
-      const adapterReducers = distinctEntityReducers(
-        entityAdapter,
-        singularName,
-        pluralName
-      );
+      const adapterReducers = distinctEntityReducers(entityAdapter, name);
       const notableEntities = createNotableEntities(
         entityAdapter,
         singularName,
@@ -180,17 +189,28 @@ export function createEntitySlice<Entity>(
         ...notableEntities.getInitialState(),
       };
       const slice = createSlice(pluralName, initialState).setReducer(
-        (builder) =>
-          builder.addCases({
+        (builder) => {
+          const builderWithEntityCases = builder.addCases({
             ...getEntityReducers(entityAdapter),
             ...adapterReducers,
             ...notableEntities.reducers,
-          })
+          });
+
+          if (createReducerExtension) {
+            const reducerExtension = createReducerExtension(
+              initialState
+            ) as ReduxToolkit.CaseReducer;
+
+            return builderWithEntityCases.addDefaultCase(reducerExtension);
+          }
+
+          return builderWithEntityCases;
+        }
       );
       const adapterSelectors = entityAdapter.getSelectors(slice.selector);
       const selectors = {
         ...adapterSelectors,
-        ...distinctEntitySelectors(adapterSelectors, singularName, pluralName),
+        ...distinctEntitySelectors(adapterSelectors, name),
         ...notableEntities.getSelectors(slice.selector),
       };
       (slice as any).entityAdapter = entityAdapter;

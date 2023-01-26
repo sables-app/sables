@@ -1,7 +1,9 @@
 import * as vitest from "vitest";
 import { assertType, describe, expect, it, test } from "vitest";
 
-import { createEntitySlice } from "../EntitySlice.js";
+import { createReducer } from "../../deps.js";
+import { createEntitySlice, EntitySlice } from "../EntitySlice.js";
+import { createAction } from "../main.js";
 import { createTestStore } from "./utils.js";
 
 describe("EntitySlice", () => {
@@ -9,9 +11,12 @@ describe("EntitySlice", () => {
 
   describe("createEntitySlice", () => {
     it("creates a slice with entity logic", async () => {
-      const booksSlice = createEntitySlice<Book>().setReducer("book", "books", {
-        best: (id: string) => id,
-      });
+      const booksSlice = createEntitySlice<Book>().setReducer(
+        ["book", "books"],
+        {
+          best: (id: string) => id,
+        }
+      );
 
       // @ts-expect-error The action doesn't accept invalid values
       booksSlice.actions.addBook(true);
@@ -56,7 +61,10 @@ describe("EntitySlice", () => {
     });
 
     test("optional adjectives", async () => {
-      const booksSlice = createEntitySlice<Book>().setReducer("book", "books");
+      const booksSlice = createEntitySlice<Book>().setReducer([
+        "book",
+        "books",
+      ]);
 
       // @ts-expect-error The selector shouldn't exist
       const { selectBestBook } = booksSlice.selectors;
@@ -84,10 +92,50 @@ describe("EntitySlice", () => {
       assertType<Record<string, unknown>>({} as Foo2);
 
       // No type error should occur when a entity type created with `interface` is used.
-      createEntitySlice<Foo1>().setReducer("foo", "foos");
+      createEntitySlice<Foo1>().setReducer(["foo", "foos"]);
 
       // No type error should occur when a entity type created with `type` is used.
-      createEntitySlice<Foo2>().setReducer("foo", "foos");
+      createEntitySlice<Foo2>().setReducer(["foo", "foos"]);
+
+      // The correct plural name is derived when only the singular name is provided
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      assertType<EntitySlice<Foo2, {}, "foo", "foos">>(
+        createEntitySlice<Foo2>().setReducer("foo")
+      );
+    });
+
+    test("reducer extension", async () => {
+      interface Dog {
+        id: number;
+        name: string;
+      }
+
+      const adoptDog = createAction<Dog>("adoptDog");
+      const dogsSlice = createEntitySlice<Dog>().setReducer(
+        "dog",
+        undefined,
+        (initialState) =>
+          createReducer(initialState, (builder) =>
+            builder.addCase(adoptDog, (state, action) => {
+              dogsSlice.caseReducers.addDog(state, action);
+            })
+          )
+      );
+
+      adoptDog.dependsUpon(dogsSlice);
+
+      const { store } = createTestStore(vitest);
+
+      expect(store.getState()).toEqual(undefined);
+
+      store.dispatch(
+        adoptDog({
+          id: 1,
+          name: "Fei",
+        })
+      );
+
+      expect(store.getState()).toMatchSnapshot();
     });
   });
 });

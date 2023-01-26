@@ -135,3 +135,19 @@ exports[`EntitySlice > createEntitySlice > creates a slice with entity logic 3`]
   "name": "Goosebumps: Night of the Living Dummy",
 }
 `;
+
+exports[`EntitySlice > createEntitySlice > reducer extension 1`] = `
+{
+  "dogs": {
+    "entities": {
+      "1": {
+        "id": 1,
+        "name": "Fei",
+      },
+    },
+    "ids": [
+      1,
+    ],
+  },
+}
+`;
