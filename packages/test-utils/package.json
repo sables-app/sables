@@ -18,7 +18,7 @@
   "main": "./dist/main.js",
   "dependencies": {
     "@sables-app/scripts": "~0.1.0",
-    "@types/node": "^18.11.9",
+    "@types/node": "^18.11.18",
     "vitest": "~0.26.3"
   },
   "devDependencies": {
