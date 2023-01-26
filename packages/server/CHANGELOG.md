@@ -1,5 +1,12 @@
 # @sables/server
 
+## 0.2.15
+
+### Patch Changes
+
+- @sables/framework@0.15.0
+- @sables/ssr@0.1.15
+
 ## 0.2.14
 
 ### Patch Changes

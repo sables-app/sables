@@ -1,5 +1,14 @@
 # @sables/framework
 
+## 0.15.0
+
+### Patch Changes
+
+- Updated dependencies [c225db2]
+- Updated dependencies [170b5ec]
+  - @sables/core@0.15.0
+  - @sables/router@0.15.0
+
 ## 0.14.0
 
 ### Patch Changes

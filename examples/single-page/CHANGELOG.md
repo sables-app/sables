@@ -1,5 +1,11 @@
 # @sables-app/boilerplate-single-page
 
+## 0.2.7
+
+### Patch Changes
+
+- @sables/framework@0.15.0
+
 ## 0.2.6
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @sables/router
 
+## 0.15.0
+
+### Minor Changes
+
+- 170b5ec: Add `RouteEffects.onAdd` method.
+
+### Patch Changes
+
+- Updated dependencies [c225db2]
+  - @sables/core@0.15.0
+
 ## 0.14.0
 
 ### Patch Changes
