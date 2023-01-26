@@ -403,7 +403,7 @@ export function combineHandlers<EffectAPI extends DefaultEffectAPI>(
 ): RouteEffectHandlers<EffectAPI> {
   // prettier-ignore
   return {
-    middleware:  chainMiddleware(    ...handlersCollection.map(({ middleware })  => middleware)),
+    middleware:  chainMiddleware(...handlersCollection.map(({ middleware })   => middleware)),
     onComplete:  combineListeners(...handlersCollection.map(({ onComplete })  => onComplete)),
     onEnd:       combineListeners(...handlersCollection.map(({ onEnd })       => onEnd)),
     onExit:      combineListeners(...handlersCollection.map(({ onExit })      => onExit)),

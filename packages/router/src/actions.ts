@@ -169,6 +169,16 @@ export const ensureLocation = createAction<
 >("sablesRouter/ensureLocation") as EnsureLocation;
 
 /**
+ * Provided to Route Effects "onAdd" listeners.
+ *
+ * @internal
+ */
+export const initRouteEffects = createAction<
+  void,
+  "sablesRouter/initRouteEffects"
+>("sablesRouter/initRouteEffects");
+
+/**
  * Used to add router slices during router initialization.
  *
  * @internal

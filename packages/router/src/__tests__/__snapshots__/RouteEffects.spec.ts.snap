@@ -3,6 +3,7 @@
 exports[`RoutesEffects > createRoutesEffects > appending route middleware 1`] = `
 {
   "_clone": [Function],
+  "_getAddHandler": [Function],
   "_getHandlersByRouteID": [Function],
   "append": [Function],
   "appendAll": [Function],
@@ -10,6 +11,7 @@ exports[`RoutesEffects > createRoutesEffects > appending route middleware 1`] = 
     "ProfileMiddleware": [Function],
     "RootMiddleware": [Function],
   },
+  "onAdd": [Function],
   "onComplete": [Function],
   "onCompleteAll": [Function],
   "onEnd": [Function],

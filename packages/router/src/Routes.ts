@@ -1,13 +1,13 @@
 import {
   AnyPayloadAction,
   DefaultEffectAPI,
-  PayloadAction,
   SYMBOL_ROUTES_META,
 } from "@sables/core";
 import { capitalize } from "@sables/utils";
 
 import { createPath } from "history";
 
+import { initRouteEffects } from "./actions.js";
 import {
   addRoutes as addRoutesEffect,
   AddRoutesParams,
@@ -116,6 +116,7 @@ export interface RoutesMethods<
    * @internal
    */
   _getHandlersByRouteID(
+    effectAPI: EffectAPI,
     id: RouteID | undefined,
     registerDynamicImport: RegisterDynamicImportFn
   ): Promise<RouteEffectHandlers<EffectAPI>>;
@@ -341,7 +342,8 @@ export type Routes<
   Info extends RouteReferenceInfo<string, string> = never
 > = Omit<UntouchedRoutes<EffectAPI, Info>, LockedMethods>;
 
-const EMPTY_ROUTE_EFFECT_HANDLERS: RouteEffectHandlers<any> = {
+/** @internal */
+export const EMPTY_ROUTE_EFFECT_HANDLERS: Readonly<RouteEffectHandlers<any>> = {
   middleware: async () => undefined,
   onComplete: async () => undefined,
   onEnd: async () => undefined,
@@ -419,7 +421,7 @@ export function createRoutes<
         }
       }
     },
-    async _getHandlersByRouteID(id, registerDynamicImport) {
+    async _getHandlersByRouteID(effectAPI, id, registerDynamicImport) {
       if (!id) {
         return EMPTY_ROUTE_EFFECT_HANDLERS;
       }
@@ -427,6 +429,7 @@ export function createRoutes<
       const { internalEffects, externalEffectsFn } = routes[SYMBOL_ROUTES_META];
       const internalHandlers = await internalEffects._getHandlersByRouteID(id);
       const externalEffects = await resolveExternalEffects(
+        effectAPI,
         externalEffectsFn,
         registerDynamicImport
       );
@@ -534,11 +537,19 @@ export function createRoutes<
     return nextRoutes;
   }
 
+  let resolvedExternalEffects: RouteEffects<EffectAPI> | undefined;
+
   async function resolveExternalEffects(
+    effectAPI: EffectAPI,
     externalEffectsFn: ExternalEffectsFn<EffectAPI> | undefined,
     registerDynamicImport: RegisterDynamicImportFn
   ): Promise<RouteEffects<EffectAPI> | undefined> {
-    if (!externalEffectsFn) return undefined;
+    if (resolvedExternalEffects) {
+      return resolvedExternalEffects;
+    }
+    if (!externalEffectsFn) {
+      return undefined;
+    }
 
     const result = externalEffectsFn();
     const routeEffects =
@@ -554,7 +565,17 @@ export function createRoutes<
       registerDynamicImport(externalEffectsFn);
     }
 
-    return routeEffects;
+    {
+      const addHandler = await routeEffects._getAddHandler();
+      const action = initRouteEffects();
+
+      effectAPI.dispatch(action);
+      queueMicrotask(() => {
+        addHandler(action, effectAPI);
+      });
+    }
+
+    return (resolvedExternalEffects = routeEffects);
   }
 
   return routes;

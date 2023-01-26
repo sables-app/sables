@@ -6,10 +6,11 @@ import {
 } from "@sables/core";
 import { capitalize } from "@sables/utils";
 
-import { ALL_ROUTES_KEY, hookNames } from "./constants.js";
+import { ALL_ROUTES_KEY, hookNames, NO_ROUTES_KEY } from "./constants.js";
 import { chainMiddleware, combineListeners } from "./effects.js";
 import {
   EndTransitionAction,
+  InitRouteEffectsAction,
   RouteEffectHandlers,
   RouteEffectHookName,
   RouteID,
@@ -19,7 +20,10 @@ import {
 } from "./types.js";
 
 /** Actions provided to route effect handlers. */
-type RouteEffectAction = StartTransitionAction | EndTransitionAction;
+type RouteEffectAction =
+  | EndTransitionAction
+  | InitRouteEffectsAction
+  | StartTransitionAction;
 
 type RouteEffectsMeta<EffectAPI extends DefaultEffectAPI> = {
   middleware: Set<{
@@ -135,9 +139,6 @@ export interface RouteEffectsMethods<
    *
    * @example
    *
-   * const routes = createRoutes()
-   *   .set("root", "/");
-   *
    * createRouteEffects()
    *   .prependAll(delayTransition(5000));
    *
@@ -154,6 +155,23 @@ export interface RouteEffectsMethods<
       >
     | Handlers
   >;
+
+  /**
+   * Adds a listener that's called when the route effects object
+   * is added to the router. The listener is only be called once
+   * in an application's lifecycle.
+   *
+   * @example
+   *
+   * createRouteEffects().onAdd(() => {
+   *   console.log("Route effects were added to the route.");
+   * });
+   *
+   * @public
+   */
+  onAdd(
+    effect: RouteListener<InitRouteEffectsAction, EffectAPI>
+  ): UntouchedRouteEffects<EffectAPI, Handlers>;
 
   /**
    * Adds a route listener that's called when a route transition
@@ -181,9 +199,6 @@ export interface RouteEffectsMethods<
    * for any route completes.
    *
    * @example
-   *
-   * const routes = createRoutes()
-   *   .set("root", "/");
    *
    * createRouteEffects()
    *   .onCompleteAll(() => {
@@ -223,9 +238,6 @@ export interface RouteEffectsMethods<
    *
    * @example
    *
-   * const routes = createRoutes()
-   *   .set("root", "/");
-   *
    * createRouteEffects()
    *   .onEndAll(() => {
    *     console.log("A route transition ended.");
@@ -263,9 +275,6 @@ export interface RouteEffectsMethods<
    * for any route exits.
    *
    * @example
-   *
-   * const routes = createRoutes()
-   *   .set("root", "/");
    *
    * createRouteEffects()
    *   .onExitAll(() => {
@@ -305,9 +314,6 @@ export interface RouteEffectsMethods<
    *
    * @example
    *
-   * const routes = createRoutes()
-   *   .set("root", "/");
-   *
    * createRouteEffects()
    *   .onFailureAll(() => {
    *     console.log("A route transition failed.");
@@ -346,9 +352,6 @@ export interface RouteEffectsMethods<
    *
    * @example
    *
-   * const routes = createRoutes()
-   *   .set("root", "/");
-   *
    * createRouteEffects()
    *   .onInterruptAll(() => {
    *     console.log("A route transition was interrupted.");
@@ -386,9 +389,6 @@ export interface RouteEffectsMethods<
    * for any route starts.
    *
    * @example
-   *
-   * const routes = createRoutes()
-   *   .set("root", "/");
    *
    * createRouteEffects()
    *   .onStartAll(() => {
@@ -464,7 +464,13 @@ type RouteEffectsHandlers<
 
 type ReadonlyRouteEffectsMethods<EffectAPI extends DefaultEffectAPI> = {
   /**
-   * Retrieves a map of handlers to invoke effects matching
+   * Creates a handler to invoke "ADD" listeners.
+   *
+   * @internal
+   */
+  _getAddHandler(): Promise<RouteListener<InitRouteEffectsAction, EffectAPI>>;
+  /**
+   * Creates a map of handlers to invoke effects matching
    * the given route ID.
    *
    * @privateRemarks To ensure no parameters are accidentally left out,
@@ -583,7 +589,7 @@ export function createRouteEffects<
 
   function getRouteListenerHandler(
     routeHookName: RouteEffectHookName,
-    routeID?: RouteID
+    matchingRouteId?: RouteID
   ) {
     const handlerListeners: RouteListenerReference<string, EffectAPI, any>[] =
       [];
@@ -592,11 +598,13 @@ export function createRouteEffects<
     ];
 
     for (const { listenerReference } of currentListeners) {
-      const { id, eventName: hookName } = listenerReference;
+      const { id: listenerRouteId, eventName: hookName } = listenerReference;
 
       if (
         hookName === routeHookName &&
-        (id === ALL_ROUTES_KEY || id === routeID)
+        (listenerRouteId === NO_ROUTES_KEY ||
+          listenerRouteId === ALL_ROUTES_KEY ||
+          listenerRouteId === matchingRouteId)
       ) {
         handlerListeners.push(listenerReference);
       }
@@ -685,6 +693,9 @@ export function createRouteEffects<
         effect
       );
     },
+    onAdd(listener) {
+      return addListener(NO_ROUTES_KEY, hookNames.ADD, listener);
+    },
     onComplete(routeInput, listener) {
       return addListener(routeInput, hookNames.COMPLETE, listener);
     },
@@ -720,6 +731,9 @@ export function createRouteEffects<
     },
     onStartAll(listener) {
       return addListener(ALL_ROUTES_KEY, hookNames.START, listener);
+    },
+    async _getAddHandler() {
+      return getRouteListenerHandler(hookNames.ADD);
     },
     async _getHandlersByRouteID(id) {
       return {

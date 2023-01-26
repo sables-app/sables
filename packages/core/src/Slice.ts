@@ -441,7 +441,6 @@ type DraftSlice<State, Name extends string = string> = {
    *
    * @public
    */
-  // TODO - Rename to `reducer`
   setReducer<
     B extends SliceReducerBuilderBase<
       State,
