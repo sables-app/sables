@@ -166,7 +166,7 @@ dogsSlice.selector(state).puppyCount;
 
 ### createEntitySlice
 
-> `createEntitySlice(adapterOptions?).setReducer(singular, plural, adjectives?);`
+> `createEntitySlice(adapterOptions?).setReducer(singular | [singular, plural], adjectives?, defaultCaseReducer?);`
 
 Creates a slice to store a specific entity.
 
@@ -187,10 +187,7 @@ type Book = { id: string; name: string };
 
 const booksSlice = createEntitySlice<Book>().setReducer(
   "book",
-  "books",
-  {
-    best: (id: string) => id,
-  }
+  { best: (id: string) => id }
 );
 
 const { addBook, denoteBestBook } = booksSlice.actions;

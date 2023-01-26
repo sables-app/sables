@@ -1,4 +1,4 @@
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { firstValueFrom, take, toArray } from "rxjs";
 import * as vitest from "vitest";
 import { assertType, beforeEach, describe, expect, it, test } from "vitest";

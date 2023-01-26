@@ -2,6 +2,7 @@ export {
   combineReducers,
   configureStore,
   createEntityAdapter,
+  createReducer,
   createSelector as createSelectorReduxToolkit,
   createSlice as createSliceReduxToolkit,
   Dictionary,

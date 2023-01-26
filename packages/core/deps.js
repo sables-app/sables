@@ -8,6 +8,7 @@ const {
   combineReducers,
   configureStore,
   createEntityAdapter,
+  createReducer,
   createSelector,
   createSlice,
 } = ReduxToolkit;
@@ -16,6 +17,7 @@ export {
   combineReducers,
   configureStore,
   createEntityAdapter,
+  createReducer,
   createSelector as createSelectorReduxToolkit,
   createSlice as createSliceReduxToolkit,
 };

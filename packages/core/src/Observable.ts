@@ -28,7 +28,7 @@ import {
  *
  * @public
  */
-// Rename this to `defineObservableCreator`?
+// TODO - Rename this to `defineObserver`
 export function createObservable<
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
   T = unknown

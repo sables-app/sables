@@ -218,7 +218,8 @@ type CaseReducersFromSliceReducerBuilder<B> =
   // prettier-ignore
   B extends SliceReducerBuilder<any, infer C, any> ? C : never;
 
-interface SliceReducerBuilderBase<
+/** @internal */
+export interface SliceReducerBuilderBase<
   State,
   CaseReducers extends ReduxToolkit.SliceCaseReducers<State>,
   Name extends string
@@ -227,7 +228,8 @@ interface SliceReducerBuilderBase<
   _assemble(): EnhancedSlice<ReduxToolkit.Slice<State, CaseReducers, Name>>;
 }
 
-interface SliceReducerBuilder<
+/** @internal */
+export interface SliceReducerBuilder<
   State,
   CaseReducers extends ReduxToolkit.SliceCaseReducers<State>,
   Name extends string
