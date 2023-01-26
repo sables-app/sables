@@ -1,5 +1,12 @@
 # @sables-app/boilerplate-router-only
 
+## 0.2.7
+
+### Patch Changes
+
+- Updated dependencies [170b5ec]
+  - @sables/router@0.15.0
+
 ## 0.2.6
 
 ### Patch Changes

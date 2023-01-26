@@ -1,5 +1,11 @@
 # @sables/ssr
 
+## 0.1.15
+
+### Patch Changes
+
+- @sables/framework@0.15.0
+
 ## 0.1.14
 
 ### Patch Changes

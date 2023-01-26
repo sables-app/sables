@@ -1,5 +1,11 @@
 # @sables/core
 
+## 0.15.0
+
+### Minor Changes
+
+- c225db2: Update `createEntitySlice` to optionally accept a default case reducer as the third parameter.
+
 ## 0.14.0
 
 ### Minor Changes
