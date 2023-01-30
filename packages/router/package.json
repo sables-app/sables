@@ -29,7 +29,7 @@
     "nanoid": "^4.0.0",
     "path-parser": "^6.1.0",
     "react-redux": "^8.0.5",
-    "redux": "^4.2.0",
+    "redux": "^4.2.1",
     "redux-first-history": "^5.1.1",
     "rxjs": "^7.8.0"
   },
