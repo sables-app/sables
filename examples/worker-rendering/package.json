@@ -23,7 +23,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20221111.1",
+    "@cloudflare/workers-types": "^4.20230115.0",
     "sables": "~0.1.6",
     "vite": "^4.0.4",
     "wrangler": "^2.1.15"
