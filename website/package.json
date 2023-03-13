@@ -61,7 +61,7 @@
     "string-template": "^1.0.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20221111.1",
+    "@cloudflare/workers-types": "^4.20230307.0",
     "@mdx-js/react": "^2.1.5",
     "@mdx-js/rollup": "^2.1.5",
     "@sables-app/scripts": "~0.1.2",
