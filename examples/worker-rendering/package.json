@@ -17,7 +17,7 @@
     "@sables/framework": "~0.15.0",
     "@sables/server": "~0.2.15",
     "@sables/ssr": "~0.1.15",
-    "@types/react": "^18.0.24",
+    "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
