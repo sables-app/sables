@@ -1,5 +1,11 @@
 # @sables-app/scripts
 
+## 0.1.3
+
+### Patch Changes
+
+- 25b0c64: chore(deps): Bump eslint-plugin-react from 7.32.1 to 7.32.2
+
 ## 0.1.2
 
 ### Patch Changes

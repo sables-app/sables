@@ -1,6 +1,6 @@
 {
   "name": "@sables/utils",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Common utilities for Sables.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
@@ -26,7 +26,7 @@
     "redux": "^4.2.1"
   },
   "devDependencies": {
-    "@sables-app/scripts": "~0.1.0",
+    "@sables-app/scripts": "~0.1.3",
     "@types/node": "^18.11.18",
     "typescript": "^4.9.3"
   },

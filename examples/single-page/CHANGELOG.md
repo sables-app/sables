@@ -1,5 +1,14 @@
 # @sables-app/boilerplate-single-page
 
+## 0.2.8
+
+### Patch Changes
+
+- 388589c: chore(deps): Bump @types/react from 18.0.26 to 18.0.35
+- Updated dependencies [388589c]
+- Updated dependencies [fc9cb15]
+  - @sables/framework@0.15.1
+
 ## 0.2.7
 
 ### Patch Changes
