@@ -1,5 +1,15 @@
 # @sables-app/boilerplate-router-only
 
+## 0.2.8
+
+### Patch Changes
+
+- 388589c: chore(deps): Bump @types/react from 18.0.26 to 18.0.35
+- fc9cb15: chore(deps): Bump redux from 4.2.0 to 4.2.1
+- Updated dependencies [388589c]
+- Updated dependencies [fc9cb15]
+  - @sables/router@0.15.1
+
 ## 0.2.7
 
 ### Patch Changes

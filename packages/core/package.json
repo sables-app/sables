@@ -1,6 +1,6 @@
 {
   "name": "@sables/core",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "The foundation of Sables, focusing on Redux-based state management.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
@@ -19,7 +19,7 @@
   "main": "./dist/main.js",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.0",
-    "@sables/utils": "~0.1.0",
+    "@sables/utils": "~0.1.1",
     "nanoid": "^4.0.0",
     "react-redux": "^8.0.5",
     "redux": "^4.2.1",

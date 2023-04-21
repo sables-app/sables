@@ -1,5 +1,16 @@
 # @sables-app/boilerplate-node-rendering
 
+## 0.2.8
+
+### Patch Changes
+
+- 388589c: chore(deps): Bump @types/react from 18.0.26 to 18.0.35
+- Updated dependencies [388589c]
+- Updated dependencies [fc9cb15]
+  - @sables/framework@0.15.1
+  - @sables/server@0.2.16
+  - @sables/ssr@0.1.16
+
 ## 0.2.7
 
 ### Patch Changes

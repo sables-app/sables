@@ -1,5 +1,18 @@
 # @sables-app/website
 
+## 0.2.15
+
+### Patch Changes
+
+- 388589c: chore(deps): Bump @types/react from 18.0.26 to 18.0.35
+- 9cc12ea: chore(deps): Bump @chakra-ui/react from 2.4.4 to 2.5.5
+- c543c34: chore(deps-dev): Bump @cloudflare/workers-types from 4.20221111.1 to 4.20230404.0
+- Updated dependencies [388589c]
+- Updated dependencies [fc9cb15]
+  - @sables/framework@0.15.1
+  - @sables/server@0.2.16
+  - @sables/ssr@0.1.16
+
 ## 0.2.14
 
 ### Patch Changes
