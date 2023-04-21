@@ -19,7 +19,7 @@
     "@sables/ssr": "~0.1.15",
     "@types/connect": "^3.4.35",
     "@types/errorhandler": "^1.5.0",
-    "@types/react": "^18.0.24",
+    "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.9",
     "connect": "^3.7.0",
     "errorhandler": "^1.5.1",
