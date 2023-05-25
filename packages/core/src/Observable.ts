@@ -127,15 +127,15 @@ function createSideEffectInstance<
   actionCreators: ActionCreators,
   observableCreator: ObservableCreator<EffectAPI, void>
 ): SideEffect<
-  typeof actionCreators["start"],
-  typeof actionCreators["end"],
+  (typeof actionCreators)["start"],
+  (typeof actionCreators)["end"],
   EffectAPI
 > {
   actionCreators.dependsUpon(observableCreator);
 
   function sideEffect(
     effectAPI: EffectAPI,
-    payload: ReturnType<typeof actionCreators["start"]>["payload"]
+    payload: ReturnType<(typeof actionCreators)["start"]>["payload"]
   ) {
     return callSideEffect(effectAPI, actionCreators, payload);
   }
@@ -208,10 +208,10 @@ export function bindSideEffect<T extends SideEffectActions<any, any>>({
   dispatch: Redux.Dispatch;
   actions: T;
   onAwaitingChange?: (isAwaiting: boolean) => void;
-  onEndAction?: (endAction: ReturnType<typeof actions.end>) => void;
+  onEndAction?: (endAction: ReturnType<T["end"]>) => void;
 }) {
-  type StartAction = ReturnType<typeof actions.start>;
-  type EndAction = ReturnType<typeof actions.end>;
+  type StartAction = ReturnType<T["start"]>;
+  type EndAction = ReturnType<T["end"]>;
   type StartPayload = StartAction["payload"];
 
   const startActionRef = createMutableRef<StartAction>();
@@ -219,7 +219,7 @@ export function bindSideEffect<T extends SideEffectActions<any, any>>({
   const dispatchStartAction = (payload: StartPayload) => {
     if (startActionRef.current) return;
 
-    const action: StartAction = actions.start(payload);
+    const action = actions.start(payload) as StartAction;
 
     startActionRef.current = action;
     onAwaitingChange?.(true);
