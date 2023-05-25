@@ -1,5 +1,11 @@
 # @sables-app/scripts
 
+## 0.1.4
+
+### Patch Changes
+
+- 5460928: Publish dev packages to public registry install of GitHub Packages
+
 ## 0.1.3
 
 ### Patch Changes
