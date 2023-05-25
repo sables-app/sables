@@ -1,5 +1,13 @@
 # @sables-app/test-utils
 
+## 0.1.2
+
+### Patch Changes
+
+- 5460928: Publish dev packages to public registry install of GitHub Packages
+- Updated dependencies [5460928]
+  - @sables-app/scripts@0.1.4
+
 ## 0.1.1
 
 ### Patch Changes
