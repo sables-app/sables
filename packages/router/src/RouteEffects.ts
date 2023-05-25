@@ -618,7 +618,7 @@ export function createRouteEffects<
     PREPEND: "prepend",
   } as const;
 
-  type AddEffectMode = typeof addEffectModes[keyof typeof addEffectModes];
+  type AddEffectMode = (typeof addEffectModes)[keyof typeof addEffectModes];
 
   function _clone(
     mutateRouteEffectMeta?: (

@@ -13,7 +13,7 @@ describe("Action", () => {
   describe("useSideEffect", () => {
     test("store integration", async () => {
       const sendRequest = createSideEffect(
-        createAction("sendRequest/start"),
+        createAction<Date>("sendRequest/start"),
         createAction("sendRequest/end"),
         async () => {
           return;
@@ -23,7 +23,9 @@ describe("Action", () => {
       function MyComponent() {
         const { isAwaiting, start } = useSideEffect(sendRequest);
 
-        return <button disabled={isAwaiting} onClick={start} />;
+        return (
+          <button disabled={isAwaiting} onClick={() => start(new Date())} />
+        );
       }
 
       const { store, actions$, effectAPIRef } = createTestStore(vitest);

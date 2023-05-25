@@ -11,9 +11,9 @@ export const headingTags = ["h1", "h2", "h3", "h4", "h5", "h6"] as const;
  */
 export const renderedHeadingTags = ["h1", "h2", "h3", "h4"] as const;
 
-export type MarkdownTag = typeof MARKDOWN_TAGS[number];
-export type HeadingTag = typeof headingTags[number];
-export type RenderedHeadingTag = typeof renderedHeadingTags[number];
+export type MarkdownTag = (typeof MARKDOWN_TAGS)[number];
+export type HeadingTag = (typeof headingTags)[number];
+export type RenderedHeadingTag = (typeof renderedHeadingTags)[number];
 
 export function isHeadingTag(
   propertyName: string | symbol

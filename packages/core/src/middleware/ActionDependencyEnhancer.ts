@@ -34,7 +34,7 @@ const insertSlicesModes = {
 } as const;
 
 type InsertSlicesMode =
-  typeof insertSlicesModes[keyof typeof insertSlicesModes];
+  (typeof insertSlicesModes)[keyof typeof insertSlicesModes];
 
 /** @internal */
 export type SubscribeToFn<

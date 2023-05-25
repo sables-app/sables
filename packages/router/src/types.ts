@@ -94,7 +94,7 @@ export type DynamicImportFn<T = unknown> = () => Promise<T>;
 export type RegisterDynamicImportFn = (dynamicImport: DynamicImportFn) => void;
 
 type TransitionStatus =
-  typeof transitionStatuses[keyof typeof transitionStatuses];
+  (typeof transitionStatuses)[keyof typeof transitionStatuses];
 
 /** @internal */
 export type SSRTransitionResult = {
@@ -168,7 +168,7 @@ export interface RouteListener<
  * @public
  */
 export type EndRouteTransitionReason =
-  typeof endRouteTransitionReasons[keyof typeof endRouteTransitionReasons];
+  (typeof endRouteTransitionReasons)[keyof typeof endRouteTransitionReasons];
 
 /** @internal */
 export type StartRouteTransitionActionPayload = {
@@ -412,7 +412,7 @@ export type RouteLink = {
 };
 
 /** @internal */
-export type RouteEffectHookName = typeof hookNames[keyof typeof hookNames];
+export type RouteEffectHookName = (typeof hookNames)[keyof typeof hookNames];
 
 /** @internal */
 export type RouteEffectHandlers<EffectAPI extends DefaultEffectAPI> = {

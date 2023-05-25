@@ -150,7 +150,7 @@ export function useSideEffect<T extends SideEffectActions<any, any>>(
   const actions = isActions(input) ? input : input.actions;
   const [isAwaiting, onAwaitingChange] = useState(false);
   type StartPayload = PayloadAction<
-    ReturnType<typeof actions["end"]>["payload"]
+    ReturnType<(typeof actions)["end"]>["payload"]
   >;
   const [latestEndAction, onEndAction] = useState<StartPayload>();
   const { dispatchStartAction, observableCreator } = useMemo(

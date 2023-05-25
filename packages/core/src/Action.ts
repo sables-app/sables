@@ -224,7 +224,7 @@ export function extendAction<AC extends AnyEnhancedStandardActionCreator>(
   actionCreator: AC,
   actionTransformer: (enhancedAction: ReturnType<AC>) => ReturnType<AC>
 ): AC {
-  type Type = typeof actionCreator["type"];
+  type Type = (typeof actionCreator)["type"];
   type Params = Parameters<typeof actionCreator>;
   type Action = ReturnType<AC>;
 

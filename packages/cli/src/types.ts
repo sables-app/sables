@@ -8,7 +8,7 @@ import type { serverTargets } from "./utils.js";
  *
  * @public
  */
-export type ServerTarget = typeof serverTargets[keyof typeof serverTargets];
+export type ServerTarget = (typeof serverTargets)[keyof typeof serverTargets];
 
 /**
  * Configuration to build a Sables client application
