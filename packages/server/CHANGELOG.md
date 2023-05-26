@@ -1,5 +1,11 @@
 # @sables/server
 
+## 0.2.17
+
+### Patch Changes
+
+- b0febb7: chore(deps): Bump @types/serve-static from 1.15.0 to 1.15.1
+
 ## 0.2.16
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sables-app/website
 
+## 0.2.16
+
+### Patch Changes
+
+- 3280687: chore(deps): Bump @emotion/css from 11.10.5 to 11.11.0
+- Updated dependencies [b0febb7]
+  - @sables/server@0.2.17
+
 ## 0.2.15
 
 ### Patch Changes

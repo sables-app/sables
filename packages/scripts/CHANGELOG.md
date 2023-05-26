@@ -1,5 +1,11 @@
 # @sables-app/scripts
 
+## 0.1.5
+
+### Patch Changes
+
+- 1191f44: chore(deps): Bump prettier from 2.8.3 to 2.8.8
+
 ## 0.1.4
 
 ### Patch Changes
