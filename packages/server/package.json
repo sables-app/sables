@@ -25,7 +25,7 @@
     "@sables/ssr": "~0.1.16",
     "@types/connect": "^3.4.35",
     "@types/jsesc": "^3.0.1",
-    "@types/serve-static": "^1.15.0",
+    "@types/serve-static": "^1.15.1",
     "connect": "^3.7.0",
     "jsesc": "^3.0.2",
     "serve-static": "^1.15.0",
