@@ -18,7 +18,7 @@
     "node": ">=18"
   },
   "peerDependencies": {
-    "@vitejs/plugin-react-swc": "^3.0.1",
+    "@vitejs/plugin-react-swc": "^3.3.1",
     "vite": "^4.0.4"
   },
   "dependencies": {
@@ -28,7 +28,7 @@
     "@sables/vite-plugin-import-tags": "~0.1.0",
     "@types/prompts": "^2.4.2",
     "@types/yargs": "^17.0.18",
-    "@vitejs/plugin-react-swc": "^3.0.1",
+    "@vitejs/plugin-react-swc": "^3.3.1",
     "chalk": "^4.1.2",
     "execa": "^5.1.1",
     "fs-jetpack": "^5.1.0",

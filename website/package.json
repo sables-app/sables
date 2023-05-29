@@ -65,7 +65,7 @@
     "@mdx-js/react": "^2.1.5",
     "@mdx-js/rollup": "^2.1.5",
     "@sables-app/scripts": "~0.1.5",
-    "@vitejs/plugin-react-swc": "^3.0.1",
+    "@vitejs/plugin-react-swc": "^3.3.1",
     "aws-sdk": "^2.1290.0",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^7.6.0",
