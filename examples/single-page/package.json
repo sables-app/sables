@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "sables": "~0.1.6",
-    "vite": "^4.0.4"
+    "vite": "^4.4.7"
   },
   "exports": {
     "./index.html": "./dist/client/index.html",
