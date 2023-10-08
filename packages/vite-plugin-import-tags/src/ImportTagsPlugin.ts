@@ -1,8 +1,9 @@
-import { createFilter, FilterPattern } from "@rollup/pluginutils";
 import crypto from "crypto";
+import path from "path";
+
+import { createFilter, FilterPattern } from "@rollup/pluginutils";
 import fs from "fs-jetpack";
 import MagicString from "magic-string";
-import path from "path";
 import type { RenderChunkHook, TransformHook } from "rollup";
 import type { ConfigEnv, UserConfig } from "vite";
 

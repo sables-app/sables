@@ -1,12 +1,12 @@
 import { Manager, ServerRequestStateRef } from "@sables/framework";
 import {
   EndRouteTransitionReason,
+  endRouteTransitionReasons,
   reportTransitionResult,
   selectCurrentRoute,
   SSRTransitionResult,
   transitionRoute,
 } from "@sables/framework/router";
-import { endRouteTransitionReasons } from "@sables/framework/router";
 
 import { filter, firstValueFrom, map, merge, timer } from "rxjs";
 

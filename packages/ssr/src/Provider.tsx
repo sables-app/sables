@@ -1,7 +1,7 @@
 import {
   ConfigureManagerFn,
-  Manager,
   Provider as FrameworkProvider,
+  Manager,
   useConfigureManager,
   useServerRequestStateRef,
 } from "@sables/framework";

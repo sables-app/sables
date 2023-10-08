@@ -4,9 +4,9 @@ import { createMutableRef } from "@sables/utils";
 import type * as ReduxToolkit from "@reduxjs/toolkit";
 import {
   ComponentType,
-  lazy as reactLazy,
   memo,
   ReactElement,
+  lazy as reactLazy,
   ReactNode,
   Suspense,
 } from "react";
