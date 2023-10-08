@@ -1,6 +1,6 @@
 {
   "name": "@sables-app/test-utils",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Sables test utilities.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
@@ -14,7 +14,7 @@
   "type": "module",
   "main": "./dist/main.js",
   "dependencies": {
-    "@sables-app/scripts": "~0.1.4",
+    "@sables-app/scripts": "~1.0.0",
     "@types/node": "^18.11.18",
     "vitest": "~0.26.3"
   },
