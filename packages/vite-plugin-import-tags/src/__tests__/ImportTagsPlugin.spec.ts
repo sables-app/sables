@@ -1,14 +1,14 @@
+import "./setupMocks.js";
+
 import { silenceLogs } from "@sables-app/test-utils";
 
 import path from "node:path";
 
 import fs from "fs-jetpack";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import * as vitest from "vitest";
 
 import { createImportTagsPlugin } from "../ImportTagsPlugin.js";
-
-vi.mock("fs-jetpack");
 
 const codeFixture = `
 import "moduleA";
