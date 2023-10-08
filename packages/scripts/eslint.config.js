@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  plugins: ["prettier", "simple-import-sort"],
+  plugins: ["prettier"],
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -15,22 +15,5 @@ module.exports = {
     "react/jsx-uses-react": "off",
     // Not necessary when using JSX pragma
     "react/react-in-jsx-scope": "off",
-    "simple-import-sort/imports": [
-      2,
-      {
-        groups: [
-          // Side effect imports
-          ["^\\u0000"],
-          // Organization packages
-          ["^@sables.+$"],
-          // Node packages
-          ["^node:.+$"],
-          // External packages
-          ["^@?\\w.+$"],
-          // Relative imports
-          ["^\\..+$"],
-        ],
-      },
-    ],
   },
 };
