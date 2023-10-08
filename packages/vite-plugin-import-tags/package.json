@@ -37,8 +37,8 @@
     "magic-string": "^0.27.0"
   },
   "devDependencies": {
-    "@sables-app/scripts": "~0.1.0",
-    "@sables-app/test-utils": "~0.1.0",
+    "@sables-app/scripts": "~1.0.0",
+    "@sables-app/test-utils": "~0.1.3",
     "@types/node": "^18.11.18",
     "typescript": "^4.9.3"
   },

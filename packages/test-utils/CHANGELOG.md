@@ -1,5 +1,12 @@
 # @sables-app/test-utils
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [95bb928]
+  - @sables-app/scripts@1.0.0
+
 ## 0.1.2
 
 ### Patch Changes
