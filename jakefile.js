@@ -77,23 +77,24 @@ namespace("build", () => {
   });
 });
 
-task("publish", ["publish:packages", "publish:website"]);
+task("publish", ["publish:packages"]);
 
 namespace("publish", () => {
   taskExec("packages", "npx changeset publish");
+});
 
-  task("website", ["publish:website:assets", "publish:website:worker"], {
+task("deploy", ["deploy:website"]);
+
+namespace("deploy", () => {
+  task("website", ["deploy:website:assets", "deploy:website:worker"], {
     concurrency: 2,
   });
 
   namespace("website", () => {
-    taskExec(
-      "assets",
-      "npm run publish:assets --workspace=@sables-app/website"
-    );
+    taskExec("assets", "npm run deploy:assets --workspace=@sables-app/website");
     taskExec(
       "worker",
-      "npm run publish:worker --workspace=@sables-app/website -- --env=production"
+      "npm run deploy:worker --workspace=@sables-app/website -- --env=production"
     );
   });
 });
@@ -104,4 +105,4 @@ namespace("prepare", () => {
   task("packages", ["clean", "build:packages", "test"]);
 });
 
-task("gamut", ["prepare", "publish"]);
+task("gamut", ["prepare", "publish", "deploy"]);
