@@ -1,6 +1,6 @@
 {
   "name": "@sables/create",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "description": "Convenience package for generating Sables apps.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
