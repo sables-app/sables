@@ -1,5 +1,11 @@
 # sables
 
+## 0.1.7
+
+### Patch Changes
+
+- 8c68bed: Replace execa with shelljs to fix build failure.
+
 ## 0.1.6
 
 ### Patch Changes

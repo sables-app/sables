@@ -1,6 +1,6 @@
 {
   "name": "sables",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Tooling for generating apps and building artifacts.",
   "author": "Morris Allison III (https://morris.xyz)",
   "license": "MIT",
