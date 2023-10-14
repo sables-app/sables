@@ -18,8 +18,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "publish:assets": "node ./scripts/publishAssets.cjs",
-    "publish:worker": "npx wrangler deploy",
+    "deploy:assets": "node ./scripts/deployAssets.cjs",
+    "deploy:worker": "npx wrangler deploy",
     "build": "sables build --verbose",
     "_dev:worker:wrangler": "npx wrangler dev --local",
     "_dev:worker:http-server": "cd ./dist/client && http-server",
