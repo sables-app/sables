@@ -32,4 +32,5 @@ r2_buckets = [
 ]
 
 [env.production.vars]
+ASSET_PROXY_URL = ""
 ASSET_PROXY_R2_BUCKET = "SABLES_WEBSITE_ASSETS"
