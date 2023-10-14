@@ -15,13 +15,13 @@ import {
 import path from "node:path";
 
 import { ModuleImporter } from "@humanwhocodes/module-importer";
-import execa from "execa";
 import fs from "fs-jetpack";
 import prependFile from "prepend-file";
 import { Deferred } from "ts-deferred";
 import { build } from "vite";
 
 import { createLogger } from "./createLogger.js";
+import { exec } from "./exec.js";
 import type {
   SablesBuildOptions,
   ServerBundleOptions,
@@ -261,7 +261,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
       transpileSrcFilePaths.join(" "),
     ].join(" ");
 
-    await execa.command(command);
+    await exec(command);
   }
 
   async function prepareDestServerDir(
