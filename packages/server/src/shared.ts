@@ -57,7 +57,13 @@ export function getEnvVarString(
     return workerEnv[envVarName] ? String(workerEnv[envVarName]) : undefined;
   }
 
-  return fromImportMeta() || fromProcessEnv() || fromWorkerEnv(workerEnv);
+  return (
+    fromImportMeta() ||
+    fromProcessEnv() ||
+    fromWorkerEnv(workerEnv) ||
+    // Empty strings are considered undefined
+    undefined
+  );
 }
 
 /**
