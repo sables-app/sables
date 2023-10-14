@@ -1,5 +1,11 @@
 # @sables/create
 
+## 0.1.7
+
+### Patch Changes
+
+- d558e39: Sync version with `sables` package.
+
 ## 0.1.1
 
 ### Patch Changes
