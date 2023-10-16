@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@sables/framework": "~0.15.1",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.1"
   },
   "peerDependencies": {
     "@types/react": "^18.0.0",
