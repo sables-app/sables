@@ -28,9 +28,9 @@ describe("Observable", () => {
 
       const dogsSlice = createSlice(
         "dogs",
-        dogsEntityAdapter.getInitialState()
+        dogsEntityAdapter.getInitialState(),
       ).setReducer((builder) =>
-        builder.addCases(distinctEntityReducers(dogsEntityAdapter, "dog"))
+        builder.addCases(distinctEntityReducers(dogsEntityAdapter, "dog")),
       );
 
       const Fei: Dog = {
@@ -59,7 +59,7 @@ describe("Observable", () => {
           }
 
           effectAPI.dispatch(dogsSlice.actions.addDogs([Fei, Ekko]));
-        }
+        },
       );
 
       const { store, actions$ } = createTestStore(vitest);
@@ -68,13 +68,13 @@ describe("Observable", () => {
         actions$.pipe(
           map(({ type }) => type),
           take(3),
-          toArray()
-        )
+          toArray(),
+        ),
       );
 
       const selectFei = createSelector(
         dogsSlice.selectDogsState,
-        (dogsState) => dogsState.entities[1]
+        (dogsState) => dogsState.entities[1],
       );
 
       expect(store.getState()).toEqual(undefined);

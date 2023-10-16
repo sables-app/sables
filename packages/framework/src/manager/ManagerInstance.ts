@@ -21,7 +21,7 @@ import type { DefaultStoreState, Manager, ManagerStore } from "../types.js";
 /** @internal */
 export function createManagerInstance<
   StoreState extends DefaultStoreState,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >({
   actions$,
   effectAPIRef,

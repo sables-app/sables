@@ -22,7 +22,7 @@ import type {
 
 /** @internal */
 export function hasLazyMeta<T extends object>(
-  value: T
+  value: T,
 ): value is T & ObjectWithLazyMeta {
   return Object.hasOwn(value, SYMBOL_LAZY_META);
 }
@@ -44,7 +44,7 @@ export function isEnhancedSelector(value: unknown): value is AnyLazySelector {
 
 /** @internal */
 export function getSlicesFromSelector(
-  selector: ReduxToolkit.Selector
+  selector: ReduxToolkit.Selector,
 ): ReduxToolkit.Slice[] {
   return isEnhancedSelector(selector)
     ? [...selector[SYMBOL_LAZY_META].slices]
@@ -52,16 +52,16 @@ export function getSlicesFromSelector(
 }
 
 type LifecycleRef<
-  StoreState extends Record<string, unknown> = Record<string, unknown>
+  StoreState extends Record<string, unknown> = Record<string, unknown>,
 > = DefaultEffectAPI<StoreState>[typeof SYMBOL_EFFECT_API_LIFECYCLE];
 
 type RoutesCollectionRef<
-  StoreState extends Record<string, unknown> = Record<string, unknown>
+  StoreState extends Record<string, unknown> = Record<string, unknown>,
 > = DefaultEffectAPI<StoreState>[typeof SYMBOL_EFFECT_API_ROUTES];
 
 /** @internal */
 export function createEffectAPIDefaults<
-  StoreState extends Record<string, unknown> = Record<string, unknown>
+  StoreState extends Record<string, unknown> = Record<string, unknown>,
 >({
   actions$,
   dispatch,
@@ -82,12 +82,12 @@ export function createEffectAPIDefaults<
     [SYMBOL_EFFECT_API_LIFECYCLE]:
       lifecycleRef ||
       createMutableRef<MutableReferenceObjectValue<LifecycleRef>>(
-        LIFECYCLE_REF_MESSAGE
+        LIFECYCLE_REF_MESSAGE,
       ),
     [SYMBOL_EFFECT_API_ROUTES]:
       routesCollectionRef ||
       createMutableRef<MutableReferenceObjectValue<RoutesCollectionRef>>(
-        ROUTES_COLLECTION_REF_MESSAGE
+        ROUTES_COLLECTION_REF_MESSAGE,
       ),
   };
 }
@@ -113,12 +113,12 @@ type WithPropsInput<Props> = Props | WithPropsTransformHook<Props>;
  */
 export function withProps<C extends ElementType>(
   Component: C,
-  input: WithPropsInput<ComponentProps<C>>
+  input: WithPropsInput<ComponentProps<C>>,
 ): FunctionComponent<ComponentProps<C>> {
   type Props = ComponentProps<C>;
 
   function isWithPropsTransformHook(
-    value: WithPropsInput<Props>
+    value: WithPropsInput<Props>,
   ): value is WithPropsTransformHook<Props> {
     return typeof value == "function";
   }

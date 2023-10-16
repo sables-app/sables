@@ -35,13 +35,13 @@ type PropsWithInitialRoutes = Required<
 type ProviderProps = PropsWithConfigureManager | PropsWithInitialRoutes;
 
 function isPropsWithConfigureManager(
-  props: ProviderProps
+  props: ProviderProps,
 ): props is PropsWithConfigureManager {
   return "configureManager" in props;
 }
 
 function initialRoutesToConfigureManager<R extends Routes<DefaultEffectAPI>>(
-  initialRoutes: R
+  initialRoutes: R,
 ): ConfigureManagerFn {
   return defineConfigureManager(({ initialLocation }) => {
     return createManager({ initialLocation, initialRoutes });

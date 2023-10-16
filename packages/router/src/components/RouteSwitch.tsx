@@ -25,14 +25,14 @@ type BooleanSelector<StoreState extends CombinedRouterState> =
 
 /** @internal */
 export type RouteSwitchComponent = (
-  props: Record<string, never>
+  props: Record<string, never>,
 ) => ReactElement;
 
 export type RouteSwitch<StoreState extends CombinedRouterState> =
   RouteSwitchComponent & {
     case<R extends AnyRouteReference | BooleanSelector<StoreState>>(
       route: R,
-      component: ReactElement | ComponentImporter
+      component: ReactElement | ComponentImporter,
     ): RouteSwitch<StoreState>;
     default(component: ReactElement | ComponentImporter): RouteSwitchComponent;
   };
@@ -45,13 +45,13 @@ export interface RouteSwitchConfig {
 const DEFAULT_OPTIONS: RouteSwitchConfig = { suspense: true };
 
 type LazyFn<T extends ComponentType<any>> = (
-  importer: ComponentImporter<T>
+  importer: ComponentImporter<T>,
 ) => T;
 
 /** @internal */
 export function createRouteSwitchCreator(lazy: LazyFn<any>) {
   return function routeSwitchCreator<
-    StoreState extends CombinedRouterState = CombinedRouterState
+    StoreState extends CombinedRouterState = CombinedRouterState,
   >(options?: Partial<RouteSwitchConfig>): RouteSwitch<StoreState> {
     const config = { ...DEFAULT_OPTIONS, ...options };
     const shouldUseSuspense = config.suspense;
@@ -69,7 +69,7 @@ export function createRouteSwitchCreator(lazy: LazyFn<any>) {
     >(undefined, () => []);
 
     function resolveElement(
-      element: ReactElement | ComponentImporter
+      element: ReactElement | ComponentImporter,
     ): ReactElement {
       if (typeof element == "object") {
         return element;
@@ -81,21 +81,21 @@ export function createRouteSwitchCreator(lazy: LazyFn<any>) {
     }
 
     function resolveSelector<
-      StoreState extends CombinedRouterState = CombinedRouterState
+      StoreState extends CombinedRouterState = CombinedRouterState,
     >(route: AnyRouteReference | BooleanSelector<StoreState>) {
       if (typeof route == "function") {
         return route;
       }
       return createSelector(
         selectCurrentRoute,
-        (currentRoute) => currentRoute?.id === route.id
+        (currentRoute) => currentRoute?.id === route.id,
       );
     }
 
     function updateSubscriptionSelector() {
       subscriptionSelector.current = createSelector(
         [...elementsBySelector.keys()],
-        (...selections) => selections
+        (...selections) => selections,
       );
     }
 
@@ -122,11 +122,11 @@ export function createRouteSwitchCreator(lazy: LazyFn<any>) {
       {
         case(
           routeOrSelector: AnyRouteReference | BooleanSelector<StoreState>,
-          elementOrComponent: ReactElement | ComponentImporter
+          elementOrComponent: ReactElement | ComponentImporter,
         ) {
           elementsBySelector.set(
             resolveSelector(routeOrSelector),
-            resolveElement(elementOrComponent)
+            resolveElement(elementOrComponent),
           );
           updateSubscriptionSelector();
 
@@ -135,13 +135,13 @@ export function createRouteSwitchCreator(lazy: LazyFn<any>) {
         default(elementOrComponent: ReactElement | ComponentImporter) {
           elementsBySelector.set(
             () => true,
-            resolveElement(elementOrComponent)
+            resolveElement(elementOrComponent),
           );
           updateSubscriptionSelector();
 
           return this as unknown as RouteSwitchComponent;
         },
-      }
+      },
     );
 
     return routeSwitch as RouteSwitch<StoreState>;

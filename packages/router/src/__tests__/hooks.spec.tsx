@@ -10,7 +10,7 @@ describe("hooks", () => {
   describe("useLink", () => {
     it("returns a route link payload", () => {
       const { render, resultRef } = createRouterHookTester(vitest, () =>
-        useLink()
+        useLink(),
       );
 
       render();
@@ -22,7 +22,7 @@ describe("hooks", () => {
   describe("useLinkProps", () => {
     it("returns a link props payload", () => {
       const { render, resultRef } = createRouterHookTester(vitest, () =>
-        useLinkProps()
+        useLinkProps(),
       );
 
       render();

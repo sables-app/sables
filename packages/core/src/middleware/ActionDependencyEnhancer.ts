@@ -38,14 +38,14 @@ type InsertSlicesMode =
 
 /** @internal */
 export type SubscribeToFn<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > = (
   ...observableCreators: ObservableCreator<EffectAPI>[]
 ) => RxJS.Subscription;
 
 /** @internal */
 export type LazySlicesEnhancerExt<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > = {
   /**
    * Asynchronously adds slices to the store.
@@ -92,12 +92,12 @@ export type LazySlicesEnhancerExt<
 /** @internal */
 export type LazySlicesEnhancedStore<
   StoreState extends Record<string, unknown> = Record<string, unknown>,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > = ReduxToolkit.Store<StoreState> & LazySlicesEnhancerExt<EffectAPI>;
 
 /** @internal */
 export function isLazySlicesEnhancedStore(
-  store: Redux.Store | LazySlicesEnhancedStore
+  store: Redux.Store | LazySlicesEnhancedStore,
 ): store is LazySlicesEnhancedStore {
   return Object.hasOwn(store, "insertSlices");
 }
@@ -105,7 +105,7 @@ export function isLazySlicesEnhancedStore(
 /** @internal */
 export function createActionDependencyEnhancer<
   StoreState extends Record<string, unknown>,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >({
   effectAPIRef,
   reducersMap: reducersMapInput,
@@ -136,7 +136,7 @@ export function createActionDependencyEnhancer<
 
   function insertSlices(
     mode: InsertSlicesMode,
-    slices: Iterable<ReduxToolkit.Slice>
+    slices: Iterable<ReduxToolkit.Slice>,
   ) {
     const isDev = isDevEnv();
     const isTest = isTestEnv();
@@ -202,7 +202,7 @@ export function createActionDependencyEnhancer<
   type ActionWithLazyMeta = Redux.AnyAction & { meta: ObjectWithLazyMeta };
 
   function actionHasLazyMeta(
-    action: Redux.AnyAction
+    action: Redux.AnyAction,
   ): action is ActionWithLazyMeta {
     return !!action.meta && hasLazyMeta(action.meta);
   }
@@ -214,7 +214,7 @@ export function createActionDependencyEnhancer<
         insertSlices(
           // Slices must be added synchronously when dispatching actions
           insertSlicesModes.SYNC,
-          slices
+          slices,
         );
       }
       if (observers.size) {

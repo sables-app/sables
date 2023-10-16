@@ -96,8 +96,8 @@ export async function createBoilerplate({ verbose }: { verbose?: boolean }) {
 
     const srcDir = path.dirname(
       require.resolve(
-        `@sables/boilerplate/dist/${boilerplate.id}/package-template.json`
-      )
+        `@sables/boilerplate/dist/${boilerplate.id}/package-template.json`,
+      ),
     );
     await fs.copyAsync(srcDir, destDir);
     await updatePackageJSON({
@@ -107,7 +107,7 @@ export async function createBoilerplate({ verbose }: { verbose?: boolean }) {
     });
     await fs.moveAsync(
       path.resolve(destDir, "tsconfig-template.json"),
-      path.resolve(destDir, "tsconfig.json")
+      path.resolve(destDir, "tsconfig.json"),
     );
 
     logger.success(`Boilerplate creation complete.`);

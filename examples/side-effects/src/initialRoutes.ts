@@ -7,5 +7,5 @@ export const initialRoutes = createRoutes()
   .setEffects(() =>
     createRouteEffects().append("root", async (_action, effectAPI) => {
       await searchDogs(effectAPI, { name: "Rex" });
-    })
+    }),
   );

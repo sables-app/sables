@@ -31,7 +31,7 @@ import {
 // TODO - Rename this to `defineObserver`
 export function createObservable<
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
-  T = unknown
+  T = unknown,
 >(observableCreator: ObservableCreator<EffectAPI, T>) {
   return observableCreator;
 }
@@ -63,34 +63,34 @@ export function createObservable<
  */
 export function createSideEffectObservable<
   EffectAPI extends DefaultEffectAPI,
-  ActionCreators extends SideEffectActions<any, any>
+  ActionCreators extends SideEffectActions<any, any>,
 >(
   actionCreators: ActionCreators,
   mapStartAction: (
     startAction: ReturnType<ActionCreators["start"]>,
-    effectAPI: EffectAPI
-  ) => Promise<ReturnType<ActionCreators["end"]>["payload"]>
+    effectAPI: EffectAPI,
+  ) => Promise<ReturnType<ActionCreators["end"]>["payload"]>,
 ) {
   return createObservable<EffectAPI, void>((effectAPI) => {
     const { actions$, dispatch } = effectAPI;
 
     const startActions$ = actions$.pipe(
       filter((action): action is ReturnType<ActionCreators["start"]> =>
-        actionCreators.start.match(action)
-      )
+        actionCreators.start.match(action),
+      ),
     );
 
     const endActionPayloads$ = startActions$.pipe(
       switchMap((startAction: ReturnType<ActionCreators["start"]>) =>
-        mapStartAction(startAction, effectAPI)
-      )
+        mapStartAction(startAction, effectAPI),
+      ),
     );
 
     return startActions$.pipe(
       zipWith(endActionPayloads$),
       map(([startAction, endPayload]) => {
         dispatch(actionCreators.end(endPayload, startAction));
-      })
+      }),
     );
   });
 }
@@ -108,11 +108,11 @@ export function createSideEffectObservable<
 export type SideEffect<
   StartActionCreator extends PayloadActionCreator<any>,
   EndActionCreator extends PayloadActionCreator<any>,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > = {
   (
     effectAPI: EffectAPI,
-    payload: ReturnType<StartActionCreator>["payload"]
+    payload: ReturnType<StartActionCreator>["payload"],
   ): Promise<ReturnType<EndActionCreator>["payload"]>;
   actions: SideEffectActions<StartActionCreator, EndActionCreator>;
   dependsUpon(
@@ -122,10 +122,10 @@ export type SideEffect<
 
 function createSideEffectInstance<
   ActionCreators extends SideEffectActions<any, any>,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(
   actionCreators: ActionCreators,
-  observableCreator: ObservableCreator<EffectAPI, void>
+  observableCreator: ObservableCreator<EffectAPI, void>,
 ): SideEffect<
   (typeof actionCreators)["start"],
   (typeof actionCreators)["end"],
@@ -135,7 +135,7 @@ function createSideEffectInstance<
 
   function sideEffect(
     effectAPI: EffectAPI,
-    payload: ReturnType<(typeof actionCreators)["start"]>["payload"]
+    payload: ReturnType<(typeof actionCreators)["start"]>["payload"],
   ) {
     return callSideEffect(effectAPI, actionCreators, payload);
   }
@@ -174,7 +174,7 @@ function createSideEffectInstance<
 export function createSideEffect<
   StartActionCreator extends PayloadActionCreator<any>,
   EndActionCreator extends PayloadActionCreator<any>,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(
   startBase: StartActionCreator,
   endBase: EndActionCreator,
@@ -182,17 +182,17 @@ export function createSideEffect<
     startAction: ReturnType<
       SideEffectActions<StartActionCreator, EndActionCreator>["start"]
     >,
-    effectAPI: EffectAPI
+    effectAPI: EffectAPI,
   ) => Promise<
     ReturnType<
       SideEffectActions<StartActionCreator, EndActionCreator>["end"]
     >["payload"]
-  >
+  >,
 ) {
   const actionCreators = createSideEffectActions(startBase, endBase);
   const observableCreator = createSideEffectObservable(
     actionCreators,
-    mapStartAction
+    mapStartAction,
   );
 
   return createSideEffectInstance(actionCreators, observableCreator);
@@ -231,7 +231,7 @@ export function bindSideEffect<T extends SideEffectActions<any, any>>({
       filter(
         (endAction): endAction is EndAction =>
           !!startActionRef.current &&
-          actions.hasAffiliation(startActionRef.current, endAction)
+          actions.hasAffiliation(startActionRef.current, endAction),
       ),
       map((endAction) => {
         onAwaitingChange?.(false);
@@ -239,8 +239,8 @@ export function bindSideEffect<T extends SideEffectActions<any, any>>({
         startActionRef.current = undefined;
 
         return endAction;
-      })
-    )
+      }),
+    ),
   );
 
   return { dispatchStartAction, observableCreator };
@@ -249,11 +249,11 @@ export function bindSideEffect<T extends SideEffectActions<any, any>>({
 /** @internal */
 async function callSideEffect<
   EffectAPI extends DefaultEffectAPI,
-  T extends SideEffectActions<any, any>
+  T extends SideEffectActions<any, any>,
 >(
   effectAPI: EffectAPI,
   actions: T,
-  startPayload: ReturnType<T["start"]>["payload"]
+  startPayload: ReturnType<T["start"]>["payload"],
 ): Promise<ReturnType<T["end"]>["payload"]> {
   const { dispatchStartAction, observableCreator } = bindSideEffect({
     dispatch: effectAPI.dispatch,

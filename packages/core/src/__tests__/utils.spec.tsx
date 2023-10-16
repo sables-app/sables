@@ -41,12 +41,12 @@ describe("utils", () => {
           Link,
           ({ className, ...otherProps }) => ({
             ...otherProps,
-          })
+          }),
         );
         const alteredButtonRender = create(
           <AlteredButton className="bar" role="banner" id="submitButton">
             Hello
-          </AlteredButton>
+          </AlteredButton>,
         ).toJSON();
 
         // the previous "className" was retained

@@ -61,7 +61,7 @@ type RoutesMeta<EffectAPI extends DefaultEffectAPI> = {
 
 /** @internal */
 function cloneRoutesMeta<EffectAPI extends DefaultEffectAPI>(
-  routesMeta: RoutesMeta<EffectAPI>
+  routesMeta: RoutesMeta<EffectAPI>,
 ): RoutesMeta<EffectAPI> {
   return {
     externalEffectsFn: routesMeta.externalEffectsFn,
@@ -73,7 +73,7 @@ function cloneRoutesMeta<EffectAPI extends DefaultEffectAPI>(
 /** @internal */
 function cloneRoutes<
   EffectAPI extends DefaultEffectAPI,
-  Info extends RouteReferenceInfo<string, string> = never
+  Info extends RouteReferenceInfo<string, string> = never,
 >(routes: UntouchedRoutes<EffectAPI, Info>): UntouchedRoutes<EffectAPI, Info> {
   const nextRoutes = createRoutes<EffectAPI, Info>();
 
@@ -81,8 +81,8 @@ function cloneRoutes<
 
   const routeReferences = Object.fromEntries(
     [...nextRoutes[SYMBOL_ROUTES_META].routesById.entries()].map(
-      ([id, routeReference]) => [capitalize(id), routeReference]
-    )
+      ([id, routeReference]) => [capitalize(id), routeReference],
+    ),
   );
 
   return Object.assign(nextRoutes, routeReferences);
@@ -91,13 +91,13 @@ function cloneRoutes<
 /** @internal */
 export type RouteReferenceInfo<
   RID extends string,
-  RawParamName extends string
+  RawParamName extends string,
 > = [RID, RawParamName];
 
 /** @internal declaration requirement */
 export interface RoutesMethods<
   EffectAPI extends DefaultEffectAPI,
-  Info extends RouteReferenceInfo<string, string> = never
+  Info extends RouteReferenceInfo<string, string> = never,
 > {
   /**
    * @public
@@ -118,7 +118,7 @@ export interface RoutesMethods<
   _getHandlersByRouteID(
     effectAPI: EffectAPI,
     id: RouteID | undefined,
-    registerDynamicImport: RegisterDynamicImportFn
+    registerDynamicImport: RegisterDynamicImportFn,
   ): Promise<RouteEffectHandlers<EffectAPI>>;
 
   /**
@@ -149,7 +149,7 @@ export interface RoutesMethods<
    */
   set<RID extends RouteID, RawParamName extends string>(
     id: RID,
-    path: RoutePathType | TemplatePath<RoutePathType, RawParamName>
+    path: RoutePathType | TemplatePath<RoutePathType, RawParamName>,
   ): UntouchedRoutes<EffectAPI, RouteReferenceInfo<RID, RawParamName> | Info>;
 
   /**
@@ -179,8 +179,8 @@ export interface RoutesMethods<
   setForwarding(
     path: RoutePathType,
     getDestination: (
-      params: RouteParams
-    ) => PartialHistoryPathStrict | RouteHref
+      params: RouteParams,
+    ) => PartialHistoryPathStrict | RouteHref,
   ): UntouchedRoutes<EffectAPI, Info>;
 
   /**
@@ -200,7 +200,7 @@ export interface RoutesMethods<
    */
   setWildcard<RID extends RouteID, RawParamName extends string>(
     id: RID,
-    path: WildCardPathType | TemplatePath<WildCardPathType, RawParamName>
+    path: WildCardPathType | TemplatePath<WildCardPathType, RawParamName>,
   ): Omit<
     UntouchedRoutes<EffectAPI, RouteReferenceInfo<RID, RawParamName> | Info>,
     WildcardLockedMethods
@@ -261,7 +261,7 @@ export interface RoutesMethods<
    * @public
    */
   setEffects(
-    externalEffectsFn: ExternalEffectsFn<EffectAPI>
+    externalEffectsFn: ExternalEffectsFn<EffectAPI>,
   ): Routes<EffectAPI, Info>;
 
   /** @internal */
@@ -280,7 +280,7 @@ type FallbackRouteParams = Record<string, unknown> | void;
 export type RouteReference<
   RID extends RouteID = RouteID,
   Path extends AnyRoutePath = AnyRoutePath,
-  PathParams extends FallbackRouteParams = FallbackRouteParams
+  PathParams extends FallbackRouteParams = FallbackRouteParams,
 > = Readonly<{
   build(params: PathParams): RouteHref;
   id: RID;
@@ -318,7 +318,7 @@ type RouteParamsFromInfo<Info extends RouteReferenceInfo<string, string>> =
   RouteParamsFromParamName<ExtractParamName<RawParamNameFromInfo<Info>>>;
 
 type RouteReferenceRecord<
-  Info extends RouteReferenceInfo<string, string> = never
+  Info extends RouteReferenceInfo<string, string> = never,
 > = {
   readonly [K in Info as Capitalize<RouteIDFromInfo<K>>]: RouteReference<
     RouteIDFromInfo<K>,
@@ -330,7 +330,7 @@ type RouteReferenceRecord<
 /** @internal */
 type UntouchedRoutes<
   EffectAPI extends DefaultEffectAPI,
-  Info extends RouteReferenceInfo<string, string> = never
+  Info extends RouteReferenceInfo<string, string> = never,
 > = RoutesMethods<EffectAPI, Info> & RouteReferenceRecord<Info>;
 
 type LockedMethods = "set" | "setForwarding" | "setWildcard" | "setRoutes";
@@ -339,7 +339,7 @@ type WildcardLockedMethods = "set" | "setForwarding";
 /** @public */
 export type Routes<
   EffectAPI extends DefaultEffectAPI,
-  Info extends RouteReferenceInfo<string, string> = never
+  Info extends RouteReferenceInfo<string, string> = never,
 > = Omit<UntouchedRoutes<EffectAPI, Info>, LockedMethods>;
 
 /** @internal */
@@ -370,7 +370,7 @@ const WILDCARD_ROUTES_ID_PREFIX = "__wildcardRoutes:";
  */
 export function createRoutes<
   EffectAPI extends DefaultEffectAPI,
-  Info extends RouteReferenceInfo<string, string> = never
+  Info extends RouteReferenceInfo<string, string> = never,
 >(): UntouchedRoutes<EffectAPI, Info> {
   const routes = {
     set(id, pathInput) {
@@ -397,7 +397,7 @@ export function createRoutes<
 
       return addRouteWithEffect(
         path,
-        addRoutesEffect<EffectAPI>(...addRoutesParams)
+        addRoutesEffect<EffectAPI>(...addRoutesParams),
       );
     },
     setEffects(externalEffectsFn) {
@@ -431,7 +431,7 @@ export function createRoutes<
       const externalEffects = await resolveExternalEffects(
         effectAPI,
         externalEffectsFn,
-        registerDynamicImport
+        registerDynamicImport,
       );
       const externalHandlers = await externalEffects?._getHandlersByRouteID(id);
 
@@ -455,7 +455,7 @@ export function createRoutes<
   function addRoute<
     RID extends RouteID,
     Path extends AnyRoutePath,
-    ParamName extends string
+    ParamName extends string,
   >(id: RID, templatePath: TemplatePath<Path, ParamName>) {
     const referenceKey = capitalize(id);
     const parser = createPathParser(templatePath);
@@ -500,19 +500,19 @@ export function createRoutes<
   }
 
   function addRouteWithEffect<
-    MW extends RouteMiddleware<AnyPayloadAction, EffectAPI>
+    MW extends RouteMiddleware<AnyPayloadAction, EffectAPI>,
   >(
     path: RoutePathType | WildCardPathType,
-    middleware: MW
+    middleware: MW,
   ): UntouchedRoutes<EffectAPI, Info>;
   function addRouteWithEffect<
-    MW extends RouteMiddleware<AnyPayloadAction, EffectAPI>
+    MW extends RouteMiddleware<AnyPayloadAction, EffectAPI>,
   >(
     path: WildCardPathType,
-    middleware: MW
+    middleware: MW,
   ): Omit<UntouchedRoutes<EffectAPI, Info>, WildcardLockedMethods>;
   function addRouteWithEffect<
-    MW extends RouteMiddleware<AnyPayloadAction, EffectAPI>
+    MW extends RouteMiddleware<AnyPayloadAction, EffectAPI>,
   >(path: RoutePathType | WildCardPathType, middleware: MW) {
     // Routes are typically created upon execution,
     // so this ID must be a deterministic to be used
@@ -531,7 +531,7 @@ export function createRoutes<
 
     nextRouteMeta.internalEffects = nextInternalEffects.append(
       routeID,
-      middleware
+      middleware,
     );
 
     return nextRoutes;
@@ -542,7 +542,7 @@ export function createRoutes<
   async function resolveExternalEffects(
     effectAPI: EffectAPI,
     externalEffectsFn: ExternalEffectsFn<EffectAPI> | undefined,
-    registerDynamicImport: RegisterDynamicImportFn
+    registerDynamicImport: RegisterDynamicImportFn,
   ): Promise<RouteEffects<EffectAPI> | undefined> {
     if (resolvedExternalEffects) {
       return resolvedExternalEffects;
@@ -556,7 +556,7 @@ export function createRoutes<
       result instanceof Promise ? (await result).default : result;
 
     function isDynamicImportFn(
-      _value: typeof externalEffectsFn
+      _value: typeof externalEffectsFn,
     ): _value is DynamicImportFn<{ default: RouteEffects<EffectAPI> }> {
       return result instanceof Promise;
     }
@@ -590,7 +590,7 @@ export function createRoutes<
  */
 export function isRoutes<
   EffectAPI extends DefaultEffectAPI,
-  Info extends RouteReferenceInfo<string, string>
+  Info extends RouteReferenceInfo<string, string>,
 >(value: unknown): value is Routes<EffectAPI, Info> {
   return (
     typeof value == "object" &&

@@ -16,7 +16,7 @@ const routes = createRoutes<AppEffectAPI>()
   // Easy access to the loading screen for development
   .set("devLoading", "/__dev__/loading")
   .setEffects(() =>
-    createRouteEffects().appendAll(delayTransition(SCREEN_ANIMATION_DURATION))
+    createRouteEffects().appendAll(delayTransition(SCREEN_ANIMATION_DURATION)),
   );
 
 export default routes;

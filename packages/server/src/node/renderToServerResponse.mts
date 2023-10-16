@@ -77,7 +77,7 @@ export async function renderToServerResponse({
       console.log("onAllReady");
 
       const { headers, status } = await describeResponse(
-        serverRequestStateRef.demand()
+        serverRequestStateRef.demand(),
       );
 
       response.statusCode = status;

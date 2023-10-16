@@ -108,7 +108,7 @@ export type SSRTransitionResult = {
 
 /** @internal */
 type LocationChangeActionPayload<
-  HistoryAction extends History.Action = History.Action
+  HistoryAction extends History.Action = History.Action,
 > = {
   /**
    * @public
@@ -140,12 +140,12 @@ export type LocationChangeAction<A extends History.Action = History.Action> =
  */
 export interface RouteMiddleware<
   Action extends AnyPayloadAction = AnyPayloadAction,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > {
   (
     action: Action,
     effectAPI: EffectAPI,
-    abortSignal: AbortSignal
+    abortSignal: AbortSignal,
   ): Promise<unknown>;
 }
 
@@ -157,7 +157,7 @@ export interface RouteMiddleware<
  */
 export interface RouteListener<
   Action extends AnyPayloadAction = AnyPayloadAction,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > {
   (action: Action, effectAPI: EffectAPI): unknown;
 }
@@ -358,7 +358,7 @@ export type NavigationDestination<Route extends BuildHrefInput> =
  */
 export type BuildLinkParams<Route extends BuildHrefInput> = [
   dispatch: Redux.Dispatch,
-  buildHrefOptions: BuildHrefOptions<Route>
+  buildHrefOptions: BuildHrefOptions<Route>,
 ];
 
 /** @internal */

@@ -33,7 +33,7 @@ export const selectRouterState = (state: CombinedRouterState) =>
  */
 export const selectCurrentLocation = createSelector(
   selectRouterState,
-  ({ location }) => location ?? undefined
+  ({ location }) => location ?? undefined,
 );
 
 /**
@@ -50,7 +50,7 @@ export const selectCurrentLocation = createSelector(
 export const selectCurrentHref = createSelector(
   selectCurrentLocation,
   (location) =>
-    location ? buildHref(location as PartialHistoryPathStrict) : undefined
+    location ? buildHref(location as PartialHistoryPathStrict) : undefined,
 );
 
 /**
@@ -66,7 +66,7 @@ export const selectCurrentHref = createSelector(
  */
 export const selectCurrentRoute = createSelector(
   selectRouteTransitionState,
-  ({ currentRoute }) => currentRoute
+  ({ currentRoute }) => currentRoute,
 );
 
 /**
@@ -82,7 +82,7 @@ export const selectCurrentRoute = createSelector(
  */
 export const selectPrevRoute = createSelector(
   selectRouteTransitionState,
-  ({ prevRoute }) => prevRoute
+  ({ prevRoute }) => prevRoute,
 );
 
 /**
@@ -101,13 +101,13 @@ export const selectPrevRoute = createSelector(
  */
 export const selectIsRouteTransitioning = createSelector(
   selectRouteTransitionState,
-  ({ isTransitioning }) => isTransitioning
+  ({ isTransitioning }) => isTransitioning,
 );
 
 /** @internal */
 export const selectHasTransitionResult = createSelector(
   selectRouteTransitionState,
-  ({ _ssrTransitionResult: transitionResult }) => !!transitionResult
+  ({ _ssrTransitionResult: transitionResult }) => !!transitionResult,
 );
 
 /**
@@ -127,7 +127,7 @@ export const selectHasTransitionResult = createSelector(
 export function createRouteMatchSelector(route: AnyRouteReference) {
   return createSelector(
     selectCurrentRoute,
-    (currentRoute) => !!currentRoute && currentRoute.id === route.id
+    (currentRoute) => !!currentRoute && currentRoute.id === route.id,
   );
 }
 
@@ -147,6 +147,6 @@ export function createRouteMatchSelector(route: AnyRouteReference) {
  */
 export function createLocationMatchSelector(route: AnyRouteReference) {
   return createSelector(selectCurrentLocation, (location) =>
-    route.match(location)
+    route.match(location),
   );
 }

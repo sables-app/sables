@@ -18,5 +18,5 @@ export const ScreenSwitch = createRouteSwitch()
   .default(
     <ArticleLayout>
       <ArticleSwitch />
-    </ArticleLayout>
+    </ArticleLayout>,
   );

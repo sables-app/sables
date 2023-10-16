@@ -99,14 +99,14 @@ async function uploadFiles(context, assetDir, filePaths) {
 
   for (const filePaths of uploadBatches) {
     await Promise.all(
-      filePaths.map((filePath) => uploadFile(context, assetDir, filePath))
+      filePaths.map((filePath) => uploadFile(context, assetDir, filePath)),
     );
   }
 }
 
 async function main() {
   const assetDir = path.dirname(
-    require.resolve("@sables-app/website/index.html")
+    require.resolve("@sables-app/website/index.html"),
   );
   const filePaths = await fs.cwd(assetDir).findAsync(".");
   const context = getContext();

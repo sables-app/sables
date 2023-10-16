@@ -23,7 +23,7 @@ import {
 } from "./utils.js";
 
 function getEffectStateMap<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(effectAPI: EffectAPI, id: symbol) {
   if (!effectAPI[SYMBOL_EFFECT_API_EFFECT_STATE]) {
     effectAPI[SYMBOL_EFFECT_API_EFFECT_STATE] = new Map();
@@ -35,20 +35,20 @@ function getEffectStateMap<
 const effectState = {
   has<EffectAPI extends DefaultEffectAPI = DefaultEffectAPI>(
     effectAPI: EffectAPI,
-    id: symbol
+    id: symbol,
   ) {
     return getEffectStateMap(effectAPI, id).has(id);
   },
   get<EffectAPI extends DefaultEffectAPI = DefaultEffectAPI>(
     effectAPI: EffectAPI,
-    id: symbol
+    id: symbol,
   ) {
     return getEffectStateMap(effectAPI, id).get(id);
   },
   set<EffectAPI extends DefaultEffectAPI = DefaultEffectAPI>(
     effectAPI: EffectAPI,
     id: symbol,
-    value: unknown
+    value: unknown,
   ) {
     getEffectStateMap(effectAPI, id).set(id, value);
   },
@@ -59,7 +59,7 @@ function createEffectState<T>(defaultValue?: T) {
 
   return {
     using: <EffectAPI extends DefaultEffectAPI = DefaultEffectAPI>(
-      effectAPI: EffectAPI
+      effectAPI: EffectAPI,
     ) => {
       function get() {
         if (!effectState.has(effectAPI, effectID)) {
@@ -109,11 +109,11 @@ export class RouteMiddlewareSignal {
  * @public
  */
 export class AddRoutesSignal<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > extends RouteMiddlewareSignal {
   constructor(
     public routes: Routes<EffectAPI>,
-    message = "Attempting to add routes."
+    message = "Attempting to add routes.",
   ) {
     super(message);
   }
@@ -132,11 +132,11 @@ export class AddRoutesSignal<
  * @public
  */
 export class ForwardRouteSignal<
-  Route extends BuildHrefInput
+  Route extends BuildHrefInput,
 > extends RouteMiddlewareSignal {
   constructor(
     public destination: NavigationDestination<Route>,
-    message = "Forwarding route."
+    message = "Forwarding route.",
   ) {
     super(message);
   }
@@ -174,7 +174,7 @@ export class ExitTransitionSignal extends RouteMiddlewareSignal {
  */
 export async function exitTransition<
   Action extends StartTransitionAction = StartTransitionAction,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(_action: Action, _effectAPI: EffectAPI, abortSignal: AbortSignal) {
   if (abortSignal.aborted) return;
   // This is caught by `routeTransitionMiddleware` to exit the transition
@@ -198,7 +198,7 @@ export async function exitTransition<
  */
 export function delayTransition<
   Action extends StartTransitionAction = StartTransitionAction,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(ms: number): RouteMiddleware<Action, EffectAPI> {
   return async (_action, _effectAPI, abortSignal) => {
     if (isSSREnv() || abortSignal.aborted) return;
@@ -224,7 +224,7 @@ export function delayTransition<
  */
 export function logTransition<
   Action extends StartTransitionAction = StartTransitionAction,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(...values: unknown[]): RouteMiddleware<Action, EffectAPI> {
   return async (_action, _effectAPI, abortSignal) => {
     if (abortSignal.aborted) return;
@@ -250,16 +250,16 @@ export function logTransition<
  */
 export function forwardTo<
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
-  Route extends BuildHrefInput = BuildHrefInput
+  Route extends BuildHrefInput = BuildHrefInput,
 >(
-  getDestination: (params: RouteParams) => NavigationDestination<Route>
+  getDestination: (params: RouteParams) => NavigationDestination<Route>,
 ): RouteMiddleware<StartTransitionAction, EffectAPI> {
   return async (action, effectAPI, abortSignal) => {
     if (abortSignal.aborted) return;
 
     const routesCollection = demandRoutesCollectionFromEffectAPI(effectAPI);
     const { nextRoute } = routesCollection.findByHref(
-      action.payload.locationChange.location
+      action.payload.locationChange.location,
     );
     const nextRouteParams = nextRoute?.params || {};
     const destination = getDestination(nextRouteParams);
@@ -276,7 +276,7 @@ export type AddRoutesParams<EffectAPI extends DefaultEffectAPI> = [
   routes:
     | (() => Routes<EffectAPI>)
     | DynamicImportFn<{ default: Routes<EffectAPI> }>,
-  message?: string
+  message?: string,
 ];
 
 /**
@@ -311,7 +311,7 @@ export type AddRoutesParams<EffectAPI extends DefaultEffectAPI> = [
  * @public
  */
 export function addRoutes<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(
   ...params: AddRoutesParams<EffectAPI>
 ): RouteMiddleware<StartTransitionAction, EffectAPI> {
@@ -333,7 +333,7 @@ export function addRoutes<
     const routes = result instanceof Promise ? (await result).default : result;
 
     function isDynamicImportFn(
-      _value: typeof routesFn
+      _value: typeof routesFn,
     ): _value is DynamicImportFn<{ default: Routes<EffectAPI> }> {
       return result instanceof Promise;
     }
@@ -362,7 +362,7 @@ export function addRoutes<
  */
 export function chainMiddleware<
   Action extends StartTransitionAction = StartTransitionAction,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(
   ...effects: RouteMiddleware<Action, EffectAPI>[]
 ): RouteMiddleware<Action, EffectAPI> {
@@ -390,7 +390,7 @@ export function chainMiddleware<
  */
 export function combineListeners<
   Action extends AnyPayloadAction = AnyPayloadAction,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(
   ...listeners: RouteListener<Action, EffectAPI>[]
 ): RouteListener<Action, EffectAPI> {
@@ -439,12 +439,12 @@ export function combineHandlers<EffectAPI extends DefaultEffectAPI>(
  */
 export function sideEffectToRouteMiddleware<
   EffectAPI extends DefaultEffectAPI,
-  S extends SideEffect<any, any, EffectAPI>
+  S extends SideEffect<any, any, EffectAPI>,
 >(
   sideEffect: S,
   assertRouteParams?: (
-    params: RouteParams
-  ) => asserts params is ReturnType<S["actions"]["start"]>["payload"]
+    params: RouteParams,
+  ) => asserts params is ReturnType<S["actions"]["start"]>["payload"],
 ): RouteMiddleware<StartTransitionAction, EffectAPI> {
   return async (action, effectAPI, abortSignal) => {
     if (abortSignal.aborted) return;

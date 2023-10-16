@@ -6,7 +6,7 @@ type PromiseWithChildProcess<T> = Promise<T> & { childProcess: ChildProcess };
 
 export function exec(
   command: string,
-  options: ExecOptions = {}
+  options: ExecOptions = {},
 ): PromiseWithChildProcess<void> {
   let childProcess: ChildProcess;
 

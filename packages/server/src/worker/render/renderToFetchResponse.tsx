@@ -29,7 +29,7 @@ export async function renderToFetchResponse({
   const { serverRequestStateRef } = Lifecycle.ref.demand();
 
   const reactStream = await renderToReadableStream(
-    <Lifecycle>{await resolveAppInput(app)}</Lifecycle>
+    <Lifecycle>{await resolveAppInput(app)}</Lifecycle>,
   );
 
   // Wait for the application to finish rendering and complete all requests.

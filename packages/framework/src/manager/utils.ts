@@ -17,7 +17,7 @@ import { createManager } from "./Manager.js";
 export * from "@sables/utils";
 
 function assertManagerConsistency<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(manager: Manager<any, EffectAPI>) {
   const effectAPIRefOnManager = manager[SYMBOL_MANAGER_EFFECT_API];
   const lifecycleRefOnManager = manager[SYMBOL_EFFECT_API_LIFECYCLE];
@@ -45,7 +45,7 @@ function assertManagerConsistency<
       [
         "Multiple route collections detected.",
         "When a route collection object is defined on the effect API, it must match the one defined on the manager.",
-      ].join("\n")
+      ].join("\n"),
     );
   }
 }
@@ -53,7 +53,7 @@ function assertManagerConsistency<
 const DEFAULT_PARAMS: ConfigureManagerParams = {};
 
 function getConfigureManagerParams(
-  serverRequestStateRef: ServerRequestStateRef
+  serverRequestStateRef: ServerRequestStateRef,
 ): ConfigureManagerParams {
   if (!isSSREnv()) {
     return DEFAULT_PARAMS;
@@ -69,14 +69,14 @@ function getConfigureManagerParams(
 /** @internal */
 export function resolveConfigureManager<M extends Manager<any, any>>(
   lifecycleState: LifecycleState,
-  configureManager: ConfigureManagerFn<M> | undefined
+  configureManager: ConfigureManagerFn<M> | undefined,
 ): M {
   const { managerRef, serverRequestStateRef } = lifecycleState;
 
   if (!managerRef.current) {
     const managerCreator = configureManager || createManager;
     managerRef.current = managerCreator(
-      getConfigureManagerParams(serverRequestStateRef)
+      getConfigureManagerParams(serverRequestStateRef),
     );
     managerRef.current[SYMBOL_EFFECT_API_LIFECYCLE].current = lifecycleState;
     assertManagerConsistency(managerRef.current);
@@ -99,7 +99,7 @@ export function resolveConfigureManager<M extends Manager<any, any>>(
  * @public
  */
 export function defineConfigureManager<M extends Manager<any, any>>(
-  configureManager: ConfigureManagerFn<M>
+  configureManager: ConfigureManagerFn<M>,
 ) {
   return configureManager;
 }

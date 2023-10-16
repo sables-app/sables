@@ -33,22 +33,22 @@ import { createManagerInstance } from "./ManagerInstance.js";
 const { createLogger: createReduxLogger } = reduxLogger;
 
 type GetReducersMap<StoreState extends DefaultStoreState> = (
-  defaultReducers: ReduxToolkit.ReducersMapObject<DefaultStoreState>
+  defaultReducers: ReduxToolkit.ReducersMapObject<DefaultStoreState>,
 ) => ReduxToolkit.ReducersMapObject<StoreState>;
 
 type EffectApiCreator<
   StoreState extends DefaultStoreState,
-  EffectAPI extends DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI,
 > = (
   defaults: ManagerMethodsOnly &
     LazySlicesEnhancerExt<EffectAPI> &
-    DefaultEffectAPI<StoreState>
+    DefaultEffectAPI<StoreState>,
 ) => EffectAPI;
 
 /** @internal */
 export interface CreateManagerOptions<
   StoreState extends DefaultStoreState = DefaultStoreState,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > extends Pick<
     ReduxToolkit.ConfigureStoreOptions<StoreState>,
     "devTools" | "enhancers" | "middleware" | "preloadedState"
@@ -173,7 +173,7 @@ function getPreloadedState() {
   if (typeof document == "undefined") return;
 
   const json = document.querySelector(
-    `[${SSR_ATTRIBUTE}="${ssrAttrValues.APP_STATE}"]`
+    `[${SSR_ATTRIBUTE}="${ssrAttrValues.APP_STATE}"]`,
   )?.textContent;
 
   if (!json) return;
@@ -190,15 +190,15 @@ function getPreloadedState() {
  */
 export function createManager<
   StoreState extends DefaultStoreState,
-  EffectAPI extends DefaultEffectAPI<StoreState> = DefaultEffectAPI<StoreState>
+  EffectAPI extends DefaultEffectAPI<StoreState> = DefaultEffectAPI<StoreState>,
 >(
-  options: CreateManagerOptions<StoreState, EffectAPI> = {}
+  options: CreateManagerOptions<StoreState, EffectAPI> = {},
 ): Manager<StoreState, EffectAPI> {
   const isDev = isDevEnv();
   const isDebugging = isDebugEnv();
 
   const defaultGetEffectAPI: EffectApiCreator<StoreState, EffectAPI> = (
-    defaults
+    defaults,
   ) => {
     return { ...defaults } as unknown as EffectAPI;
   };
@@ -242,7 +242,7 @@ export function createManager<
   const reducer = combineReducers<StoreState>(reducersMap);
 
   function resolveEnhancers(
-    defaultEnhancers: readonly ReduxToolkit.StoreEnhancer[]
+    defaultEnhancers: readonly ReduxToolkit.StoreEnhancer[],
   ): readonly ReduxToolkit.StoreEnhancer[] {
     if (typeof enhancers == "function") {
       return enhancers(defaultEnhancers);
@@ -254,7 +254,7 @@ export function createManager<
   }
 
   function resolveMiddleware(
-    getDefaultMiddleware: CurriedGetDefaultMiddleware<StoreState>
+    getDefaultMiddleware: CurriedGetDefaultMiddleware<StoreState>,
   ): readonly Redux.Middleware[] {
     if (typeof middleware == "function") {
       return middleware(getDefaultMiddleware);
@@ -295,7 +295,7 @@ export function createManager<
   const history = initializeRouter(store);
   const routesCollectionRef = createMutableRef(
     ROUTES_COLLECTION_REF_MESSAGE,
-    routesCollection
+    routesCollection,
   );
   const manager = createManagerInstance({
     actions$,

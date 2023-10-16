@@ -17,7 +17,7 @@ type ComponentDynamicImportFn<T extends React.ComponentType<any>> =
  * @public
  */
 export function lazy<T extends ComponentType<any>>(
-  importer: ComponentDynamicImportFn<T>
+  importer: ComponentDynamicImportFn<T>,
 ): T {
   const LazyComponent = reactLazy(importer);
 

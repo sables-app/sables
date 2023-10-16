@@ -17,7 +17,7 @@ describe("Action", () => {
         createAction("sendRequest/end"),
         async () => {
           return;
-        }
+        },
       );
 
       function MyComponent() {
@@ -34,8 +34,8 @@ describe("Action", () => {
         actions$.pipe(
           map(({ type }) => type),
           take(2),
-          toArray()
-        )
+          toArray(),
+        ),
       );
 
       expect(store.getState()).toBeUndefined();

@@ -10,7 +10,7 @@ describe("framework/hooks/Action", () => {
   const secondActionCreator = createAction("secondAction");
   const thirdActionCreator = enhanceAction(function thirdAction(
     time: Date,
-    text: string
+    text: string,
   ) {
     return {
       type: "thirdAction",
@@ -25,7 +25,7 @@ describe("framework/hooks/Action", () => {
           useAction(
             firstActionCreator,
             secondActionCreator,
-            thirdActionCreator
+            thirdActionCreator,
           );
 
         assertType<(payload: { foo: boolean }) => void>(dispatchFirstAction);

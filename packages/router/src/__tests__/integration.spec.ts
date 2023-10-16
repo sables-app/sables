@@ -36,7 +36,7 @@ describe("integration", () => {
     const aboutRouteEffectsImporter = mockImporter(
       vitest,
       "aboutRouteEffectsImporter",
-      aboutRouteEffects
+      aboutRouteEffects,
     );
     const aboutRoutes = createRoutes()
       .set("aboutUs", "/app/about/company")
@@ -45,7 +45,7 @@ describe("integration", () => {
     const aboutRoutesImporter = mockImporter(
       vitest,
       "aboutRoutesImporter",
-      aboutRoutes
+      aboutRoutes,
     );
     const interruptListener = vi.fn();
     const initialRouteEffects =
@@ -64,7 +64,7 @@ describe("integration", () => {
           invokedImporters = addInvokedImportersToEffectAPI(defaults);
           return defaults;
         },
-      }
+      },
     );
 
     expect(selectCurrentRoute(store.getState())).toBeNull();
@@ -127,7 +127,7 @@ describe("integration", () => {
       }),
       expect.objectContaining({
         actions$,
-      })
+      }),
     );
     expect(aboutDogsRouteEffect).toHaveBeenCalledOnce();
     {
@@ -185,7 +185,7 @@ describe("integration", () => {
         {
           initialLocation: "/app",
           initialRoutes,
-        }
+        },
       );
 
       const dispatchedActions: Redux.AnyAction[] = [];
@@ -196,7 +196,9 @@ describe("integration", () => {
     }
 
     function testOneLocationPush(
-      testTransition: (testBag: ReturnType<typeof prepareTest>) => Promise<void>
+      testTransition: (
+        testBag: ReturnType<typeof prepareTest>,
+      ) => Promise<void>,
     ) {
       it("dispatches only one location push action", async () => {
         const testBag = prepareTest();
@@ -219,7 +221,7 @@ describe("integration", () => {
 
         expect(dispatchedActions.filter(ensureLocation.match)).toHaveLength(4);
         expect(
-          dispatchedActions.filter(locationChange.isPushAction)
+          dispatchedActions.filter(locationChange.isPushAction),
         ).toHaveLength(1);
       });
     }
@@ -242,8 +244,8 @@ describe("integration", () => {
             take(4),
             map(() => {
               store.dispatch(ensureLocation(initialRoutes.Cats));
-            })
-          )
+            }),
+          ),
         );
 
         await Promise.all([dispatches, waitForEnsuredRouteTransition()]);

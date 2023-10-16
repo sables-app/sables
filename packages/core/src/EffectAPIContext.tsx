@@ -6,12 +6,12 @@ import { EFFECT_API_REF_MESSAGE } from "./constants.js";
 import { DefaultEffectAPI } from "./types.js";
 
 const EffectAPIContext = createContext(
-  createMutableRef<DefaultEffectAPI>(EFFECT_API_REF_MESSAGE)
+  createMutableRef<DefaultEffectAPI>(EFFECT_API_REF_MESSAGE),
 );
 
 /** @internal */
 export function EffectAPIProvider<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >({
   children,
   effectAPI,
@@ -22,7 +22,7 @@ export function EffectAPIProvider<
     <EffectAPIContext.Provider
       value={useMemo(
         () => createMutableRef(EFFECT_API_REF_MESSAGE, effectAPI),
-        [effectAPI]
+        [effectAPI],
       )}
     >
       {children}
@@ -51,7 +51,7 @@ export function EffectAPIProvider<
  * @public
  */
 export function useEffectAPI<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >() {
   return useContext(EffectAPIContext).demand() as EffectAPI;
 }

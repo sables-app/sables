@@ -16,7 +16,7 @@ function parseRange(encoded: string | null) {
 
   if (!offsetString || !endString) {
     console.warn(
-      "Encountered a request that didn't specify both the beginning & ending byte."
+      "Encountered a request that didn't specify both the beginning & ending byte.",
     );
     // A server MAY ignore the Range header.
     // https://www.ietf.org/archive/id/draft-ietf-httpbis-p5-range-09.html
@@ -44,7 +44,7 @@ function getResponseHeaders(object: R2Object, range?: ParsedRange) {
   if (range) {
     headers.set(
       "content-range",
-      `bytes ${range.offset}-${range.end}/${object.size}`
+      `bytes ${range.offset}-${range.end}/${object.size}`,
     );
   }
 
@@ -76,7 +76,7 @@ async function handleHeadRequest(bucket: R2Bucket, objectName: string) {
 }
 
 function hasBody(
-  object: R2Object | R2ObjectBody | null
+  object: R2Object | R2ObjectBody | null,
 ): object is R2ObjectBody {
   return !!object && typeof (object as any).body == "object";
 }
@@ -99,7 +99,7 @@ function getResponseStatus(body?: ReadableStream, range?: ParsedRange) {
 async function handleGetRequest(
   request: FetchEvent["request"],
   bucket: R2Bucket,
-  objectName: string
+  objectName: string,
 ) {
   const range = parseRange(request.headers.get("range"));
   const object = await bucket.get(objectName, {
@@ -120,7 +120,7 @@ async function handleGetRequest(
 
 export async function handleR2ObjectRequest(
   request: FetchEvent["request"],
-  bucket: R2Bucket
+  bucket: R2Bucket,
 ): Promise<Response> {
   const url = new URL(request.url);
   // Remove trailing slash

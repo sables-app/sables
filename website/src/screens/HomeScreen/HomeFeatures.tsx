@@ -187,7 +187,7 @@ export function HomeFeatures() {
         heading={translate("homeScreen.features.sliceInsertion.heading")}
         apiLinkHash="#add-slice-dependencies"
         description={translate(
-          "homeScreen.features.sliceInsertion.description"
+          "homeScreen.features.sliceInsertion.description",
         )}
       />
       <Feature

@@ -13,7 +13,7 @@ export function createMutableRef<T>(errorMessage?: string, initialValue?: T) {
     current: initialValue,
     error() {
       return new ReferenceError(
-        errorMessage || "Value has not been initialized."
+        errorMessage || "Value has not been initialized.",
       );
     },
     demand() {
@@ -31,7 +31,7 @@ export function createMutableRef<T>(errorMessage?: string, initialValue?: T) {
 /** @internal */
 export function demandValue<T>(
   value?: T,
-  message = "An expected value was not defined!"
+  message = "An expected value was not defined!",
 ) {
   return createMutableRef<T>(message, value).demand();
 }
@@ -52,7 +52,7 @@ export function composeMiddleware(
 
     return rest.reduceRight(
       (composed, initFn) => initFn(composed),
-      last(next || identity)
+      last(next || identity),
     );
   }
 
@@ -74,7 +74,7 @@ export function resolveAssetPath(assetPath: string) {
   } catch (error) {
     return new URL(
       assetPath,
-      new URL(assetsBase, "http://example.com/").toString()
+      new URL(assetsBase, "http://example.com/").toString(),
     ).pathname;
   }
 }

@@ -20,8 +20,8 @@ describe("createSlice", () => {
         "adoptPuppies",
         (state, action: PayloadAction<string[]>) => {
           state.puppyCount += action.payload.length;
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -90,7 +90,7 @@ describe("createSlice", () => {
         (builder) =>
           builder.addCase(adoptPuppies, (state) => {
             state.isAnnoyed = true;
-          })
+          }),
       );
 
       adoptPuppies.dependsUpon(catSlice);
@@ -101,7 +101,7 @@ describe("createSlice", () => {
         expect(state).toEqual(undefined);
         expect(catSlice.selectCatState(state)).toHaveProperty(
           "isAnnoyed",
-          false
+          false,
         );
       }
 
@@ -116,7 +116,7 @@ describe("createSlice", () => {
         });
         expect(catSlice.selectCatState(state)).toHaveProperty(
           "isAnnoyed",
-          true
+          true,
         );
       }
     });
@@ -136,7 +136,7 @@ describe("createSlice", () => {
             "adoptPuppies",
             (state, action: PayloadAction<PetName[]>) => {
               state.adoptedPetCount += action.payload.length;
-            }
+            },
           )
           .addCase(adoptDogs, (state, action) => {
             state.adoptedPetCount += action.payload.length;
@@ -151,7 +151,7 @@ describe("createSlice", () => {
           })
           .addDefaultCase((state) => {
             return state;
-          })
+          }),
       );
 
       adoptDogs.dependsUpon(petSlice);
@@ -180,13 +180,13 @@ describe("createSlice", () => {
         "buyBooks",
         (state, action: PayloadAction<string[]>) => {
           state.purchasedBookCount += action.payload.length;
-        }
+        },
       );
       return finalBuilder;
     });
 
     assertType<PayloadActionCreator<string[], "books/buyBooks">>(
-      slice.actions.buyBooks
+      slice.actions.buyBooks,
     );
 
     const action = slice.actions.buyBooks([
@@ -230,11 +230,11 @@ describe("createSlice", () => {
           })
           .addMatcher(increaseBookCount.match, (state, action) => {
             state.purchasedBookCount += action.payload;
-          })
+          }),
     );
 
     assertType<PayloadActionCreator<string[], "books/buyBooks">>(
-      slice.actions.buyBooks
+      slice.actions.buyBooks,
     );
   });
 
@@ -252,11 +252,11 @@ describe("createSlice", () => {
           .addDefaultCase((state) => {
             return state;
           });
-      }
+      },
     );
 
     assertType<PayloadActionCreator<string[], "books/buyBooks">>(
-      slice.actions.buyBooks
+      slice.actions.buyBooks,
     );
   });
 });

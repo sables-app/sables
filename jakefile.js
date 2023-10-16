@@ -48,7 +48,7 @@ task("clean", () =>
     exec("rm -rf ./packages/*/tsconfig.tsbuildinfo"),
     exec("rm -rf ./website/dist"),
     exec("rm -rf ./website/tsconfig.tsbuildinfo"),
-  ])
+  ]),
 );
 
 namespace("clean", () => {
@@ -94,7 +94,7 @@ namespace("deploy", () => {
     taskExec("assets", "npm run deploy:assets --workspace=@sables-app/website");
     taskExec(
       "worker",
-      "npm run deploy:worker --workspace=@sables-app/website -- --env=production"
+      "npm run deploy:worker --workspace=@sables-app/website -- --env=production",
     );
   });
 });

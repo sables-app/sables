@@ -31,8 +31,8 @@ const booksSlice = createSlice("books", {
     "buyBooks",
     (state, action: PayloadAction<string[]>) => {
       state.purchasedBookCount += action.payload.length;
-    }
-  )
+    },
+  ),
 );
 
 const { buyBooks } = booksSlice.actions;
@@ -43,12 +43,12 @@ store.dispatch(
   buyBooks([
     "Goosebumps: Night of the Living Dummy",
     "Goosebumps: Welcome to Dead House",
-  ])
+  ]),
 );
 
 const selectPurchasedBookCount = createSelector(
   selectBooksState,
-  ({ purchasedBookCount }) => purchasedBookCount
+  ({ purchasedBookCount }) => purchasedBookCount,
 );
 
 // Returns `2`
@@ -76,10 +76,10 @@ In contrast, `DraftSlice.setReducer` uses a single fluent interface for all redu
 type PetName = string;
 
 const adoptCats = createAction<PetName[], "adoptCats">(
-  "adoptCats"
+  "adoptCats",
 );
 const adoptDogs = createAction<PetName[], "adoptDogs">(
-  "adoptDogs"
+  "adoptDogs",
 );
 
 const slice = createSlice("pets", {
@@ -90,7 +90,7 @@ const slice = createSlice("pets", {
       "adoptPuppies",
       (state, action: PayloadAction<PetName[]>) => {
         state.adoptedPetCount += action.payload.length;
-      }
+      },
     )
     .addCase(adoptDogs, (state, action) => {
       state.adoptedPetCount += action.payload.length;
@@ -98,7 +98,7 @@ const slice = createSlice("pets", {
     .addCases({
       adoptKittens: (
         state,
-        action: PayloadAction<PetName[]>
+        action: PayloadAction<PetName[]>,
       ) => {
         state.adoptedPetCount += action.payload.length;
       },
@@ -108,7 +108,7 @@ const slice = createSlice("pets", {
     })
     .addDefaultCase((state) => {
       return state;
-    })
+    }),
 );
 
 adoptDogs.dependsUpon(slice);
@@ -187,7 +187,7 @@ type Book = { id: string; name: string };
 
 const booksSlice = createEntitySlice<Book>().setReducer(
   "book",
-  { best: (id: string) => id }
+  { best: (id: string) => id },
 );
 
 const { addBook, denoteBestBook } = booksSlice.actions;
@@ -197,7 +197,7 @@ store.dispatch(
   addBook({
     id: "1",
     name: "Goosebumps: Night of the Living Dummy",
-  })
+  }),
 );
 
 store.dispatch(denoteBestBook("1"));
@@ -294,7 +294,7 @@ const showAlertWithId = extendAction(
       ...action.meta,
       alertId: nanoid(),
     },
-  })
+  }),
 );
 ```
 
@@ -318,14 +318,14 @@ const dogsSlice = createSlice("dogs", {
 }).setReducer((builder) =>
   builder.addCase(adoptDog, (state) => {
     state.adoptionCount++;
-  })
+  }),
 );
 
 const dogsObservable = createObservable(({ actions$ }) =>
   actions$.pipe(
     filter(adoptDog.match),
-    tap(() => console.log("A dog was adopted!"))
-  )
+    tap(() => console.log("A dog was adopted!")),
+  ),
 );
 
 adoptDog.dependsUpon(dogsSlice, dogsObservable);
@@ -341,8 +341,8 @@ const dogsSlice = createSlice("dogs", {
     "adoptPuppies",
     (state, action: PayloadAction<string[]>) => {
       state.puppyCount += action.payload.length;
-    }
-  )
+    },
+  ),
 );
 
 const { adoptPuppies } = dogsSlice.actions;
@@ -352,7 +352,7 @@ const catSlice = createSlice("cat", {
 }).setReducer((builder) =>
   builder.addCase(adoptPuppies, (state) => {
     state.isAnnoyed = true;
-  })
+  }),
 );
 
 adoptPuppies.dependsUpon(catSlice);
@@ -433,9 +433,9 @@ const getUser = createSideEffect(
   createAction<Response>("getUser/end"),
   async (action, effectAPI) => {
     return fetch(
-      `https://api.example.com/users/${action.payload}`
+      `https://api.example.com/users/${action.payload}`,
     );
-  }
+  },
 );
 
 // The dispatched action will cause a request to be sent to
@@ -465,7 +465,7 @@ type SuperHero = {
 
 const getSuperHero = createSideEffectActions(
   createAction<SuperHero["id"]>("getSuperHero/start"),
-  createAction<SuperHero>("getSuperHero/end")
+  createAction<SuperHero>("getSuperHero/end"),
 );
 
 // Returns: { type: "getSuperHero/start", payload: "1212" }
@@ -479,13 +479,13 @@ const endAction = getSuperHero.end(
     username: "Hawkeye",
   },
   // Affiliate with the start action
-  startAction
+  startAction,
 );
 
 // Returns `true`
 const actionsAreAffiliated = getSuperHero.hasAffiliation(
   startAction,
-  endAction
+  endAction,
 );
 ```
 
@@ -512,8 +512,8 @@ const getDataObservableCreator = createSideEffectObservable(
   getData,
   (effectAPI) =>
     fetch("https://api.example.com/data.json").then(
-      (response) => response.json()
-    )
+      (response) => response.json(),
+    ),
 );
 
 // Dispatching the start action will send the request
@@ -538,11 +538,11 @@ const dogsEntityAdapter = createEntityAdapter<Dog>();
 
 const dogsSlice = createSlice(
   "dogs",
-  dogsEntityAdapter.getInitialState()
+  dogsEntityAdapter.getInitialState(),
 ).setReducer((builder) =>
   builder.addCases(
-    distinctEntityReducers(dogsEntityAdapter, "dog")
-  )
+    distinctEntityReducers(dogsEntityAdapter, "dog"),
+  ),
 );
 
 // `addDog` is equal to `addOne` from Redux Toolkit
@@ -564,11 +564,11 @@ const cactiAdapter = createEntityAdapter<Cactus>({
 
 const cactiSlice = createSlice(
   "cacti",
-  cactiAdapter.getInitialState()
+  cactiAdapter.getInitialState(),
 ).setReducer((builder) =>
   builder.addCases(
-    distinctEntityReducers(cactiAdapter, "cactus", "cacti")
-  )
+    distinctEntityReducers(cactiAdapter, "cactus", "cacti"),
+  ),
 );
 
 const { addCactus, addCacti } = cactiSlice.actions;
@@ -577,7 +577,7 @@ store.dispatch(
   addCactus({
     plantId: "1",
     name: "Opuntia",
-  })
+  }),
 );
 store.dispatch(
   addCacti([
@@ -589,7 +589,7 @@ store.dispatch(
       plantId: "3",
       name: "Mammillaria",
     },
-  ])
+  ]),
 );
 ```
 
@@ -633,13 +633,13 @@ interface Book {
 const booksEntityAdapter = createEntityAdapter<Book>();
 const booksSlice = createSlice(
   "books",
-  booksEntityAdapter.getInitialState()
+  booksEntityAdapter.getInitialState(),
 ).setReducer((builder) => builder);
 
 // `selectBookCount` is equal to `selectTotal` from Redux Toolkit
 const { selectBookCount } = distinctEntitySelectors(
   booksEntityAdapter.getSelectors(booksSlice.selector),
-  "book"
+  "book",
 );
 ```
 
@@ -675,7 +675,7 @@ const booksAdapter = createEntityAdapter<Book>();
 const notableBooks = createNotableEntities(
   booksAdapter,
   "book",
-  { best: (id: string) => id }
+  { best: (id: string) => id },
 );
 ```
 
@@ -693,7 +693,7 @@ const booksAdapter = createEntityAdapter<Book>({
 });
 const booksReducers = distinctEntityReducers(
   booksAdapter,
-  "book"
+  "book",
 );
 const notableBooks = createNotableEntities(
   booksAdapter,
@@ -704,7 +704,7 @@ const notableBooks = createNotableEntities(
     // The adjective function returns the ID of the notable entity.
     best: (payload: { id: string; reason: string }) =>
       payload.id,
-  }
+  },
 );
 const booksSlice = createSlice("books", {
   ...booksAdapter.getInitialState(),
@@ -712,7 +712,7 @@ const booksSlice = createSlice("books", {
 }).setReducer((builder) =>
   builder
     .addCases(booksReducers)
-    .addCases(notableBooks.reducers)
+    .addCases(notableBooks.reducers),
 );
 // Selectors are created for each adjective
 const {
@@ -735,7 +735,7 @@ store.dispatch(
   denoteBestBook({
     id: "1",
     reason: "It's awesome!",
-  })
+  }),
 );
 ```
 
@@ -770,7 +770,7 @@ const booksSlice = createSlice("books", {
 
 const selectBooks = createSelector(
   booksSlice.selector,
-  ({ books }) => books
+  ({ books }) => books,
 );
 ```
 
@@ -795,7 +795,7 @@ const booksSlice = createSlice("books", {
 
 const selectBooks = createSelector(
   booksSlice.selector,
-  ({ books }) => books
+  ({ books }) => books,
 );
 
 function MyComponent() {
@@ -908,7 +908,7 @@ const sendRequest = createSideEffect(
   createAction("sendRequest/end"),
   async () => {
     return;
-  }
+  },
 );
 
 function MyComponent() {
@@ -938,7 +938,7 @@ function MyComponent() {
 
   useEffect(() => {
     const subscription = effectAPI.actions$.subscribe(
-      console.log
+      console.log,
     );
 
     return () => subscription.unsubscribe();
@@ -1093,7 +1093,7 @@ const routes = createRoutes()
   .set("profile", "/profiles/:handle");
 
 const profileRouteWithParams = routes.find(
-  "/profiles/@ash.ketchum"
+  "/profiles/@ash.ketchum",
 );
 ```
 
@@ -1175,7 +1175,7 @@ const routes = createRoutes()
   .setRoutes("/settings/*", () => settingsRoutes)
   .setRoutes(
     "/company/*",
-    () => import("./companyRoutes.js")
+    () => import("./companyRoutes.js"),
   );
 ```
 
@@ -1228,7 +1228,7 @@ createRouteEffects()
   // Lazy-load routes when a location matches the Profiles wildcard route
   .append(
     initialRoutes.Profiles,
-    addRoutes(() => import("./profileRoutes.js"))
+    addRoutes(() => import("./profileRoutes.js")),
   );
 ```
 
@@ -1272,7 +1272,7 @@ const routes = createRoutes().set("root", "/");
 
 createRouteEffects().append(
   routes.Root,
-  delayTransition(5000)
+  delayTransition(5000),
 );
 ```
 
@@ -1301,7 +1301,7 @@ const routes = createRoutes().set("root", "/");
 
 createRouteEffects().prepend(
   routes.Root.id,
-  delayTransition(5000)
+  delayTransition(5000),
 );
 ```
 
@@ -1690,7 +1690,7 @@ The middleware resolves early if the route transition was aborted.
 const routeEffects = createRouteEffects()
   // Log a message during every route transition
   .appendAll(
-    logTransition("A route transition is occurring.")
+    logTransition("A route transition is occurring."),
   );
 ```
 
@@ -1712,7 +1712,7 @@ const routeEffects = createRouteEffects()
   // Forwards "/" to "/app"
   .append(
     routes.Root.id,
-    forwardTo(() => routes.AppRoot)
+    forwardTo(() => routes.AppRoot),
   );
 ```
 
@@ -1742,7 +1742,7 @@ const routeEffects = createRouteEffects()
   // Add `profileRoutes` when the location matches `initialRoutes.Profile`
   .append(
     initialRoutes.Profile.id,
-    addRoutes(() => profileRoutes)
+    addRoutes(() => profileRoutes),
   );
 
 initialRoutes.setEffects(() => routeEffects);
@@ -1761,7 +1761,7 @@ The series execution is halted if the transition is aborted.
 ```ts
 const myRouteEffect = chainMiddleware(
   delayTransition(3000),
-  logTransition("A route transition occurred.")
+  logTransition("A route transition occurred."),
 );
 ```
 
@@ -1777,7 +1777,7 @@ route listeners in series synchronously.
 ```ts
 const myRouteListener = combineListeners(
   () => console.log("First log."),
-  () => console.log("Second log.")
+  () => console.log("Second log."),
 );
 ```
 
@@ -1796,19 +1796,19 @@ const getBooks = createSideEffect(
   createAction<{ id: string }>("getBooks/start"),
   createAction<Response>("getBooks/end"),
   async (action) =>
-    fetch(`https://example.com/books/${action.payload.id}`)
+    fetch(`https://example.com/books/${action.payload.id}`),
 );
 const loadBooks = sideEffectToRouteMiddleware(
   getBooks,
   (params) =>
     yup
       .object({ id: yup.string().required() })
-      .validate(params)
+      .validate(params),
 );
 
 createRoutes().setEffects(() =>
   // Loads books for every route transition
-  createRouteEffects().appendAll(loadBooks)
+  createRouteEffects().appendAll(loadBooks),
 );
 ```
 
@@ -1858,7 +1858,7 @@ Writing `defineParam(":parameterName")` is effectively the same as writing
 
 ```ts
 const profilePath = definePath`/profiles/${defineParam(
-  ":handle"
+  ":handle",
 )}`;
 
 const routes = createRoutes()
@@ -1965,7 +1965,7 @@ function MyComponent(props: {
     routes.Profile,
     {
       handle: "@ash.ketchum",
-    }
+    },
   );
 
   return (
@@ -2015,7 +2015,7 @@ A selector that retrieves the current location from the given store state.
 
 ```ts
 const currentLocation = selectCurrentLocation(
-  store.getState()
+  store.getState(),
 );
 ```
 
@@ -2065,7 +2065,7 @@ A selector that determines whether a route is currently transitioning from the g
 
 ```ts
 const isRouteTransitioning = selectIsRouteTransitioning(
-  store.getState()
+  store.getState(),
 );
 ```
 
@@ -2080,10 +2080,10 @@ Creates a selector that determines whether the current route has the same ID as 
 ```ts
 const routes = createRoutes().set("root", "/");
 const selectRouteMatchesRoot = createRouteMatchSelector(
-  routes.Root
+  routes.Root,
 );
 const routeMatchesRoot = selectRouteMatchesRoot(
-  store.getState()
+  store.getState(),
 );
 ```
 
@@ -2100,7 +2100,7 @@ const routes = createRoutes().set("root", "/");
 const selectLocationMatchesRoot =
   createLocationMatchSelector(routes.Root);
 const locationMatchesRoot = selectLocationMatchesRoot(
-  store.getState()
+  store.getState(),
 );
 ```
 
@@ -2129,7 +2129,7 @@ Creates a standalone router for use with any Redux-based framework.
 ```ts
 const initialRoutes = createRoutes().set(
   "appRoot",
-  "/app/:abc"
+  "/app/:abc",
 );
 const router = createRouter({ initialRoutes });
 const store = Redux.createStore();
@@ -2282,7 +2282,7 @@ Sets the initial reducer map for the Redux store reducer.
 ```ts
 const dogsSlice = ReduxToolkit.createSlice(
   "dogs",
-  {}
+  {},
 ).setReducer((builder) => builder);
 
 function configureManager() {
@@ -2326,7 +2326,7 @@ const basicSlice = ReduxToolkit.createSlice({
 });
 const enhancedSlice = ReduxToolkit.createSlice(
   "enhanced",
-  {}
+  {},
 ).setReducer((builder) => builder);
 
 manager.store.insertSlices(birdsSlice, enhancedSlice);
@@ -2346,8 +2346,8 @@ const locationChangeLogger = createObservable(
   ({ actions$ }) =>
     actions$.pipe(
       filter(locationChange.match),
-      tap(() => console.log("The location changed!"))
-    )
+      tap(() => console.log("The location changed!")),
+    ),
 );
 
 manager.subscribeTo(locationChangeLogger);
@@ -2413,7 +2413,7 @@ _With a `configureManager` function:_
 const configureManager = defineConfigureManager(
   ({ initialLocation }) => {
     return createManager({ initialLocation });
-  }
+  },
 );
 
 function App() {
@@ -2486,7 +2486,7 @@ A utility function to assist in defining `configureManager` functions.
 export const configureManager = defineConfigureManager(
   ({ initialLocation }) => {
     return createManager({ initialLocation });
-  }
+  },
 );
 ```
 

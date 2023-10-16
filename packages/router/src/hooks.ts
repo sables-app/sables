@@ -69,7 +69,7 @@ export function useLink<Route extends BuildHrefInput>(
  * @public
  */
 export function useLinkProps<
-  Route extends AnyRouteReference | PartialHistoryPathStrict
+  Route extends AnyRouteReference | PartialHistoryPathStrict,
 >(
   onClick?: MouseEventHandler<HTMLAnchorElement>,
   ...options: BuildHrefOptions<Route>
@@ -98,7 +98,7 @@ export function useLinkProps<
       event.preventDefault();
       ensureLocation();
     },
-    [ensureLocation, onClick]
+    [ensureLocation, onClick],
   );
 
   return useMemo(
@@ -110,7 +110,7 @@ export function useLinkProps<
         onClick: handleClick,
       },
     }),
-    [href, handleClick]
+    [href, handleClick],
   );
 }
 

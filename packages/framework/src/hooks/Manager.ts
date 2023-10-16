@@ -6,7 +6,7 @@ import { ConfigureManagerFn, Manager } from "../types.js";
 
 /** @internal */
 export function useConfigureManager<M extends Manager<any, any>>(
-  configureManager: ConfigureManagerFn<M> | undefined
+  configureManager: ConfigureManagerFn<M> | undefined,
 ) {
   return resolveConfigureManager<M>(useLifecycleState(), configureManager);
 }
@@ -35,10 +35,10 @@ export function useConfigureManager<M extends Manager<any, any>>(
  * @public
  */
 export function defineEffectAPIHook<EffectAPI extends DefaultEffectAPI>(
-  configureManager: ConfigureManagerFn<Manager<any, EffectAPI>>
+  configureManager: ConfigureManagerFn<Manager<any, EffectAPI>>,
 ): () => EffectAPI;
 export function defineEffectAPIHook<
-  EffectAPI extends DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI,
 >(): () => EffectAPI;
 export function defineEffectAPIHook<EffectAPI extends DefaultEffectAPI>() {
   return useEffectAPI as () => EffectAPI;

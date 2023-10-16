@@ -82,7 +82,7 @@ export function Link<Route extends AnyRouteReference>({
   const Component = as || "a";
   const historyPath = useMemo(
     (): PartialHistoryPathStrict => ({ pathname: route.build(params), hash }),
-    [hash, params, route]
+    [hash, params, route],
   );
   const { href, handleClick } = useLinkProps(onClick, historyPath);
 

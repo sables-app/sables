@@ -19,7 +19,7 @@ type EntityAdapterOptions<Entity> = Parameters<
 type EntitySliceState<
   Entity,
   Adjectives extends NotableEntities.Adjectives,
-  SingularName extends string
+  SingularName extends string,
 > = ReduxToolkit.EntityState<Entity> &
   NotableEntities.SliceState<Entity, Adjectives, SingularName>;
 
@@ -27,7 +27,7 @@ type EntitySliceReducers<
   Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string,
-  PluralName extends string
+  PluralName extends string,
 > = NotableEntities.Instance<Entity, Adjectives, SingularName>["reducers"] &
   EntityReducers.Reducers<Entity, SingularName, PluralName> &
   ReduxToolkit.EntityStateAdapter<Entity>;
@@ -36,7 +36,7 @@ type EntitySliceSelectors<
   Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string,
-  PluralName extends string
+  PluralName extends string,
 > = NotableEntities.Selectors<
   Record<PluralName, EntitySliceState<Entity, Adjectives, SingularName>> &
     Record<string, unknown>,
@@ -50,7 +50,7 @@ type EntitySliceMixin<
   Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string,
-  PluralName extends string
+  PluralName extends string,
 > = {
   entityAdapter: ReduxToolkit.EntityAdapter<Entity>;
   selectors: EntitySliceSelectors<Entity, Adjectives, SingularName, PluralName>;
@@ -58,7 +58,7 @@ type EntitySliceMixin<
 
 /** @internal */
 function getEntityReducers<
-  Adapter extends ReduxToolkit.EntityStateAdapter<any>
+  Adapter extends ReduxToolkit.EntityStateAdapter<any>,
 >(adapter: Adapter) {
   return {
     addOne: adapter.addOne,
@@ -85,7 +85,7 @@ export type EntitySlice<
   Entity,
   Adjectives extends NotableEntities.Adjectives,
   SingularName extends string,
-  PluralName extends string
+  PluralName extends string,
 > = EnhancedSlice<
   ReduxToolkit.Slice<
     EntitySliceState<Entity, Adjectives, SingularName>,
@@ -150,13 +150,13 @@ type ReduxToolkitReducer<State> = ReturnType<
  * @public
  */
 export function createEntitySlice<Entity>(
-  adapterOptions?: EntityAdapterOptions<Entity>
+  adapterOptions?: EntityAdapterOptions<Entity>,
 ) {
   return {
     setReducer<
       Adjectives extends NotableEntities.Adjectives | void,
       SingularName extends string,
-      PluralName extends string = `${SingularName}s`
+      PluralName extends string = `${SingularName}s`,
     >(
       name: SingularName | [SingularName, PluralName],
       adjectives?: Adjectives,
@@ -165,10 +165,10 @@ export function createEntitySlice<Entity>(
           Entity,
           NormalizeAdjectives<Adjectives>,
           SingularName
-        >
+        >,
       ) => ReduxToolkitReducer<
         EntitySliceState<Entity, NormalizeAdjectives<Adjectives>, SingularName>
-      >
+      >,
     ): EntitySlice<
       Entity,
       NormalizeAdjectives<Adjectives>,
@@ -182,7 +182,7 @@ export function createEntitySlice<Entity>(
       const notableEntities = createNotableEntities(
         entityAdapter,
         singularName,
-        adjectives || {}
+        adjectives || {},
       );
       const initialState = {
         ...entityAdapter.getInitialState(),
@@ -198,14 +198,14 @@ export function createEntitySlice<Entity>(
 
           if (createReducerExtension) {
             const reducerExtension = createReducerExtension(
-              initialState
+              initialState,
             ) as ReduxToolkit.CaseReducer;
 
             return builderWithEntityCases.addDefaultCase(reducerExtension);
           }
 
           return builderWithEntityCases;
-        }
+        },
       );
       const adapterSelectors = entityAdapter.getSelectors(slice.selector);
       const selectors = {

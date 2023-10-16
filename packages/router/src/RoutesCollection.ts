@@ -13,7 +13,7 @@ import type { MatchingHref, RouteID, RouteWithParams } from "./types.js";
 
 /** @internal */
 export interface RoutesCollection<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > {
   getRouteByID<RID extends RouteID>(id?: RID): RouteReference<RID> | undefined;
   add(routes: Routes<EffectAPI>): void;
@@ -30,7 +30,7 @@ const DEFAULT_ROOT_ID = "defaultRoot";
 
 /** @internal */
 export function createRoutesCollection<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(): RoutesCollection<EffectAPI> {
   let collection = new Set<Routes<EffectAPI>>();
   let defaultInitialRoutes:
@@ -50,7 +50,7 @@ export function createRoutesCollection<
 
       defaultInitialRoutes = createRoutes<EffectAPI>().set(
         DEFAULT_ROOT_ID,
-        "/"
+        "/",
       );
 
       routesCollection.add(initialRoutes || defaultInitialRoutes);
@@ -90,7 +90,7 @@ export function createRoutesCollection<
 
 /** @internal */
 export function isRoutesCollection<EffectAPI extends DefaultEffectAPI>(
-  value: unknown
+  value: unknown,
 ): value is RoutesCollection<EffectAPI> {
   return (
     typeof value == "object" &&

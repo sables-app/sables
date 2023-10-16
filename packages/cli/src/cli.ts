@@ -19,13 +19,13 @@ export function runCli() {
       "build",
       `Build a Sables project using the "sables.config.js" file located in the current directory.`,
       verboseOption,
-      buildArtifacts
+      buildArtifacts,
     )
     .command(
       "create",
       "Generate a new app from a boilerplate.",
       verboseOption,
-      createBoilerplate
+      createBoilerplate,
     )
     .demandCommand()
     .help().argv;

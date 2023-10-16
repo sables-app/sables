@@ -44,7 +44,7 @@ describe("integration", () => {
     const DogsScreenImporter = mockImporter(vitest, "DogsImporter", DogsScreen);
     const selectLocationEndsWithCats = createSelector(
       selectCurrentLocation,
-      (location) => !!location?.pathname?.endsWith("cats")
+      (location) => !!location?.pathname?.endsWith("cats"),
     );
     const TestRouteSwitch = createRouteSwitch({
       fallback: <LoadingScreen />,

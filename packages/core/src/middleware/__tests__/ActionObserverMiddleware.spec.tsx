@@ -22,8 +22,8 @@ describe("ActionObservableMiddleware", () => {
         actions$.pipe(
           tap(() => {
             observerEmittedAnAction = true;
-          })
-        )
+          }),
+        ),
       );
 
       store.dispatch(firstAction);

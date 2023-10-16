@@ -15,7 +15,7 @@ describe("EntitySlice", () => {
         ["book", "books"],
         {
           best: (id: string) => id,
-        }
+        },
       );
 
       // @ts-expect-error The action doesn't accept invalid values
@@ -50,7 +50,7 @@ describe("EntitySlice", () => {
       booksSlice.selectors.selectWorstBook;
       // The selector should exist
       assertType<(state: Record<string, unknown>) => Book[]>(
-        booksSlice.selectors.selectAllBooks
+        booksSlice.selectors.selectAllBooks,
       );
 
       expect(selectBestBook(store.getState())).toEqual(undefined);
@@ -100,7 +100,7 @@ describe("EntitySlice", () => {
       // The correct plural name is derived when only the singular name is provided
       // eslint-disable-next-line @typescript-eslint/ban-types
       assertType<EntitySlice<Foo2, {}, "foo", "foos">>(
-        createEntitySlice<Foo2>().setReducer("foo")
+        createEntitySlice<Foo2>().setReducer("foo"),
       );
     });
 
@@ -118,8 +118,8 @@ describe("EntitySlice", () => {
           createReducer(initialState, (builder) =>
             builder.addCase(adoptDog, (state, action) => {
               dogsSlice.caseReducers.addDog(state, action);
-            })
-          )
+            }),
+          ),
       );
 
       adoptDog.dependsUpon(dogsSlice);
@@ -132,7 +132,7 @@ describe("EntitySlice", () => {
         adoptDog({
           id: 1,
           name: "Fei",
-        })
+        }),
       );
 
       expect(store.getState()).toMatchSnapshot();

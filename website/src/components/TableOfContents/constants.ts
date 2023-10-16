@@ -16,7 +16,7 @@ export type HeadingTag = (typeof headingTags)[number];
 export type RenderedHeadingTag = (typeof renderedHeadingTags)[number];
 
 export function isHeadingTag(
-  propertyName: string | symbol
+  propertyName: string | symbol,
 ): propertyName is HeadingTag {
   return (
     typeof propertyName == "string" && headingTags.includes(propertyName as any)
@@ -24,7 +24,7 @@ export function isHeadingTag(
 }
 
 export function isRenderedHeadingTag(
-  propertyName: string | symbol
+  propertyName: string | symbol,
 ): propertyName is RenderedHeadingTag {
   return (
     typeof propertyName == "string" &&
@@ -33,7 +33,7 @@ export function isRenderedHeadingTag(
 }
 
 export function isRenderedHeadingMeta(
-  headingMeta: HeadingMeta
+  headingMeta: HeadingMeta,
 ): headingMeta is HeadingMeta<RenderedHeadingTag> {
   return isRenderedHeadingTag(headingMeta.tag);
 }

@@ -23,7 +23,7 @@ import { RouteID, RouteMiddleware } from "../types.js";
 
 export function initializeTestRouter(
   vitest: typeof import("vitest"),
-  options: CreateRouterOptions = {}
+  options: CreateRouterOptions = {},
 ) {
   const routeEffectFn = vitest.vi.fn();
   const routeEffects = createRouteEffects().append("appRoot", routeEffectFn);
@@ -96,7 +96,7 @@ export function createHookTester(store: Redux.Store, useHook: () => void) {
     create(
       <Provider store={store}>
         <TestComponent />
-      </Provider>
+      </Provider>,
     );
   }
 
@@ -109,7 +109,7 @@ export function createHookTester(store: Redux.Store, useHook: () => void) {
 
 export function createRouterHookTester(
   vitest: typeof import("vitest"),
-  useHook: () => void
+  useHook: () => void,
 ) {
   const context = initializeTestRouter(vitest);
 
@@ -128,7 +128,7 @@ export function addInvokedImportersToEffectAPI(effectAPI: DefaultEffectAPI) {
   effectAPI[SYMBOL_EFFECT_API_LIFECYCLE].current = {
     serverRequestStateRef: createMutableRef(
       "serverRequestStateRef test error message",
-      { invokedImporters }
+      { invokedImporters },
     ),
   };
 
@@ -185,7 +185,7 @@ export function mockRouteEffectParams(vitest: typeof import("vitest")) {
 export function mockImporter<T>(
   vitest: typeof import("vitest"),
   uniqueName: string,
-  defaultExport: T
+  defaultExport: T,
 ) {
   const mockImporter = vitest.vi.fn(async () => ({
     default: defaultExport,

@@ -72,7 +72,7 @@ export type ExtractParamName<RawParamName> =
  * @public
  */
 export function defineParam<RawParamName extends RawParamNameType>(
-  rawParamName: RawParamName
+  rawParamName: RawParamName,
 ): RawParamName {
   return rawParamName;
 }
@@ -108,7 +108,7 @@ export function definePath<RawParamName>(
 ): TemplatePathFromRawParamName<RawParamName> {
   const path = pieces.reduce(
     (result, piece, index) => `${result}${piece}${rawParamNames[index] || ""}`,
-    ""
+    "",
   );
 
   assertRoutePathType(path);
@@ -122,7 +122,7 @@ export function definePath<RawParamName>(
 
 /** @internal */
 export function routePathToTemplatePath<Path extends RoutePathType>(
-  path: Path
+  path: Path,
 ): TemplatePath<Path, unknown> {
   return { path };
 }
@@ -134,7 +134,7 @@ export function isWildCardPath(path: AnyRoutePath): path is WildCardPathType {
 
 /** @internal */
 export function assertWildCardRoutePath(
-  path: AnyRoutePath
+  path: AnyRoutePath,
 ): asserts path is WildCardPathType {
   if (!isWildCardPath(path)) {
     throw new Error(`The provided route path must be a wildcard path.`);
@@ -143,7 +143,7 @@ export function assertWildCardRoutePath(
 
 /** @internal */
 export function assertNotWildCardRoutePath(
-  path: AnyRoutePath
+  path: AnyRoutePath,
 ): asserts path is RoutePathType {
   if (isWildCardPath(path)) {
     throw new Error(`The provided route path must not be a wildcard path.`);
@@ -152,7 +152,7 @@ export function assertNotWildCardRoutePath(
 
 /** @internal */
 export function assertWildCardRouteTemplatePath<ParamName = any>(
-  templatePath: TemplatePath<any, ParamName>
+  templatePath: TemplatePath<any, ParamName>,
 ): asserts templatePath is TemplatePath<WildCardPathType, ParamName> {
   if (!isWildCardPath(templatePath.path)) {
     throw new Error(`The provided route path must be a wildcard path.`);
@@ -161,7 +161,7 @@ export function assertWildCardRouteTemplatePath<ParamName = any>(
 
 /** @internal */
 export function assertNotWildCardRouteTemplatePath<ParamName = any>(
-  templatePath: TemplatePath<any, ParamName>
+  templatePath: TemplatePath<any, ParamName>,
 ): asserts templatePath is TemplatePath<RoutePathType, ParamName> {
   if (isWildCardPath(templatePath.path)) {
     throw new Error(`The provided route path must not be a wildcard path.`);
@@ -170,7 +170,7 @@ export function assertNotWildCardRouteTemplatePath<ParamName = any>(
 
 /** @internal */
 export function assertRoutePathType(
-  path: string
+  path: string,
 ): asserts path is RoutePathType {
   if (!path.startsWith("/")) {
     throw new Error("Route paths much begin with a forward slash (/).");
@@ -179,7 +179,7 @@ export function assertRoutePathType(
 
 /** @internal */
 export function normalizeRoutePath<Path extends RoutePathType>(
-  pathInput: Path | TemplatePath<Path, any>
+  pathInput: Path | TemplatePath<Path, any>,
 ): TemplatePath<Path, any> {
   return typeof pathInput == "string"
     ? routePathToTemplatePath(pathInput)
@@ -188,7 +188,7 @@ export function normalizeRoutePath<Path extends RoutePathType>(
 
 /** @internal */
 export function createPathParser(
-  templatePath: TemplatePath<AnyRoutePath, unknown>
+  templatePath: TemplatePath<AnyRoutePath, unknown>,
 ) {
   const parserPath = isWildCardPath(templatePath.path)
     ? `${templatePath.path}${PARSER_WILDCARD_PARAM_NAME}`

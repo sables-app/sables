@@ -12,7 +12,7 @@ import { DefaultEffectAPI } from "../types.js";
 import { createEffectAPIDefaults } from "../utils.js";
 
 export function mockEffectAPI(
-  vitest: typeof import("vitest")
+  vitest: typeof import("vitest"),
 ): DefaultEffectAPI {
   return createEffectAPIDefaults({
     dispatch: vitest.vi.fn(),
@@ -32,7 +32,7 @@ export function createTestStore(
     middleware?: ReduxToolkit.Middleware[];
     preloadedState?: Record<string, unknown>;
     reducer?: ReduxToolkit.Reducer;
-  } = {}
+  } = {},
 ) {
   const { actions$, actionObservableMiddleware } =
     createActionObservableMiddleware();
@@ -61,7 +61,7 @@ export function createTestStore(
   effectAPIRef.demand().getState = store.getState;
 
   const storeStates$ = new BehaviorSubject<Record<string, unknown>>(
-    store.getState()
+    store.getState(),
   );
 
   function recordState() {

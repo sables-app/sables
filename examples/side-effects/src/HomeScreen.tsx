@@ -5,7 +5,7 @@ import { FormEventHandler, useCallback } from "react";
 import { searchDogs } from "./sideEffects.js";
 
 function submissionToPayload(
-  event: React.FormEvent<HTMLFormElement>
+  event: React.FormEvent<HTMLFormElement>,
 ): Record<string, unknown> | undefined {
   const formEl = event.nativeEvent.target;
 
@@ -24,10 +24,10 @@ function useSubmitHandler() {
 
       start(
         // Cast assumes the payload is valid
-        submissionToPayload(event) as any
+        submissionToPayload(event) as any,
       );
     },
-    [start]
+    [start],
   );
 
   return {

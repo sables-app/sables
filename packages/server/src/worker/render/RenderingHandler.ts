@@ -16,7 +16,7 @@ interface RenderingHandlerOptions {
 
 export function createRenderingHandler(
   app: AppInput,
-  options: RenderingHandlerOptions = {}
+  options: RenderingHandlerOptions = {},
 ) {
   const { describeResponse, sablesBuildMeta } = options;
   const { taggedSSRManifest, template } = getBuildMeta(sablesBuildMeta);

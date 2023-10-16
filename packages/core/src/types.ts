@@ -54,7 +54,7 @@ export interface StandardAction<Type extends string, Payload = any> {
 export interface BasicActionCreator<
   Type extends string,
   Params extends [...params: any],
-  Action extends StandardAction<Type>
+  Action extends StandardAction<Type>,
 > {
   (...params: Params): Action;
 }
@@ -67,7 +67,7 @@ export interface BasicPayloadActionCreator<Payload, Type extends string> {
 /** @internal */
 type DecoratedActionCreator<
   T extends string,
-  AC extends (...args: any) => any
+  AC extends (...args: any) => any,
 > = AC & {
   match(action?: Redux.Action): action is ReturnType<AC>;
   toString(): T;
@@ -77,7 +77,7 @@ type DecoratedActionCreator<
 /** @internal */
 export type DecoratedBasicActionCreator<
   Type extends string,
-  AC extends BasicActionCreator<Type, any, any>
+  AC extends BasicActionCreator<Type, any, any>,
 > = AC & {
   match(action?: Redux.Action): action is ReturnType<AC>;
   toString(): Type;
@@ -88,7 +88,7 @@ export type DecoratedBasicActionCreator<
 export type StandardActionCreator<
   Type extends string,
   Params extends [...params: any],
-  Action extends StandardAction<Type>
+  Action extends StandardAction<Type>,
 > = DecoratedBasicActionCreator<Type, BasicActionCreator<Type, Params, Action>>;
 
 /** @internal */
@@ -115,12 +115,12 @@ type EnhancedActionCreator<AC extends (...args: any) => any> = AC &
 
 /** @internal */
 export type EnhancedStandardActionCreator<
-  AC extends StandardActionCreator<any, any, any>
+  AC extends StandardActionCreator<any, any, any>,
 > = EnhancedActionCreator<AC>;
 
 /** @internal */
 export type EnhancedActionCreatorWithPayload<
-  AC extends ReduxToolkit.ActionCreatorWithPayload<any>
+  AC extends ReduxToolkit.ActionCreatorWithPayload<any>,
 > = EnhancedStandardActionCreator<
   StandardActionCreator<ReturnType<AC>["type"], Parameters<AC>, ReturnType<AC>>
 >;
@@ -134,7 +134,7 @@ export type EnhancedActionCreatorWithPayload<
 export type ActionCreator<
   Type extends string = string,
   Params extends [...params: any] = unknown[],
-  Action extends StandardAction<Type> = StandardAction<Type>
+  Action extends StandardAction<Type> = StandardAction<Type>,
 > = EnhancedStandardActionCreator<StandardActionCreator<Type, Params, Action>>;
 
 /**
@@ -145,7 +145,7 @@ export type ActionCreator<
  */
 export type PayloadActionCreator<
   Payload,
-  Type extends string = string
+  Type extends string = string,
 > = EnhancedStandardActionCreator<
   DecoratedBasicActionCreator<
     Type,
@@ -159,7 +159,7 @@ type DependsUponFn<T> = (...dependencies: ActionDependency[]) => T;
 /** @public */
 export type SideEffectActions<
   StartActionCreator extends PayloadActionCreator<any>,
-  EndActionCreator extends PayloadActionCreator<any>
+  EndActionCreator extends PayloadActionCreator<any>,
 > = {
   /**
    * Adds a dependency to the action.
@@ -179,7 +179,7 @@ export type SideEffectActions<
       EndActionCreator["type"],
       (
         payload: ReturnType<EndActionCreator>["payload"],
-        startAction?: ReturnType<StartActionCreator>
+        startAction?: ReturnType<StartActionCreator>,
       ) => PayloadAction<
         ReturnType<EndActionCreator>["payload"],
         EndActionCreator["type"]
@@ -187,20 +187,20 @@ export type SideEffectActions<
     >
   >;
   getStartAction(
-    endAction: ReturnType<EndActionCreator>
+    endAction: ReturnType<EndActionCreator>,
   ): ReturnType<StartActionCreator> | undefined;
   hasAffiliation(
     startAction: Redux.AnyAction,
-    endAction: Redux.AnyAction
+    endAction: Redux.AnyAction,
   ): boolean;
   match(
-    action?: Redux.Action
+    action?: Redux.Action,
   ): action is ReturnType<StartActionCreator> | ReturnType<EndActionCreator>;
   start: EnhancedActionCreator<
     DecoratedActionCreator<
       StartActionCreator["type"],
       (
-        payload: ReturnType<StartActionCreator>["payload"]
+        payload: ReturnType<StartActionCreator>["payload"],
       ) => PayloadAction<
         ReturnType<StartActionCreator>["payload"],
         StartActionCreator["type"]
@@ -288,8 +288,9 @@ export type EnhancedSlice<S extends ReduxToolkit.Slice = ReduxToolkit.Slice> =
  */
 export type Slice<
   State = any,
-  CaseReducers extends ReduxToolkit.SliceCaseReducers<State> = ReduxToolkit.SliceCaseReducers<State>,
-  Name extends string = string
+  CaseReducers extends
+    ReduxToolkit.SliceCaseReducers<State> = ReduxToolkit.SliceCaseReducers<State>,
+  Name extends string = string,
 > = EnhancedSlice<ReduxToolkit.Slice<State, CaseReducers, Name>>;
 /** @internal */
 export type AnySlice = ReduxToolkit.Slice<any, any, any>;
@@ -362,7 +363,7 @@ export type DefaultEffectAPI<StoreState extends Record<string, unknown> = any> =
  */
 export type ObservableCreator<
   EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
-  T = unknown
+  T = unknown,
 > = (effectAPI: EffectAPI) => RxJS.Observable<T>;
 
 /** @internal */

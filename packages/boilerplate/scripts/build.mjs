@@ -28,11 +28,11 @@ async function generateBoilerplateFromExample(distDir, boilerplate) {
   await Promise.all([
     fs.moveAsync(
       path.resolve(destDir, "package.json"),
-      path.resolve(destDir, "package-template.json")
+      path.resolve(destDir, "package-template.json"),
     ),
     fs.moveAsync(
       path.resolve(destDir, "tsconfig.json"),
-      path.resolve(destDir, "tsconfig-template.json")
+      path.resolve(destDir, "tsconfig-template.json"),
     ),
   ]);
 }
@@ -43,13 +43,13 @@ async function getBoilerplates() {
    * @type {import("@changesets/types").PackageJSON}
    */
   const pkgJSON = JSON.parse(
-    await fs.readAsync(path.resolve(__dirname, "../package.json"))
+    await fs.readAsync(path.resolve(__dirname, "../package.json")),
   );
   const boilerplatePackageNames = Object.keys(
-    pkgJSON.devDependencies || {}
+    pkgJSON.devDependencies || {},
   ).filter((packageName) => packageName.startsWith("@sables-app/boilerplate-"));
   const boilerplatePackages = workspaces.packages.filter(({ packageJson }) =>
-    boilerplatePackageNames.includes(packageJson.name)
+    boilerplatePackageNames.includes(packageJson.name),
   );
 
   /**
@@ -78,14 +78,14 @@ async function main() {
   // Write manifest
   await fs.writeAsync(
     path.resolve(distDir, "boilerplates.json"),
-    boilerplatesManifest
+    boilerplatesManifest,
   );
 
   // Generate all of the boilerplates
   await Promise.all(
     boilerplates.map((boilerplate) =>
-      generateBoilerplateFromExample(distDir, boilerplate)
-    )
+      generateBoilerplateFromExample(distDir, boilerplate),
+    ),
   );
 
   console.info(`Done. Generated ${boilerplates.length} boilerplates.`);
