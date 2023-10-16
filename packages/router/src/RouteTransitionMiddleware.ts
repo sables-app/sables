@@ -55,7 +55,7 @@ import {
 
 /** @internal */
 export function createRouteTransitionMiddleware<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >({
   effectAPIRef,
   onError = console.error,
@@ -70,7 +70,7 @@ export function createRouteTransitionMiddleware<
   const actions$ = new ActionSubject();
 
   function destinationToLocation<Route extends BuildHrefInput>(
-    dest: NavigationDestination<Route>
+    dest: NavigationDestination<Route>,
   ): RouteHref | PartialHistoryPathStrict {
     if (typeof dest == "string") {
       return dest;
@@ -86,7 +86,7 @@ export function createRouteTransitionMiddleware<
   }
 
   function destinationToHref<Route extends BuildHrefInput>(
-    dest: NavigationDestination<Route>
+    dest: NavigationDestination<Route>,
   ): RouteHref {
     const location = destinationToLocation(dest);
 
@@ -103,19 +103,19 @@ export function createRouteTransitionMiddleware<
     const effectAPI = effectAPIRef.demand();
 
     function isCurrentTransition<
-      T extends { payload: { transitionID: string } }
+      T extends { payload: { transitionID: string } },
     >({ payload }: T) {
       return payload.transitionID === transitionID;
     }
 
     const transitionEndActions$ = actions$.pipe(
       filter(transitionRouteActions.end.match),
-      filter(isCurrentTransition)
+      filter(isCurrentTransition),
     );
 
     const transitionStartActions$ = actions$.pipe(
       filter(transitionRouteActions.start.match),
-      filter(isCurrentTransition)
+      filter(isCurrentTransition),
     );
 
     const handlerByTransitionEndReason: Record<
@@ -129,14 +129,14 @@ export function createRouteTransitionMiddleware<
     };
 
     async function endHandler(
-      action: ReturnType<typeof transitionRouteActions.end>
+      action: ReturnType<typeof transitionRouteActions.end>,
     ) {
       effectHandlers?.onEnd?.(action, effectAPI);
       handlerByTransitionEndReason[action.payload.reason]?.(action, effectAPI);
     }
 
     async function startHandler(
-      action: ReturnType<typeof transitionRouteActions.start>
+      action: ReturnType<typeof transitionRouteActions.start>,
     ) {
       effectHandlers?.onStart?.(action, effectAPI);
     }
@@ -175,7 +175,7 @@ export function createRouteTransitionMiddleware<
       };
 
       const { nextRoute, routes } = routesCollection.findByHref(
-        action.payload.location
+        action.payload.location,
       );
 
       // For consistency, the middleware only invokes handlers from the
@@ -191,7 +191,7 @@ export function createRouteTransitionMiddleware<
       const effectHandlers = await routes?._getHandlersByRouteID(
         effectAPI,
         nextRoute?.id,
-        createDynamicImportRegistrar(effectAPI)
+        createDynamicImportRegistrar(effectAPI),
       );
 
       setupListeners({
@@ -211,7 +211,7 @@ export function createRouteTransitionMiddleware<
         await effectHandlers?.middleware?.(
           startAction,
           effectAPI,
-          abortController.signal
+          abortController.signal,
         );
 
         // When a transition is interrupted, an exception isn't thrown,
@@ -223,8 +223,8 @@ export function createRouteTransitionMiddleware<
             completeRouteTransition(
               locationChange,
               transitionID,
-              nextRoute || null
-            )
+              nextRoute || null,
+            ),
           );
         }
       } catch (signalOrError) {
@@ -237,7 +237,7 @@ export function createRouteTransitionMiddleware<
                 "Infinite loop detected.",
                 "A route effect has attempted to add routes that have already been added.",
                 "This means that the added routes don't have a higher specificity to prevent an infinite loop.",
-              ].join(" ")
+              ].join(" "),
             );
 
             dispatch(failRouteTransition(locationChange, transitionID, error));
@@ -257,13 +257,13 @@ export function createRouteTransitionMiddleware<
           // Dispatching a History action will subsequently dispatch an
           // `transitionRouteActions.end` action, when the current transition is interrupted.
           dispatch(
-            replaceLocation(destinationToLocation(signalOrError.destination))
+            replaceLocation(destinationToLocation(signalOrError.destination)),
           );
         } else if (signalOrError instanceof ExitTransitionSignal) {
           dispatch(exitRouteTransition(locationChange, transitionID));
         } else {
           dispatch(
-            failRouteTransition(locationChange, transitionID, signalOrError)
+            failRouteTransition(locationChange, transitionID, signalOrError),
           );
           onError(signalOrError);
         }
@@ -280,7 +280,7 @@ export function createRouteTransitionMiddleware<
       createMutableRef<LocationChangeAction["payload"]>();
 
     return function shouldTransitionRoute(
-      action: ReduxToolkit.AnyAction
+      action: ReduxToolkit.AnyAction,
     ): action is LocationChangeAction {
       if (!locationChange.match(action)) {
         return false;
@@ -314,7 +314,7 @@ export function createRouteTransitionMiddleware<
         currentLocationChange.action !== HistoryAction.Replace &&
         areLocationChangesRouterEquivalent(
           currentLocationChange,
-          prevLocationChange
+          prevLocationChange,
         )
       ) {
         // Don't start a route transition if the route hasn't changed.
@@ -333,7 +333,7 @@ export function createRouteTransitionMiddleware<
 
   function createPushLocationFilter({ getState }: ReduxToolkit.MiddlewareAPI) {
     return function shouldPushLocation(
-      action: ReduxToolkit.AnyAction
+      action: ReduxToolkit.AnyAction,
     ): action is ReturnType<typeof ensureLocation> {
       if (!ensureLocation.match(action)) return false;
 
@@ -354,13 +354,13 @@ export function createRouteTransitionMiddleware<
         filter(shouldTransitionRoute),
         map((action) => {
           transitionRoute(action).catch(onError);
-        })
+        }),
       );
       const locationChanges$ = actions$.pipe(
         filter(shouldPushLocation),
         map((action) => {
           store.dispatch(pushLocation(destinationToLocation(action.payload)));
-        })
+        }),
       );
       const routerObserver$ = merge(transitionStarts$, locationChanges$);
 

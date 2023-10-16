@@ -21,7 +21,7 @@ function createManagerRef() {
 type ServerProps = Pick<ServerRequestState, "href"> | undefined;
 
 function createServerRequestState(
-  serverProps: ServerProps
+  serverProps: ServerProps,
 ): ServerRequestState | undefined {
   if (!serverProps) {
     return undefined;
@@ -38,11 +38,11 @@ function createServerRequestState(
 export type ServerRequestStateRef = MutableReferenceObject<ServerRequestState>;
 
 function createServerRequestStateRef(
-  props: ServerProps
+  props: ServerProps,
 ): ServerRequestStateRef {
   return createMutableRef<ServerRequestState>(
     SERVER_REQUEST_STATE_REF_MESSAGE,
-    createServerRequestState(props)
+    createServerRequestState(props),
   );
 }
 

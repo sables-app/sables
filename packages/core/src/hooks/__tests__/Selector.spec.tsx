@@ -42,7 +42,7 @@ describe("Selector", () => {
       create(
         <Provider store={store}>
           <MyComponent />
-        </Provider>
+        </Provider>,
       );
 
       // Wait for the slice to be added in the next microtask

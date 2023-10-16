@@ -27,7 +27,7 @@ import { DefaultEffectAPI, ObservableCreator } from "../types.js";
  * @public
  */
 export function useObservable<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(observableCreator: ObservableCreator<EffectAPI>) {
   const effectAPI = useEffectAPI<EffectAPI>();
 

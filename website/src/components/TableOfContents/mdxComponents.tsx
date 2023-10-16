@@ -30,7 +30,7 @@ function createMDXComponentFromTag<T extends MarkdownTag>(tag: T) {
 }
 
 const tocMdxComponents: MDXComponents = Object.fromEntries(
-  MARKDOWN_TAGS.map((tag) => [tag, createMDXComponentFromTag(tag)])
+  MARKDOWN_TAGS.map((tag) => [tag, createMDXComponentFromTag(tag)]),
 );
 
 export { tocMdxComponents };

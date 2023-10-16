@@ -27,7 +27,7 @@ export async function transitionToFetchResponse({
   const { serverRequestStateRef } = Lifecycle.ref.demand();
   const manager = resolveConfigureManager(
     Lifecycle.ref.demand(),
-    configureManager
+    configureManager,
   );
 
   serverRequestStateRef.demand().routeTransitionStarted = true;

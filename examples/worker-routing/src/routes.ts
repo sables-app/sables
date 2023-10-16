@@ -11,6 +11,6 @@ export const routes = createRoutes()
   .setEffects(() =>
     createRouteEffects().append(
       routes.AboutCompany.id,
-      forwardTo(() => routes.About)
-    )
+      forwardTo(() => routes.About),
+    ),
   );

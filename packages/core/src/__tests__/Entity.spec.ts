@@ -43,7 +43,7 @@ describe("Entity", () => {
       const bookReducers = distinctEntityReducers(booksAdapter, "book");
       const booksSlice = createSlice(
         "books",
-        booksAdapter.getInitialState()
+        booksAdapter.getInitialState(),
       ).setReducer((builder) => builder.addCases(bookReducers));
 
       return { bookReducers, booksSlice };
@@ -65,7 +65,7 @@ describe("Entity", () => {
         booksSlice.actions.addBook({
           bookId: "1",
           title: "Harry Potter",
-        })
+        }),
       );
 
       expect(store.getState().books).toMatchSnapshot();
@@ -74,11 +74,11 @@ describe("Entity", () => {
         bookReducers.addBook(store.getState().books, {
           bookId: "1",
           title: "Harry Potter",
-        })
+        }),
       ).toMatchSnapshot();
 
       const booksSelectors = booksAdapter.getSelectors(
-        booksSlice.selectBooksState
+        booksSlice.selectBooksState,
       );
 
       expect(booksSelectors.selectAll(store.getState())).toMatchSnapshot();
@@ -89,42 +89,42 @@ describe("Entity", () => {
         booksSlice.actions.addBook({
           bookId: "3",
           title: "Goosebumps: Night of the Living Dummy",
-        }).payload
+        }).payload,
       ).toMatchSnapshot();
       expect(
         booksSlice.actions.addBooks([
           { bookId: "4", title: "Goosebumps: Night of the Living Dummy" },
           { bookId: "5", title: "Goosebumps: Welcome to Dead House" },
-        ]).payload
+        ]).payload,
       ).toMatchSnapshot();
       expect(
         booksSlice.actions.setBook({
           bookId: "3",
           title: "Goosebumps: Night of the Living Dummy",
-        }).payload
+        }).payload,
       ).toMatchSnapshot();
       expect(
         booksSlice.actions.setBooks([
           { bookId: "4", title: "Goosebumps: Night of the Living Dummy" },
           { bookId: "5", title: "Goosebumps: Welcome to Dead House" },
-        ]).payload
+        ]).payload,
       ).toMatchSnapshot();
       expect(
         booksSlice.actions.setAllBooks([
           { bookId: "4", title: "Goosebumps: Night of the Living Dummy" },
           { bookId: "5", title: "Goosebumps: Welcome to Dead House" },
-        ]).payload
+        ]).payload,
       ).toMatchSnapshot();
       expect(booksSlice.actions.removeBook("2").payload).toMatchSnapshot();
       expect(
-        booksSlice.actions.removeBooks(["1", "3"]).payload
+        booksSlice.actions.removeBooks(["1", "3"]).payload,
       ).toMatchSnapshot();
       expect(booksSlice.actions.removeAllBooks().payload).toMatchSnapshot();
       expect(
         booksSlice.actions.updateBook({
           id: "3",
           changes: { title: "Goosebumps: Night of the Living Dummy" },
-        }).payload
+        }).payload,
       ).toMatchSnapshot();
       expect(
         booksSlice.actions.updateBooks([
@@ -133,19 +133,19 @@ describe("Entity", () => {
             changes: { title: "Goosebumps: Night of the Living Dummy" },
           },
           { id: "4", changes: { title: "Goosebumps: Welcome to Dead House" } },
-        ]).payload
+        ]).payload,
       ).toMatchSnapshot();
       expect(
         booksSlice.actions.upsertBook({
           bookId: "3",
           title: "Goosebumps: Night of the Living Dummy",
-        }).payload
+        }).payload,
       ).toMatchSnapshot();
       expect(
         booksSlice.actions.upsertBooks([
           { bookId: "3", title: "Goosebumps: Night of the Living Dummy" },
           { bookId: "3", title: "Goosebumps: Welcome to Dead House" },
-        ]).payload
+        ]).payload,
       ).toMatchSnapshot();
     });
   });
@@ -163,7 +163,7 @@ describe("Entity", () => {
         ...booksAdapter.getInitialState(),
         ...notableBooks.getInitialState(),
       }).setReducer((builder) =>
-        builder.addCases(bookReducers).addCases(notableBooks.reducers)
+        builder.addCases(bookReducers).addCases(notableBooks.reducers),
       );
 
       const {
@@ -180,18 +180,18 @@ describe("Entity", () => {
       });
 
       const booksSelectors = booksAdapter.getSelectors(
-        booksSlice.selectBooksState
+        booksSlice.selectBooksState,
       );
 
       expect(booksSelectors.selectAll(store.getState())).toMatchSnapshot();
       expect(selectBestBook(store.getState())).toMatchSnapshot(
-        "selectBestBook1"
+        "selectBestBook1",
       );
       expect(selectWorstBook(store.getState())).toMatchSnapshot(
-        "selectWorstBook1"
+        "selectWorstBook1",
       );
       expect(selectFavoriteBook(store.getState())).toMatchSnapshot(
-        "selectFavoriteBook1"
+        "selectFavoriteBook1",
       );
 
       const bestBookPayload = {
@@ -218,23 +218,23 @@ describe("Entity", () => {
           { bookId: "1", title: "Goosebumps: Monster Blood" },
           { bookId: "2", title: "Goosebumps: Night of the Living Dummy" },
           { bookId: "3", title: "Goosebumps: Welcome to Dead House" },
-        ])
+        ]),
       );
 
       expect(selectBestBook(store.getState())).toMatchSnapshot(
-        "selectBestBook2"
+        "selectBestBook2",
       );
       expect(selectWorstBook(store.getState())).toMatchSnapshot(
-        "selectWorstBook2"
+        "selectWorstBook2",
       );
       expect(selectFavoriteBook(store.getState())).toMatchSnapshot(
-        "selectFavoriteBook2"
+        "selectFavoriteBook2",
       );
       expect(selectBestBookPayload(store.getState())).toStrictEqual(
-        bestBookPayload
+        bestBookPayload,
       );
       expect(selectBestBookId(store.getState())).toStrictEqual(
-        bestBookPayload.id
+        bestBookPayload.id,
       );
     });
   });
@@ -244,7 +244,7 @@ describe("Entity", () => {
       const bookReducers = distinctEntityReducers(booksAdapter, "book");
       const booksSlice = createSlice(
         "books",
-        booksAdapter.getInitialState()
+        booksAdapter.getInitialState(),
       ).setReducer((builder) => builder.addCases(bookReducers));
 
       const {
@@ -255,7 +255,7 @@ describe("Entity", () => {
         selectBookIds,
       } = distinctEntitySelectors(
         booksAdapter.getSelectors(booksSlice.selector),
-        "book"
+        "book",
       );
 
       const { store, insertSlices } = createTestStore(vitest);
@@ -266,7 +266,7 @@ describe("Entity", () => {
       assertType<Book | undefined>(selectBookById(store.getState(), "fake-id"));
       assertType<number>(selectBookCount(store.getState()));
       assertType<ReduxToolkit.Dictionary<Book>>(
-        selectBookDictionary(store.getState())
+        selectBookDictionary(store.getState()),
       );
       assertType<ReduxToolkit.EntityId[]>(selectBookIds(store.getState()));
     });

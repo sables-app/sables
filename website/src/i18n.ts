@@ -59,7 +59,7 @@ const translations = {
 
 export function translate(
   dotPath: string,
-  context?: Record<string, unknown> | unknown[]
+  context?: Record<string, unknown> | unknown[],
 ) {
   const translation = get(translations, ["en-US", ...dotPath.split(".")]);
 

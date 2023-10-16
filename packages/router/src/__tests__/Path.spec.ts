@@ -25,10 +25,10 @@ describe("Routes", () => {
 
       const paramPath = definePath`/profiles/${defineParam(":handle")}`;
       const multiPath = definePath`/boom/${defineParam(":pow")}/${defineParam(
-        ":kaboom"
+        ":kaboom",
       )}`;
       const wildcardPath = definePath`/foo/${defineParam(":bar")}/${defineParam(
-        "*"
+        "*",
       )}`;
 
       // `defineParam` infers params
@@ -136,7 +136,7 @@ describe("Routes", () => {
       assertType<
         Readonly<{
           build(
-            params?: Record<"pow" | "kaboom", unknown> | null | undefined
+            params?: Record<"pow" | "kaboom", unknown> | null | undefined,
           ): `/${string}`;
           id: "definedRoute";
           path: `/${string}`;

@@ -33,7 +33,7 @@ export type DefaultStoreState = CombinedRouterState;
  */
 export type ManagerStore<
   StoreState extends DefaultStoreState = DefaultStoreState,
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > = Redux.Store<StoreState> &
   LazySlicesEnhancerExt<EffectAPI> &
   RouterEnhancerExt<EffectAPI>;
@@ -56,7 +56,7 @@ export interface ManagerMethodsOnly {
  */
 export type Manager<
   StoreState extends DefaultStoreState = DefaultStoreState,
-  EffectAPI extends DefaultEffectAPI<StoreState> = DefaultEffectAPI<StoreState>
+  EffectAPI extends DefaultEffectAPI<StoreState> = DefaultEffectAPI<StoreState>,
 > = DefaultEffectAPI<StoreState> &
   ManagerMethodsOnly & {
     [SYMBOL_EFFECT_API_LIFECYCLE]: LifecycleRef;
@@ -93,7 +93,7 @@ export type Manager<
 
 /** @internal */
 export type ManagerRef<
-  StoreState extends DefaultStoreState = DefaultStoreState
+  StoreState extends DefaultStoreState = DefaultStoreState,
 > = MutableReferenceObject<Manager<StoreState>>;
 
 /* --- External Helpers --- */
@@ -106,7 +106,7 @@ export type ManagerRef<
 export type ExtendEffectAPI<
   EffectAPIMixin,
   StoreState extends DefaultStoreState = DefaultStoreState,
-  EffectAPI extends DefaultEffectAPI = any
+  EffectAPI extends DefaultEffectAPI = any,
 > = DefaultEffectAPI<StoreState> &
   ManagerMethodsOnly &
   LazySlicesEnhancerExt<EffectAPI> &
@@ -127,7 +127,7 @@ export type ExtendManager<EffectAPIMixin, AppState extends DefaultStoreState>
  */
 export type ExtendStoreState<
   InitialReducers extends Redux.ReducersMapObject,
-  LazyReducers extends Redux.ReducersMapObject
+  LazyReducers extends Redux.ReducersMapObject,
 > = Redux.StateFromReducersMapObject<InitialReducers> &
   Partial<Redux.StateFromReducersMapObject<LazyReducers>> &
   DefaultStoreState;
@@ -152,7 +152,7 @@ export type ExtendStoreState<
 export type ExtendFramework<
   EffectAPIMixin = Record<string, unknown>,
   InitialReducers extends Redux.ReducersMapObject = Redux.ReducersMapObject,
-  LazyReducers extends Redux.ReducersMapObject = Redux.ReducersMapObject
+  LazyReducers extends Redux.ReducersMapObject = Redux.ReducersMapObject,
 > = {
   // prettier-ignore
   State: ExtendStoreState<InitialReducers, LazyReducers>;
@@ -199,7 +199,7 @@ export type ConfigureManagerParams = {
  * @public
  */
 export type ConfigureManagerFn<
-  M extends Manager<any, any> = Manager<any, any>
+  M extends Manager<any, any> = Manager<any, any>,
 > = (params: ConfigureManagerParams) => M;
 
 /* --- Server Request Context --- */

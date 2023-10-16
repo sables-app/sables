@@ -36,20 +36,20 @@ export const transitionRoute = createSideEffectActions(
   createAction<
     EndRouteTransitionActionPayload,
     typeof END_TRANSITION_ACTION_TYPE
-  >(END_TRANSITION_ACTION_TYPE)
+  >(END_TRANSITION_ACTION_TYPE),
 );
 
 /** @internal */
 export const routeTransitionSlice = createSlice(
   "sablesRouteTransition",
-  createInitialState()
+  createInitialState(),
 ).setReducer((builder) =>
   builder
     .addCase(
       "reportTransitionResult",
       (state, action: PayloadAction<SSRTransitionResult>) => {
         state._ssrTransitionResult = action.payload;
-      }
+      },
     )
     .addCase(transitionRoute.start, (state) => {
       state.isTransitioning = true;
@@ -63,7 +63,7 @@ export const routeTransitionSlice = createSlice(
         state.prevRoute = state.currentRoute;
         state.currentRoute = nextRoute;
       }
-    })
+    }),
 );
 
 transitionRoute.dependsUpon(routeTransitionSlice);
@@ -77,7 +77,7 @@ export const reportTransitionResult =
 /** @internal */
 export function exitRouteTransition(
   locationChange: LocationChangeAction["payload"],
-  transitionID: string
+  transitionID: string,
 ) {
   return transitionRoute.end({
     locationChange,
@@ -90,7 +90,7 @@ export function exitRouteTransition(
 export function completeRouteTransition(
   locationChange: LocationChangeAction["payload"],
   transitionID: string,
-  nextRoute: RouteWithParams | null
+  nextRoute: RouteWithParams | null,
 ) {
   return transitionRoute.end({
     locationChange,
@@ -121,7 +121,7 @@ class RouteTransitionError
   constructor(
     public locationChange: LocationChangeAction["payload"],
     public transitionID: string,
-    public originalError: unknown
+    public originalError: unknown,
   ) {
     super("Route transition failed.");
   }
@@ -131,17 +131,17 @@ class RouteTransitionError
 export function failRouteTransition(
   locationChange: LocationChangeAction["payload"],
   transitionID: string,
-  originalError: unknown
+  originalError: unknown,
 ) {
   return transitionRoute.end(
-    new RouteTransitionError(locationChange, transitionID, originalError)
+    new RouteTransitionError(locationChange, transitionID, originalError),
   );
 }
 
 /** @internal */
 export function interruptRouteTransition(
   locationChange: LocationChangeAction["payload"],
-  transitionID: string
+  transitionID: string,
 ) {
   return transitionRoute.end({
     locationChange,

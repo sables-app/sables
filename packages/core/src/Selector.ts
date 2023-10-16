@@ -36,7 +36,7 @@ export const createSelector: Reselect.CreateSelectorFunction<
     equalityCheckOrOptions?:
       | Reselect.EqualityFn
       | Reselect.DefaultMemoizeOptions
-      | undefined
+      | undefined,
   ],
   {
     clearCache: () => void;

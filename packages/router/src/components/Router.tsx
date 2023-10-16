@@ -13,7 +13,7 @@ import { AnyRouteReference } from "../Routes.js";
 import { selectCurrentRoute } from "../selectors.js";
 
 function getRouteProps(
-  node: ReactNode
+  node: ReactNode,
 ): ComponentProps<typeof Route> | undefined {
   if (isValidElement(node) && node.type === Route) {
     return node.props;

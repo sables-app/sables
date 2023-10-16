@@ -12,5 +12,5 @@ export const configureManager = defineConfigureManager(
       initialRoutes: routes,
       middleware: (getDefaults) => [...getDefaults({ thunk: false })],
     });
-  }
+  },
 );

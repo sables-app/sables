@@ -33,7 +33,7 @@ export function getBuildMeta(buildMeta?: SablesBuildMeta): SablesBuildMeta {
 
 export function getEnvVarString(
   envVarName: string,
-  workerEnv?: Record<string, unknown>
+  workerEnv?: Record<string, unknown>,
 ) {
   function fromImportMeta(): string | undefined {
     try {
@@ -52,7 +52,7 @@ export function getEnvVarString(
   }
 
   function fromWorkerEnv(
-    workerEnv: Record<string, unknown> = {}
+    workerEnv: Record<string, unknown> = {},
   ): string | undefined {
     return workerEnv[envVarName] ? String(workerEnv[envVarName]) : undefined;
   }
@@ -74,7 +74,7 @@ export function getEnvVarString(
  * @internal
  */
 export function getAssetProxyURL(
-  workerEnv: Record<string, unknown> | undefined
+  workerEnv: Record<string, unknown> | undefined,
 ) {
   return getEnvVarString("ASSET_PROXY_URL", workerEnv);
 }
@@ -83,7 +83,7 @@ const IMPORTER_HASH_PATTERN = /\$rollupImportTag\("([a-fA-F0-9]{32})"\)/;
 
 function importerToAssetPaths(
   taggedSSRManifest: TaggedSSRManifest,
-  invokedImporter: string
+  invokedImporter: string,
 ): string[] {
   const matches = IMPORTER_HASH_PATTERN.exec(invokedImporter);
 
@@ -99,7 +99,7 @@ function importerToAssetPaths(
 
 function getAssetPathsFromInvokedImporters(
   serverRequestStateRef: ServerRequestStateRef,
-  taggedSSRManifest: TaggedSSRManifest
+  taggedSSRManifest: TaggedSSRManifest,
 ) {
   const { invokedImporters } = serverRequestStateRef.demand();
 
@@ -130,7 +130,7 @@ function assetPathToTag(assetPath: string) {
 
 function createAppStateTag(
   appState: ServerRequestState["appState"],
-  shouldHydrate: boolean
+  shouldHydrate: boolean,
 ) {
   const serializedAppState = jsesc(appState, {
     es6: true,
@@ -161,7 +161,7 @@ export async function getAssetTags({
 }) {
   const tags = getAssetPathsFromInvokedImporters(
     serverRequestStateRef,
-    taggedSSRManifest
+    taggedSSRManifest,
   ).map(assetPathToTag);
 
   const { appState } = serverRequestStateRef.demand();
@@ -175,7 +175,7 @@ export async function getAssetTags({
 export function parseTemplate(template: string) {
   const [start, secondHalf] = template.split("</head>");
   const [beforeApp, afterApp] = `</head>${secondHalf}`.split(
-    APP_HTML_PLACEHOLDER
+    APP_HTML_PLACEHOLDER,
   );
 
   return { afterApp, beforeApp, start };
@@ -214,7 +214,7 @@ export async function defaultResponseDescriptor({
 }
 
 export async function resolveAppInput(
-  appInput: AppInput
+  appInput: AppInput,
 ): Promise<ReactElement> {
   const App =
     typeof appInput === "function" ? (await appInput()).default : appInput;

@@ -30,7 +30,7 @@ import type {
  */
 export function areLocationChangesRouterEquivalent(
   changeA?: LocationChangeAction["payload"],
-  changeB?: LocationChangeAction["payload"]
+  changeB?: LocationChangeAction["payload"],
 ): boolean {
   return !!(
     changeA &&
@@ -42,7 +42,10 @@ export function areLocationChangesRouterEquivalent(
 
 /** @internal */
 export function isPartialHistoryPath<Route extends BuildHrefInput>(
-  value?: AnyRouteReference | PartialHistoryPathStrict | BuildHrefOptions<Route>
+  value?:
+    | AnyRouteReference
+    | PartialHistoryPathStrict
+    | BuildHrefOptions<Route>,
 ): value is PartialHistoryPathStrict {
   return (
     typeof value === "object" &&
@@ -105,7 +108,7 @@ export function buildLink<Route extends BuildHrefInput>(
 
 /** @internal */
 export function demandRoutesCollectionFromEffectAPI<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(effectAPI: EffectAPI): RoutesCollection<EffectAPI> {
   const routesCollectionRef = effectAPI[SYMBOL_EFFECT_API_ROUTES];
 
@@ -118,7 +121,7 @@ export function demandRoutesCollectionFromEffectAPI<
 
 /** @internal */
 export function createDynamicImportRegistrar<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(effectAPI: EffectAPI): RegisterDynamicImportFn {
   return function registerDynamicImport(dynamicImport) {
     if (!isSSREnv()) return;

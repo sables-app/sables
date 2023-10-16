@@ -28,7 +28,7 @@ describe("Selector", () => {
     it("creates a selector", async () => {
       const selector = createSelector(
         ({ cat }: { cat: { name: string } }) => cat,
-        ({ name }) => name
+        ({ name }) => name,
       );
 
       expect(selector({ cat: { name: "fry" } })).toEqual("fry");
@@ -36,7 +36,7 @@ describe("Selector", () => {
 
     describe("returned selector", () => {
       function assertSliceDependency(
-        slice: Selector | (Selector & ObjectWithLazyMeta)
+        slice: Selector | (Selector & ObjectWithLazyMeta),
       ): asserts slice is Selector & ObjectWithLazyMeta {
         expect(hasLazyMeta(slice)).toBe(true);
       }

@@ -49,7 +49,7 @@ export function createImportTagsPlugin(options?: Partial<PluginConfig>) {
   function codeHasReplacements(
     code: string,
     id: string,
-    magicString: MagicString
+    magicString: MagicString,
   ) {
     let result = false;
     let matches: RegExpExecArray | null;
@@ -76,7 +76,7 @@ export function createImportTagsPlugin(options?: Partial<PluginConfig>) {
 
   function executeReplacement(
     code: string,
-    id: string
+    id: string,
   ): ReturnType<RenderChunkHook> {
     const magicString = new MagicString(code);
 

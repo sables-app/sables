@@ -42,7 +42,7 @@ export type ResponseDescriptorPayload = Pick<
 >;
 
 export type ResponseDescriptor = (
-  payload: ResponseDescriptorPayload
+  payload: ResponseDescriptorPayload,
 ) => Promise<{
   status: number;
   headers: Record<string, string>;

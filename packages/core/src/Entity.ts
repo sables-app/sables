@@ -44,7 +44,7 @@ export namespace EntityReducers {
   export type Reducers<
     Entity,
     SingularName extends string,
-    PluralName extends string
+    PluralName extends string,
   > = {
     [K in keyof ReduxToolkit.EntityStateAdapter<Entity> as ReducerName<
       K,
@@ -72,7 +72,7 @@ export namespace EntitySelectors {
   export type Selectors<
     Entity,
     SingularName extends string,
-    PluralName extends string
+    PluralName extends string,
   > = {
     [K in keyof ReduxToolkit.EntitySelectors<
       Entity,
@@ -116,10 +116,10 @@ export namespace EntitySelectors {
 export function distinctEntityReducers<
   Adapter extends ReduxToolkit.EntityStateAdapter<any>,
   SingularName extends string,
-  PluralName extends string = `${SingularName}s`
+  PluralName extends string = `${SingularName}s`,
 >(
   adapter: Adapter,
-  name: SingularName | [SingularName, PluralName]
+  name: SingularName | [SingularName, PluralName],
 ): EntityReducers.Reducers<
   ExtractEntityFromAdapter<Adapter>,
   SingularName,
@@ -174,10 +174,10 @@ export function distinctEntityReducers<
 export function distinctEntitySelectors<
   Selectors extends ReduxToolkit.EntitySelectors<any, any>,
   SingularName extends string,
-  PluralName extends string = `${SingularName}s`
+  PluralName extends string = `${SingularName}s`,
 >(
   selectors: Selectors,
-  name: SingularName | [SingularName, PluralName]
+  name: SingularName | [SingularName, PluralName],
 ): EntitySelectors.Selectors<
   ExtractEntityFromSelector<Selectors>,
   SingularName,
@@ -209,7 +209,7 @@ export namespace NotableEntities {
 
   export type SliceStatePropertyName<
     Adjective extends string,
-    Name extends string
+    Name extends string,
   > = `${Extract<Adjective, string>}${Capitalize<Name>}Payload`;
 
   export type PayloadFromAdjectiveFn<T extends AdjectiveEntityIDGetter<never>> =
@@ -218,7 +218,7 @@ export namespace NotableEntities {
   export type SliceState<
     Entity,
     A extends Adjectives,
-    Name extends string
+    Name extends string,
   > = ReduxToolkit.EntityState<Entity> & {
     [K in keyof A as SliceStatePropertyName<
       Extract<K, string>,
@@ -228,22 +228,22 @@ export namespace NotableEntities {
 
   export type ReducerName<
     Adjective extends string,
-    Name extends string
+    Name extends string,
   > = `denote${Capitalize<Extract<Adjective, string>>}${Capitalize<Name>}`;
 
   export type EntitySelectorName<
     TAdjective extends string,
-    Name extends string
+    Name extends string,
   > = `select${Capitalize<Extract<TAdjective, string>>}${Capitalize<Name>}`;
 
   export type IdSelectorName<
     Adjective extends string,
-    Name extends string
+    Name extends string,
   > = `select${Capitalize<Extract<Adjective, string>>}${Capitalize<Name>}Id`;
 
   export type PayloadSelectorName<
     Adjective extends string,
-    Name extends string
+    Name extends string,
   > = `select${Capitalize<
     Extract<Adjective, string>
   >}${Capitalize<Name>}Payload`;
@@ -252,24 +252,24 @@ export namespace NotableEntities {
     StoreState,
     Entity,
     A extends Adjectives,
-    Name extends string
+    Name extends string,
   > = {
     [K in keyof A as EntitySelectorName<Extract<K, string>, Name>]: (
-      storeState: StoreState
+      storeState: StoreState,
     ) => Entity | undefined;
   } & {
     [K in keyof A as IdSelectorName<Extract<K, string>, Name>]: (
-      storeState: StoreState
+      storeState: StoreState,
     ) => ReduxToolkit.EntityId | undefined;
   } & {
     [K in keyof A as PayloadSelectorName<Extract<K, string>, Name>]: (
-      storeState: StoreState
+      storeState: StoreState,
     ) => NotableEntities.PayloadFromAdjectiveFn<A[K]> | undefined;
   };
 
   export type Instance<Entity, A extends Adjectives, Name extends string> = {
     getSelectors<StoreState>(
-      selectState: (storeState: StoreState) => SliceState<Entity, A, Name>
+      selectState: (storeState: StoreState) => SliceState<Entity, A, Name>,
     ): Selectors<StoreState, Entity, A, Name>;
     getInitialState(): SliceState<Entity, A, Name>;
     reducers: {
@@ -305,11 +305,11 @@ export namespace NotableEntities {
 export function createNotableEntities<
   Adapter extends ReduxToolkit.EntityStateAdapter<any>,
   A extends NotableEntities.Adjectives,
-  Name extends string
+  Name extends string,
 >(
   _adapter: Adapter,
   singularName: Name,
-  adjectives: A
+  adjectives: A,
 ): NotableEntities.Instance<ExtractEntityFromAdapter<Adapter>, A, Name> {
   type State = NotableEntities.SliceState<
     ExtractEntityFromAdapter<Adapter>,
@@ -319,35 +319,35 @@ export function createNotableEntities<
 
   function getStatePropertyName(
     adjective: string,
-    name: string
+    name: string,
   ): NotableEntities.SliceStatePropertyName<typeof adjective, typeof name> {
     return `${adjective}${capitalize(name)}Payload`;
   }
 
   function getReducerName(
     adjective: string,
-    name: string
+    name: string,
   ): NotableEntities.ReducerName<typeof adjective, typeof name> {
     return `denote${capitalize(adjective)}${capitalize(name)}`;
   }
 
   function getEntitySelectorName(
     adjective: string,
-    name: string
+    name: string,
   ): NotableEntities.EntitySelectorName<typeof adjective, typeof name> {
     return `select${capitalize(adjective)}${capitalize(name)}`;
   }
 
   function getIdSelectorName(
     adjective: string,
-    name: string
+    name: string,
   ): NotableEntities.IdSelectorName<typeof adjective, typeof name> {
     return `select${capitalize(adjective)}${capitalize(name)}Id`;
   }
 
   function getPayloadSelectorName(
     adjective: string,
-    name: string
+    name: string,
   ): NotableEntities.PayloadSelectorName<typeof adjective, typeof name> {
     return `select${capitalize(adjective)}${capitalize(name)}Payload`;
   }
@@ -360,17 +360,17 @@ export function createNotableEntities<
         >;
         const entitySelectorName = getEntitySelectorName(
           adjective,
-          singularName
+          singularName,
         );
         const idSelectorName = getIdSelectorName(adjective, singularName);
         const payloadSelectorName = getPayloadSelectorName(
           adjective,
-          singularName
+          singularName,
         );
         const statePropertyName = getStatePropertyName(adjective, singularName);
         const payloadSelector = createSelector(
           selectState,
-          (state) => (state as any)[statePropertyName]
+          (state) => (state as any)[statePropertyName],
         );
         const idSelector = createSelector(payloadSelector, (payload) => {
           return payload !== undefined
@@ -382,7 +382,7 @@ export function createNotableEntities<
           idSelector,
           (sliceState, id) => {
             return id ? sliceState.entities[id] : undefined;
-          }
+          },
         );
 
         return {
@@ -392,7 +392,7 @@ export function createNotableEntities<
           [payloadSelectorName]: payloadSelector,
         };
       },
-      {}
+      {},
     );
   }
 
@@ -422,7 +422,7 @@ export function createNotableEntities<
         },
       };
     },
-    {}
+    {},
   );
 
   return {

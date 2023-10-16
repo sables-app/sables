@@ -33,9 +33,9 @@ import { createLazyMeta, hasLazyMeta } from "./utils.js";
 export function isEnhancedActionCreator<
   T extends string,
   P extends [...params: any] = [],
-  A extends StandardAction<T> = StandardAction<T>
+  A extends StandardAction<T> = StandardAction<T>,
 >(
-  actionCreator: BasicActionCreator<T, P, A>
+  actionCreator: BasicActionCreator<T, P, A>,
 ): actionCreator is EnhancedStandardActionCreator<
   StandardActionCreator<T, P, A>
 > {
@@ -43,7 +43,7 @@ export function isEnhancedActionCreator<
 }
 
 function findActionCreatorType<T extends string>(
-  actionCreator: BasicActionCreator<T, any, any>
+  actionCreator: BasicActionCreator<T, any, any>,
 ): T {
   try {
     return actionCreator().type;
@@ -90,7 +90,7 @@ type HasOneOptionalParameter = [payload?: any] & { length: 0 | 1 };
  * @public
  */
 export function enhanceAction<AC extends BasicPayloadActionCreator<any, any>>(
-  actionCreator: AC
+  actionCreator: AC,
 ): PayloadActionCreator<
   Parameters<AC> extends HasNoParameters
     ? void
@@ -102,15 +102,15 @@ export function enhanceAction<AC extends BasicPayloadActionCreator<any, any>>(
 export function enhanceAction<
   Type extends string,
   Params extends [...params: any] = [],
-  TAction extends StandardAction<Type> = StandardAction<Type>
+  TAction extends StandardAction<Type> = StandardAction<Type>,
 >(
   actionCreator: BasicActionCreator<Type, Params, TAction>,
-  typeInput?: Type
+  typeInput?: Type,
 ): EnhancedStandardActionCreator<StandardActionCreator<Type, Params, TAction>>;
 export function enhanceAction<
   Type extends string,
   Params extends [...params: any] = [],
-  TAction extends StandardAction<Type> = StandardAction<Type>
+  TAction extends StandardAction<Type> = StandardAction<Type>,
 >(actionCreator: BasicActionCreator<Type, Params, TAction>, typeInput?: Type) {
   if (isEnhancedActionCreator(actionCreator)) {
     return actionCreator;
@@ -144,7 +144,7 @@ export function enhanceAction<
   }
 
   function isObserverBuilder(
-    value: ActionDependency
+    value: ActionDependency,
   ): value is ObservableCreator {
     return typeof value == "function";
   }
@@ -182,7 +182,7 @@ type AnyEnhancedStandardActionCreator = EnhancedStandardActionCreator<
 
 /** @internal */
 function getActionDependencies(
-  actionCreator: AnyEnhancedStandardActionCreator
+  actionCreator: AnyEnhancedStandardActionCreator,
 ): ActionDependency[] {
   const { observers, slices } = actionCreator[SYMBOL_LAZY_META];
 
@@ -192,7 +192,7 @@ function getActionDependencies(
 /** @internal */
 function copyActionDependencies(
   from: AnyEnhancedStandardActionCreator,
-  to: AnyEnhancedStandardActionCreator
+  to: AnyEnhancedStandardActionCreator,
 ) {
   to.dependsUpon(...getActionDependencies(from));
 }
@@ -222,7 +222,7 @@ function copyActionDependencies(
  */
 export function extendAction<AC extends AnyEnhancedStandardActionCreator>(
   actionCreator: AC,
-  actionTransformer: (enhancedAction: ReturnType<AC>) => ReturnType<AC>
+  actionTransformer: (enhancedAction: ReturnType<AC>) => ReturnType<AC>,
 ): AC {
   type Type = (typeof actionCreator)["type"];
   type Params = Parameters<typeof actionCreator>;
@@ -232,7 +232,7 @@ export function extendAction<AC extends AnyEnhancedStandardActionCreator>(
     function nextActionCreator(...args) {
       return actionTransformer(actionCreator(...args));
     },
-    actionCreator.type
+    actionCreator.type,
   ) as AC;
 
   copyActionDependencies(actionCreator, nextActionCreator);
@@ -257,10 +257,10 @@ export function extendAction<AC extends AnyEnhancedStandardActionCreator>(
  * @public
  */
 export function createAction<Payload = void, Type extends string = string>(
-  type: Type
+  type: Type,
 ) {
   return enhanceAction(function actionCreator(
-    payload: Payload
+    payload: Payload,
   ): PayloadAction<Payload, Type> {
     return { type, payload };
   }) as PayloadActionCreator<Payload, Type>;
@@ -283,10 +283,10 @@ export function createAction<Payload = void, Type extends string = string>(
  */
 export function createSideEffectActions<
   StartActionCreator extends PayloadActionCreator<any>,
-  EndActionCreator extends PayloadActionCreator<any>
+  EndActionCreator extends PayloadActionCreator<any>,
 >(
   startBase: StartActionCreator,
-  endBase: EndActionCreator
+  endBase: EndActionCreator,
 ): SideEffectActions<StartActionCreator, EndActionCreator> {
   type T = SideEffectActions<StartActionCreator, EndActionCreator>;
   type StartAction = ReturnType<T["start"]>;
@@ -302,7 +302,7 @@ export function createSideEffectActions<
         ...actionBase.meta,
         [PROPERTY_EFFECT_ACTIONS_ID]: nanoid(),
       },
-    })
+    }),
   );
 
   const endActionCreator: T["end"] = enhanceAction(
@@ -317,20 +317,20 @@ export function createSideEffectActions<
 
       return { ...actionBase, meta };
     },
-    endType
+    endType,
   );
 
   copyActionDependencies(endBase, endActionCreator);
 
   const match: T["match"] = function match(
-    action?: Redux.Action
+    action?: Redux.Action,
   ): action is ReturnType<typeof startBase> | ReturnType<typeof endBase> {
     return startBase.match(action) || endBase.match(action);
   };
 
   const hasAffiliation: T["hasAffiliation"] = function hasAffiliation(
     startAction,
-    endAction
+    endAction,
   ) {
     return !!(
       startActionCreator.match(startAction) &&
@@ -349,7 +349,7 @@ export function createSideEffectActions<
   };
 
   const getStartAction: T["getStartAction"] = function getStartAction(
-    endAction
+    endAction,
   ) {
     return endAction.meta?.[PROPERTY_EFFECT_ACTIONS_START_ACTION];
   };

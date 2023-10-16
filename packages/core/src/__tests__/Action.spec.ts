@@ -24,13 +24,13 @@ describe("Action", () => {
       const { store, storeStates$ } = createTestStore(vitest);
 
       const statesPromise = firstValueFrom(
-        storeStates$.pipe(take(3), toArray())
+        storeStates$.pipe(take(3), toArray()),
       );
       const catsSlice = createSlice("cat", { sleep: true }).setReducer(
         (builder) =>
           builder.addCase(wakeCat, (state, action) => {
             state.sleep = false;
-          })
+          }),
       );
 
       wakeCat.dependsUpon(catsSlice);
@@ -111,7 +111,7 @@ describe("Action", () => {
 
       const addNumbers = enhanceAction(function addNumbers(
         numA: number,
-        numB: number
+        numB: number,
       ) {
         return {
           type: "addNumbers",
@@ -182,11 +182,11 @@ describe("Action", () => {
           (builder) =>
             builder.addCase(adoptDog, (state) => {
               state.adoptionCount++;
-            })
+            }),
         );
         const tapStub = vitest.vi.fn();
         const dogsObservable = createObservable(({ actions$ }) =>
-          actions$.pipe(filter(adoptDog.match), tap(tapStub))
+          actions$.pipe(filter(adoptDog.match), tap(tapStub)),
         );
 
         adoptDog.dependsUpon(dogsSlice, dogsObservable);
@@ -224,7 +224,7 @@ describe("Action", () => {
       assertType<string>(wakeCat.type);
 
       const addNumbers = createAction<[number, number] & { length: 2 }>(
-        "addNumbers"
+        "addNumbers",
       );
 
       // It accepts number tuple
@@ -266,17 +266,17 @@ describe("Action", () => {
           // don't handle `void` union types properly.
           .addCase(
             "end",
-            (state, action: PayloadAction<undefined | Error>) => state
-          )
+            (state, action: PayloadAction<undefined | Error>) => state,
+          ),
       );
       const sideEffectActions = createSideEffectActions(
         slice.actions.start,
-        slice.actions.end
+        slice.actions.end,
       );
       const startAction = sideEffectActions.start(new Date());
       const endAction = sideEffectActions.end(
         new Error("Side effect failed."),
-        startAction
+        startAction,
       );
 
       return {
@@ -301,10 +301,10 @@ describe("Action", () => {
         expect(sideEffectActions.start.type).toBe(slice.actions.start.type);
         expect(sideEffectActions.end.type).toBe(slice.actions.end.type);
         expect(sideEffectActions.start.toString()).toBe(
-          slice.actions.start.toString()
+          slice.actions.start.toString(),
         );
         expect(sideEffectActions.end.toString()).toBe(
-          slice.actions.end.toString()
+          slice.actions.end.toString(),
         );
       });
 
@@ -312,10 +312,10 @@ describe("Action", () => {
         const { endAction, sideEffectActions, slice, startAction } = getStubs();
 
         expect(sideEffectActions.start[SYMBOL_LAZY_META]).not.toBe(
-          slice.actions.start[SYMBOL_LAZY_META]
+          slice.actions.start[SYMBOL_LAZY_META],
         );
         expect(sideEffectActions.end[SYMBOL_LAZY_META]).not.toBe(
-          slice.actions.end[SYMBOL_LAZY_META]
+          slice.actions.end[SYMBOL_LAZY_META],
         );
       });
 
@@ -326,20 +326,20 @@ describe("Action", () => {
         expect(sideEffectActions.end[SYMBOL_LAZY_META].slices.size).toBe(1);
 
         expect(
-          sideEffectActions.start[SYMBOL_LAZY_META].observers.entries()
+          sideEffectActions.start[SYMBOL_LAZY_META].observers.entries(),
         ).toStrictEqual(
-          slice.actions.start[SYMBOL_LAZY_META].observers.entries()
+          slice.actions.start[SYMBOL_LAZY_META].observers.entries(),
         );
         expect(
-          sideEffectActions.end[SYMBOL_LAZY_META].observers.entries()
+          sideEffectActions.end[SYMBOL_LAZY_META].observers.entries(),
         ).toStrictEqual(
-          slice.actions.end[SYMBOL_LAZY_META].observers.entries()
+          slice.actions.end[SYMBOL_LAZY_META].observers.entries(),
         );
         expect(
-          sideEffectActions.start[SYMBOL_LAZY_META].slices.entries()
+          sideEffectActions.start[SYMBOL_LAZY_META].slices.entries(),
         ).toStrictEqual(slice.actions.start[SYMBOL_LAZY_META].slices.entries());
         expect(
-          sideEffectActions.end[SYMBOL_LAZY_META].slices.entries()
+          sideEffectActions.end[SYMBOL_LAZY_META].slices.entries(),
         ).toStrictEqual(slice.actions.end[SYMBOL_LAZY_META].slices.entries());
       });
 

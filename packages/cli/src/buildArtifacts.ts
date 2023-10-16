@@ -89,7 +89,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
   }
 
   async function serverBundleOptionsToServerBundleContext(
-    options: ServerBundleOptions
+    options: ServerBundleOptions,
   ): Promise<ServerBundleContext> {
     logger.verbose("serverBundleOptionsToServerBundleContext");
     const cwd = process.cwd();
@@ -102,11 +102,11 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
     const target = options.target || serverTargets.NODE;
     const destImportTagsManifestPath = path.resolve(
       destServerDir,
-      IMPORT_TAGS_FILENAME
+      IMPORT_TAGS_FILENAME,
     );
     const destSSRManifestPath = path.resolve(
       destServerDir,
-      SSR_MANIFEST_FILENAME
+      SSR_MANIFEST_FILENAME,
     );
 
     return {
@@ -122,7 +122,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
   }
 
   async function createBuildServerContext(
-    options: SablesBuildOptions
+    options: SablesBuildOptions,
   ): Promise<BuildContext> {
     logger.verbose("createBuildServerContext");
     const cwd = process.cwd();
@@ -143,7 +143,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
     const serverBundles = await Promise.all(
       serverBundleOptionsList
         .filter((options): options is ServerBundleOptions => !!options)
-        .map(serverBundleOptionsToServerBundleContext)
+        .map(serverBundleOptionsToServerBundleContext),
     );
 
     return {
@@ -200,23 +200,23 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
   async function bundleAllServers(context: BuildContext) {
     logger.verbose("bundleAllServers");
     await Promise.all(
-      context.serverBundles.map((serverContext) => bundleServer(serverContext))
+      context.serverBundles.map((serverContext) => bundleServer(serverContext)),
     );
   }
 
   function getTempTranspileSubDir(serverContext: ServerBundleContext) {
     return path.resolve(
       serverContext.tempTranspileDir,
-      path.basename(serverContext.tempServerBundleDir)
+      path.basename(serverContext.tempServerBundleDir),
     );
   }
 
   async function getBuildManifestFiles(
-    buildManifestFilePath: string
+    buildManifestFilePath: string,
   ): Promise<AssetFilePath[]> {
     const buildManifest = (await fs.readAsync(
       buildManifestFilePath,
-      "json"
+      "json",
     )) as Promise<BuildManifest>;
 
     return Object.values(buildManifest)
@@ -226,22 +226,22 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
 
   async function getFilesToTranspile(
     context: BuildContext,
-    serverContext: ServerBundleContext
+    serverContext: ServerBundleContext,
   ): Promise<AssetFilePath[]> {
     return getBuildManifestFiles(
-      path.resolve(serverContext.tempServerBundleDir, "manifest.json")
+      path.resolve(serverContext.tempServerBundleDir, "manifest.json"),
     );
   }
 
   async function transpileServerBundle(
     context: BuildContext,
-    serverContext: ServerBundleContext
+    serverContext: ServerBundleContext,
   ) {
     logger.verbose("transpileServerBundle");
 
     await fs.copyAsync(
       serverContext.tempServerBundleDir,
-      getTempTranspileSubDir(serverContext)
+      getTempTranspileSubDir(serverContext),
     );
 
     const bundleFilePaths = await getFilesToTranspile(context, serverContext);
@@ -266,13 +266,13 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
 
   async function prepareDestServerDir(
     context: BuildContext,
-    serverContext: ServerBundleContext
+    serverContext: ServerBundleContext,
   ) {
     logger.verbose("prepareDestServerDir");
     await fs.removeAsync(serverContext.destServerDir);
     await fs.moveAsync(
       getTempTranspileSubDir(serverContext),
-      serverContext.destServerDir
+      serverContext.destServerDir,
     );
 
     if (!context.destClientManifestPath) return;
@@ -280,7 +280,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
     await waitForFileToExist(context.destClientManifestPath);
     await fs.copyAsync(
       path.dirname(context.destClientManifestPath),
-      path.resolve(serverContext.destServerDir, "client")
+      path.resolve(serverContext.destServerDir, "client"),
     );
   }
 
@@ -292,7 +292,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
         ctx.tempServerBundleDir,
         ctx.tempTranspileDir,
       ],
-      []
+      [],
     );
 
     await Promise.all(tempDirs.map(fs.removeAsync));
@@ -301,7 +301,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
   async function waitForFileToExist(
     filePath: string,
     interval = 100,
-    timeout = 5000
+    timeout = 5000,
   ) {
     const deferred = new Deferred();
 
@@ -342,7 +342,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
 
   async function readManifests(
     context: BuildContext,
-    serverContext: ServerBundleContext
+    serverContext: ServerBundleContext,
   ) {
     if (!context.destClientManifestPath) {
       return {
@@ -360,7 +360,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
       ])) as [
         BuildManifest | undefined,
         SSRManifest | undefined,
-        ImportTagsManifest | undefined
+        ImportTagsManifest | undefined,
       ];
 
     if (!clientManifest) {
@@ -387,7 +387,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
 
   function clientChunkToAssetPaths(
     clientManifest: BuildManifest,
-    chunk?: BuildManifestChunk
+    chunk?: BuildManifestChunk,
   ): string[] {
     if (!chunk) return [];
 
@@ -399,7 +399,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
           ...assetPaths,
           ...clientChunkToAssetPaths(clientManifest, clientManifest[srcFile]),
         ],
-        []
+        [],
       );
 
     return [chunk.file, ...cssAssetPaths, ...importAssetPaths];
@@ -407,18 +407,18 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
 
   function srcFileToClientAssetPaths(
     clientManifest: BuildManifest,
-    srcFile: string
+    srcFile: string,
   ) {
     return [
       ...new Set(
-        clientChunkToAssetPaths(clientManifest, clientManifest[srcFile])
+        clientChunkToAssetPaths(clientManifest, clientManifest[srcFile]),
       ),
     ];
   }
 
   function srcFilePrefixSrcFile(
     clientManifest: BuildManifest,
-    { src, importPath }: ImportTagInfo
+    { src, importPath }: ImportTagInfo,
   ) {
     /**
      * This path may not have a file extension depending on the type of file imported.
@@ -450,7 +450,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
     }
 
     return Object.keys(clientManifest).find((srcFile) =>
-      srcFile.startsWith(srcFilePrefix)
+      srcFile.startsWith(srcFilePrefix),
     );
   }
 
@@ -467,7 +467,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
           const [hash, importTagInfo] = importTagsEntry;
           const srcFileToImport = srcFilePrefixSrcFile(
             clientManifest,
-            importTagInfo
+            importTagInfo,
           );
 
           if (!srcFileToImport) {
@@ -479,14 +479,14 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
             hash,
             srcFileToClientAssetPaths(clientManifest, srcFileToImport),
           ];
-        }
-      )
+        },
+      ),
     );
   }
 
   async function buildSablesBuildMeta(
     context: BuildContext,
-    serverContext: ServerBundleContext
+    serverContext: ServerBundleContext,
   ) {
     logger.verbose("buildSablesBuildMeta");
 
@@ -497,7 +497,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
       await waitForFileToExist(context.destClientTemplatePath);
 
       sablesBuildMeta.assetManifest = await createAssetManifest(
-        context.clientBundleDir
+        context.clientBundleDir,
       );
     }
 
@@ -538,7 +538,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
 
   async function prependMetaData(
     context: BuildContext,
-    serverContext: ServerBundleContext
+    serverContext: ServerBundleContext,
   ) {
     logger.verbose("appendMetaData");
     const sablesBuildMeta = await buildSablesBuildMeta(context, serverContext);
@@ -572,7 +572,7 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
 
   async function bundleServerScript(
     context: BuildContext,
-    serverContext: ServerBundleContext
+    serverContext: ServerBundleContext,
   ) {
     logBundleServerScript(serverContext);
     logger.verbose("bundleServerScript");
@@ -585,8 +585,8 @@ export async function buildArtifacts({ verbose }: { verbose?: boolean }) {
     logger.verbose("bundleAllServerScripts");
     await Promise.all(
       context.serverBundles.map((serverBundle) =>
-        bundleServerScript(context, serverBundle)
-      )
+        bundleServerScript(context, serverBundle),
+      ),
     );
   }
 

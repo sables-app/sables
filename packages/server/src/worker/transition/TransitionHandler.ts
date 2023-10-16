@@ -14,7 +14,7 @@ interface TransitionHandlerOptions {
 
 export function createTransitionHandler(
   configureManager: ConfigureManagerFn,
-  options: TransitionHandlerOptions = {}
+  options: TransitionHandlerOptions = {},
 ) {
   const { describeResponse, sablesBuildMeta } = options;
   const { taggedSSRManifest, template } = getBuildMeta(sablesBuildMeta);

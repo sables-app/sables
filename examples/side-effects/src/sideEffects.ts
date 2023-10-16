@@ -24,7 +24,7 @@ export const searchDogs = createSideEffect(
           breed: "Labrador Retriever",
           dob: null,
         },
-      ])
+      ]),
     );
-  }
+  },
 );

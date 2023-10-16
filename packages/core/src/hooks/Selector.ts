@@ -40,7 +40,7 @@ import { getSlicesFromSelector } from "../utils.js";
  */
 export function useSelector<StoreState = unknown, Selected = unknown>(
   selector: (state: StoreState) => Selected,
-  equalityFn?: ReactRedux.EqualityFn<Selected> | undefined
+  equalityFn?: ReactRedux.EqualityFn<Selected> | undefined,
 ): Selected {
   const hasAddedSlicesRef = useRef(false);
   const store = useStore();

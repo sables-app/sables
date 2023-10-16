@@ -28,7 +28,7 @@ describe("effects", () => {
     it("requires a message to be set", () => {
       expect(new RouteMiddlewareSignal()).toHaveProperty(
         "message",
-        expect.any(String)
+        expect.any(String),
       );
     });
   });
@@ -36,7 +36,7 @@ describe("effects", () => {
   describe("AddRoutesSignal", () => {
     it("extends RouteMiddlewareSignal", () => {
       expect(new AddRoutesSignal(createRoutes())).toBeInstanceOf(
-        RouteMiddlewareSignal
+        RouteMiddlewareSignal,
       );
     });
   });
@@ -44,7 +44,7 @@ describe("effects", () => {
   describe("ForwardRouteSignal", () => {
     it("extends RouteMiddlewareSignal", () => {
       expect(new ForwardRouteSignal({ pathname: "/" })).toBeInstanceOf(
-        RouteMiddlewareSignal
+        RouteMiddlewareSignal,
       );
     });
   });
@@ -60,7 +60,7 @@ describe("effects", () => {
       const { params } = mockRouteEffectParams(vitest);
 
       await expect(exitTransition(...params)).rejects.toBeInstanceOf(
-        ExitTransitionSignal
+        ExitTransitionSignal,
       );
     });
 
@@ -97,7 +97,7 @@ describe("effects", () => {
         const routes = createRoutes().set("defaultRoot", "/");
 
         await expect(
-          forwardTo(() => routes.DefaultRoot)(...params)
+          forwardTo(() => routes.DefaultRoot)(...params),
         ).rejects.toBeInstanceOf(ForwardRouteSignal);
       });
 
@@ -105,7 +105,7 @@ describe("effects", () => {
         const { params } = mockRouteEffectParams(vitest);
 
         await expect(
-          forwardTo(() => "/location-does-not-match")(...params)
+          forwardTo(() => "/location-does-not-match")(...params),
         ).rejects.toBeInstanceOf(ForwardRouteSignal);
       });
 
@@ -116,7 +116,7 @@ describe("effects", () => {
         abortController.abort();
 
         await expect(
-          forwardTo(() => routes.DefaultRoot)(...params)
+          forwardTo(() => routes.DefaultRoot)(...params),
         ).resolves.toBeUndefined();
       });
 
@@ -203,7 +203,7 @@ describe("effects", () => {
         expect(invokedImporters).toHaveProperty("size", 0);
 
         await expect(
-          addRoutes(mockDynamicImport)(...params)
+          addRoutes(mockDynamicImport)(...params),
         ).rejects.toBeInstanceOf(AddRoutesSignal);
 
         expect(invokedImporters).toHaveProperty("size", 1);
@@ -216,7 +216,7 @@ describe("effects", () => {
         abortController.abort();
 
         await expect(
-          addRoutes(() => createRoutes())(...params)
+          addRoutes(() => createRoutes())(...params),
         ).resolves.toBeUndefined();
       });
     });
@@ -244,7 +244,7 @@ describe("effects", () => {
         expect(firstEffect).toHaveBeenCalledTimes(0);
 
         const assertionResult = expect(
-          nextRouteEffect(...params)
+          nextRouteEffect(...params),
         ).resolves.toBeUndefined();
 
         expect(firstEffect).toHaveBeenCalledOnce();
@@ -274,7 +274,7 @@ describe("effects", () => {
         expect(firstEffect).toHaveBeenCalledTimes(0);
 
         const assertionResult = expect(
-          nextRouteEffect(...params)
+          nextRouteEffect(...params),
         ).resolves.toBeUndefined();
 
         expect(firstEffect).toHaveBeenCalledOnce();

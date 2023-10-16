@@ -197,7 +197,7 @@ function useTOCPresenter(headings: HeadingMeta[]) {
         result.push(
           <H2Group key={key} headingText={h2Group.heading.children}>
             {h2Group.group}
-          </H2Group>
+          </H2Group>,
         );
       }
 
@@ -213,7 +213,7 @@ function useTOCPresenter(headings: HeadingMeta[]) {
       (h2Group?.group || result).push(
         <TOCItem key={key} tag={heading.tag}>
           {heading.children}
-        </TOCItem>
+        </TOCItem>,
       );
     }
 

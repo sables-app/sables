@@ -13,7 +13,7 @@ import {
 const REF_MESSAGE = "`AnchorSlugProvider` must be used with `AnchorSlug`.";
 
 const AnchorSlugContext = createContext(
-  createMutableRef<GithubSlugger>(REF_MESSAGE)
+  createMutableRef<GithubSlugger>(REF_MESSAGE),
 );
 
 type AnchorSlugProps = {
@@ -96,7 +96,7 @@ export const AnchorSlugProvider = memo(function AnchorSlugProvider({
   children: ReactNode;
 }) {
   const [value] = useState(() =>
-    createMutableRef(REF_MESSAGE, new GithubSlugger())
+    createMutableRef(REF_MESSAGE, new GithubSlugger()),
   );
 
   return (

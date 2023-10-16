@@ -26,7 +26,7 @@ interface RenderingMiddlewareOptions {
 
 export async function createRenderingMiddleware(
   app: AppInput,
-  options: RenderingMiddlewareOptions = {}
+  options: RenderingMiddlewareOptions = {},
 ) {
   const { describeResponse } = options;
   const assetProxyURL = getAssetProxyURL(undefined);
@@ -42,12 +42,12 @@ export async function createRenderingMiddleware(
   if (assetProxyURL) {
     // TODO: Add middleware to proxy assets to the base URL.
     console.error(
-      "Rendering middleware doesn't yet support the option to proxy assets."
+      "Rendering middleware doesn't yet support the option to proxy assets.",
     );
   } else {
     if (!fs.existsSync(assetsDir)) {
       console.error(
-        "Rendering middleware couldn't find client assets directory. Client assets won't be served."
+        "Rendering middleware couldn't find client assets directory. Client assets won't be served.",
       );
     } else {
       server.use(serveStatic(assetsDir, { index: false }));
@@ -60,7 +60,7 @@ export async function createRenderingMiddleware(
     try {
       const template = await vite.transformIndexHtml(
         demandValue(request.originalUrl),
-        baseTemplate
+        baseTemplate,
       );
 
       await renderToServerResponse({

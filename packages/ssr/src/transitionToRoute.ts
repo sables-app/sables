@@ -14,7 +14,7 @@ import { transitionStatuses } from "./constants.js";
 
 function endRouteTransitionToTransitionResult(
   manager: Manager<any, any>,
-  { payload }: ReturnType<typeof transitionRoute.end>
+  { payload }: ReturnType<typeof transitionRoute.end>,
 ): SSRTransitionResult {
   switch (payload.reason) {
     case endRouteTransitionReasons.COMPLETED: {
@@ -62,7 +62,7 @@ const DEFAULT_OPTIONS: TransitionToRouteConfig = { timeout: 20000 };
 export async function transitionToRoute(
   serverRequestStateRef: ServerRequestStateRef,
   manager: Manager<any, any>,
-  options: Partial<TransitionToRouteConfig> = DEFAULT_OPTIONS
+  options: Partial<TransitionToRouteConfig> = DEFAULT_OPTIONS,
 ) {
   console.log("transitionToRoute");
   const config = { ...DEFAULT_OPTIONS, ...options };
@@ -70,18 +70,18 @@ export async function transitionToRoute(
   const transitionResultsFromAction = manager.actions$.pipe(
     filter(transitionRoute.end.match),
     filter(isTransitionFinished),
-    map((action) => endRouteTransitionToTransitionResult(manager, action))
+    map((action) => endRouteTransitionToTransitionResult(manager, action)),
   );
 
   const transitionResultsFromTimeout = timer(config.timeout).pipe(
     map(() => ({
       route: null,
       status: transitionStatuses.TIMEOUT,
-    }))
+    })),
   );
 
   const transitionResult = await firstValueFrom(
-    merge(transitionResultsFromAction, transitionResultsFromTimeout)
+    merge(transitionResultsFromAction, transitionResultsFromTimeout),
   );
 
   const serverRequestState = serverRequestStateRef.demand();

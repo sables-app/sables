@@ -47,7 +47,7 @@ export async function assembleHTMLResponse({
 
   return new Response(
     pageHTML,
-    await describeResponse(serverRequestStateRef.demand())
+    await describeResponse(serverRequestStateRef.demand()),
   );
 }
 
@@ -59,7 +59,7 @@ export async function handleError(error: unknown) {
 
 export function createWorkerHandler(
   appRequestHandler: (request: FetchEvent["request"]) => Promise<Response>,
-  sablesBuildMeta?: SablesBuildMeta
+  sablesBuildMeta?: SablesBuildMeta,
 ) {
   const assetProxyHandler = createAssetProxyHandler({ sablesBuildMeta });
 

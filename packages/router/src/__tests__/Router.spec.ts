@@ -31,12 +31,12 @@ describe("Router", () => {
         expect.objectContaining({
           sablesRouter: expect.any(Function),
           sablesRouteTransition: expect.any(Function),
-        })
+        }),
       );
       expect(router).toHaveProperty("routerSlice", expect.any(Object));
       expect(router.routerSlice).toHaveProperty(
         "reducer",
-        router.reducersMap.sablesRouter
+        router.reducersMap.sablesRouter,
       );
     });
 
@@ -97,7 +97,7 @@ describe("Router", () => {
           type: "sables/transitionRoute/start",
         }),
         expect.objectContaining({ customHelper }),
-        expect.objectContaining({ aborted: false })
+        expect.objectContaining({ aborted: false }),
       );
     });
 
@@ -129,25 +129,25 @@ describe("Router", () => {
 
         expect(defaultEffectAPI).toHaveProperty(
           "actions$",
-          expect.any(ActionSubject)
+          expect.any(ActionSubject),
         );
         expect(defaultEffectAPI).toHaveProperty(
           "dispatch",
-          expect.any(Function)
+          expect.any(Function),
         );
         expect(defaultEffectAPI).toHaveProperty(
           "getState",
-          expect.any(Function)
+          expect.any(Function),
         );
         expect(defaultEffectAPI[SYMBOL_EFFECT_API_LIFECYCLE]).toEqual(
           expect.objectContaining({
             current: undefined,
-          })
+          }),
         );
         expect(defaultEffectAPI[SYMBOL_EFFECT_API_ROUTES]).toEqual(
           expect.objectContaining({
             current: expect.any(Object),
-          })
+          }),
         );
       });
     });
@@ -172,7 +172,7 @@ describe("Router", () => {
 
         expect(router.reducersMap).toHaveProperty(
           "sablesRouter",
-          expect.any(Function)
+          expect.any(Function),
         );
       });
 
@@ -181,7 +181,7 @@ describe("Router", () => {
 
         expect(router.reducersMap).toHaveProperty(
           "sablesRouteTransition",
-          expect.any(Function)
+          expect.any(Function),
         );
       });
     });

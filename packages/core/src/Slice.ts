@@ -26,17 +26,17 @@ import type {
 import { createLazyMeta } from "./utils.js";
 
 function createLazySliceSelectorName<S extends ReduxToolkit.Slice>(
-  slice: S
+  slice: S,
 ): LazySliceSelectorName<S> {
   return `select${capitalize(slice.name)}State`;
 }
 
 function createLazySliceSelector<S extends ReduxToolkit.Slice>(
-  enhancedSliceShell: Partial<EnhancedSlice<S>>
+  enhancedSliceShell: Partial<EnhancedSlice<S>>,
 ): SliceLazySelector<S> {
   const stateProperty: SliceName<S> = demandValue(enhancedSliceShell.name);
   const baseLazySelector: BaseSliceLazySelector<S> = function lazySelector(
-    storeState?: LazySliceStoreState<S>
+    storeState?: LazySliceStoreState<S>,
   ) {
     if (storeState === undefined || !Object.hasOwn(storeState, stateProperty)) {
       // The slice has not been added yet, so the initial state is used instead.
@@ -52,7 +52,7 @@ function createLazySliceSelector<S extends ReduxToolkit.Slice>(
   });
 
   lazySelector[SYMBOL_LAZY_META].slices.add(
-    enhancedSliceShell as unknown as ReduxToolkit.Slice
+    enhancedSliceShell as unknown as ReduxToolkit.Slice,
   );
 
   return lazySelector;
@@ -60,18 +60,18 @@ function createLazySliceSelector<S extends ReduxToolkit.Slice>(
 
 function enhanceSliceActions<S extends AnySlice>(
   actions: S["actions"],
-  enhancedSliceShell: Partial<EnhancedSlice<S>>
+  enhancedSliceShell: Partial<EnhancedSlice<S>>,
 ): EnhancedSlice<S>["actions"] {
   type StandardActionCreatorWithType<Type extends string> =
     StandardActionCreator<Type, [...params: any], StandardAction<Type>>;
   type ActionCreatorEntry<Type extends string> = [
     Type,
-    StandardActionCreatorWithType<Type>
+    StandardActionCreatorWithType<Type>,
   ];
   type ActionCreatorEntries = ActionCreatorEntry<string>[];
   type EnhancedActionCreatorEntry<Type extends string> = [
     Type,
-    EnhancedStandardActionCreator<StandardActionCreatorWithType<Type>>
+    EnhancedStandardActionCreator<StandardActionCreatorWithType<Type>>,
   ];
   type LazyActionCreatorEntries = EnhancedActionCreatorEntry<string>[];
   const actionCreatorEntries = Object.entries(actions) as ActionCreatorEntries;
@@ -80,7 +80,7 @@ function enhanceSliceActions<S extends AnySlice>(
       const nextActionCreator = enhanceAction(actionCreator);
 
       nextActionCreator[SYMBOL_LAZY_META].slices.add(
-        enhancedSliceShell as ReduxToolkit.Slice
+        enhancedSliceShell as ReduxToolkit.Slice,
       );
 
       return [name, nextActionCreator];
@@ -110,12 +110,12 @@ function enhanceSliceActions<S extends AnySlice>(
  * @public
  */
 export function enhanceSlice<S extends ReduxToolkit.Slice>(
-  slice: S
+  slice: S,
 ): EnhancedSlice<S> {
   const selectorName = createLazySliceSelectorName(slice);
 
   function isEnhancedSlice(
-    value: ReduxToolkit.Slice | EnhancedSlice<S>
+    value: ReduxToolkit.Slice | EnhancedSlice<S>,
   ): value is EnhancedSlice<S> {
     return Object.hasOwn(value, selectorName);
   }
@@ -143,7 +143,7 @@ export function enhanceSlice<S extends ReduxToolkit.Slice>(
 namespace SliceBuilder {
   export type ActionTypeCase = [
     actionType: string,
-    reducer: ReduxToolkit.CaseReducer<any, AnyPayloadAction>
+    reducer: ReduxToolkit.CaseReducer<any, AnyPayloadAction>,
   ];
 
   /**
@@ -151,11 +151,11 @@ namespace SliceBuilder {
    */
   export type ActionCreatorCase = [
     actionCreator: ActionCreator<any, any[]>,
-    reducer: ReduxToolkit.CaseReducer<any, AnyPayloadAction>
+    reducer: ReduxToolkit.CaseReducer<any, AnyPayloadAction>,
   ];
 
   export type ActionMatcher<A extends Redux.AnyAction> = (
-    value: Redux.AnyAction
+    value: Redux.AnyAction,
   ) => value is A;
 
   /**
@@ -164,12 +164,12 @@ namespace SliceBuilder {
    */
   export type MatcherCase<A extends Redux.AnyAction = Redux.AnyAction> = [
     actionMatcher: ActionMatcher<A>,
-    reducer: ReduxToolkit.CaseReducer<any, A>
+    reducer: ReduxToolkit.CaseReducer<any, A>,
   ];
 
   export type DefaultCase = [
     empty: undefined,
-    reducer: ReduxToolkit.CaseReducer<any, Redux.AnyAction>
+    reducer: ReduxToolkit.CaseReducer<any, Redux.AnyAction>,
   ];
 
   export type Case =
@@ -179,13 +179,13 @@ namespace SliceBuilder {
     | DefaultCase;
 
   export function isActionTypeCase(
-    reducerCase: SliceBuilder.Case
+    reducerCase: SliceBuilder.Case,
   ): reducerCase is SliceBuilder.ActionTypeCase {
     return typeof reducerCase[0] === "string";
   }
 
   export function isActionCreatorCase(
-    reducerCase: SliceBuilder.Case
+    reducerCase: SliceBuilder.Case,
   ): reducerCase is SliceBuilder.ActionCreatorCase {
     const [value] = reducerCase;
 
@@ -193,7 +193,7 @@ namespace SliceBuilder {
   }
 
   export function isMatcherCase(
-    reducerCase: SliceBuilder.Case
+    reducerCase: SliceBuilder.Case,
   ): reducerCase is SliceBuilder.MatcherCase {
     const [value] = reducerCase;
 
@@ -201,7 +201,7 @@ namespace SliceBuilder {
   }
 
   export function isDefaultCase(
-    reducerCase: SliceBuilder.Case
+    reducerCase: SliceBuilder.Case,
   ): reducerCase is SliceBuilder.DefaultCase {
     return typeof reducerCase[0] === "undefined";
   }
@@ -222,7 +222,7 @@ type CaseReducersFromSliceReducerBuilder<B> =
 export interface SliceReducerBuilderBase<
   State,
   CaseReducers extends ReduxToolkit.SliceCaseReducers<State>,
-  Name extends string
+  Name extends string,
 > {
   /** @internal */
   _assemble(): EnhancedSlice<ReduxToolkit.Slice<State, CaseReducers, Name>>;
@@ -232,7 +232,7 @@ export interface SliceReducerBuilderBase<
 export interface SliceReducerBuilder<
   State,
   CaseReducers extends ReduxToolkit.SliceCaseReducers<State>,
-  Name extends string
+  Name extends string,
 > extends SliceReducerBuilderBase<State, CaseReducers, Name> {
   /**
    * Adds a reducer to handle a specific action.
@@ -241,18 +241,18 @@ export interface SliceReducerBuilder<
    */
   addCase<
     Type extends string,
-    R extends ReduxToolkit.CaseReducer<State, AnyPayloadAction>
+    R extends ReduxToolkit.CaseReducer<State, AnyPayloadAction>,
   >(
     actionType: Type,
-    caseReducer: R
+    caseReducer: R,
   ): SliceReducerBuilder<State, CaseReducers & { [K in Type]: R }, Name>;
   addCase<
     AC extends EnhancedActionCreatorWithPayload<
       ReduxToolkit.ActionCreatorWithPayload<any>
-    >
+    >,
   >(
     actionCreator: AC,
-    caseReducer: ReduxToolkit.CaseReducer<State, ReturnType<AC>>
+    caseReducer: ReduxToolkit.CaseReducer<State, ReturnType<AC>>,
   ): SliceReducerBuilder<State, CaseReducers, Name>;
 
   /**
@@ -261,7 +261,7 @@ export interface SliceReducerBuilder<
    * @public
    */
   addCases<C extends ReduxToolkit.SliceCaseReducers<State>>(
-    reducersMap: C
+    reducersMap: C,
   ): SliceReducerBuilder<State, CaseReducers & C, Name>;
 
   /**
@@ -272,7 +272,7 @@ export interface SliceReducerBuilder<
    */
   addMatcher<A extends Redux.AnyAction>(
     actionMatcher: SliceBuilder.ActionMatcher<A>,
-    caseReducer: ReduxToolkit.CaseReducer<State, A>
+    caseReducer: ReduxToolkit.CaseReducer<State, A>,
   ): Omit<
     SliceReducerBuilder<State, CaseReducers, Name>,
     "addCase" | "addCases"
@@ -284,18 +284,18 @@ export interface SliceReducerBuilder<
    * @public
    */
   addDefaultCase(
-    caseReducer: ReduxToolkit.CaseReducer<State, Redux.AnyAction>
+    caseReducer: ReduxToolkit.CaseReducer<State, Redux.AnyAction>,
   ): SliceReducerBuilderBase<State, CaseReducers, Name>;
 }
 
 function createSliceReducerBuilder<
   State,
   CaseReducers extends ReduxToolkit.SliceCaseReducers<State>,
-  Name extends string
+  Name extends string,
 >(
   name: Name,
   initialState: State,
-  cases: SliceBuilder.Case[]
+  cases: SliceBuilder.Case[],
 ): SliceReducerBuilder<State, CaseReducers, Name> {
   function getReducersOption() {
     return cases.reduce<ReduxToolkit.SliceCaseReducers<State>>(
@@ -311,7 +311,7 @@ function createSliceReducerBuilder<
 
         return result;
       },
-      {}
+      {},
     );
   }
 
@@ -349,7 +349,7 @@ function createSliceReducerBuilder<
   }
 
   function addCases<C extends ReduxToolkit.SliceCaseReducers<State>>(
-    reducers: C
+    reducers: C,
   ) {
     const nextCases = Object.entries(reducers) as SliceBuilder.Case[];
 
@@ -360,7 +360,7 @@ function createSliceReducerBuilder<
   }
 
   function addDefaultCase(
-    reducer: ReduxToolkit.CaseReducer<State, Redux.AnyAction>
+    reducer: ReduxToolkit.CaseReducer<State, Redux.AnyAction>,
   ) {
     return createSliceReducerBuilder(name, initialState, [
       ...cases,
@@ -448,12 +448,12 @@ type DraftSlice<State, Name extends string = string> = {
       State,
       ReduxToolkit.SliceCaseReducers<State>,
       Name
-    >
+    >,
   >(
     buildReducerFn: (
       // eslint-disable-next-line @typescript-eslint/ban-types
-      builder: SliceReducerBuilder<State, {}, Name>
-    ) => B
+      builder: SliceReducerBuilder<State, {}, Name>,
+    ) => B,
   ): EnhancedSlice<
     ReduxToolkit.Slice<State, CaseReducersFromSliceReducerBuilder<B>, Name>
   >;
@@ -502,7 +502,7 @@ type DraftSlice<State, Name extends string = string> = {
  */
 export function createSlice<State, Name extends string = string>(
   name: Name,
-  initialState: State
+  initialState: State,
 ): DraftSlice<State, Name> {
   return {
     setReducer(buildReducerFn) {
@@ -510,7 +510,7 @@ export function createSlice<State, Name extends string = string>(
       const initialBuilder = createSliceReducerBuilder<State, {}, Name>(
         name,
         initialState,
-        []
+        [],
       );
       const finalBuilder = buildReducerFn(initialBuilder);
 

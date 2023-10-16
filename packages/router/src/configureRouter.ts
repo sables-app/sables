@@ -41,7 +41,7 @@ function createRouterSlice(routerReducer: Redux.Reducer<RouterState>) {
 }
 
 function assertInitialRouterState(
-  storeState: unknown
+  storeState: unknown,
 ): asserts storeState is CombinedRouterState {
   const isValid =
     storeState &&
@@ -51,7 +51,7 @@ function assertInitialRouterState(
 
   if (!isValid) {
     throw new Error(
-      "Router reducer have not been configured correctly in the store."
+      "Router reducer have not been configured correctly in the store.",
     );
   }
 }
@@ -86,7 +86,7 @@ function getRouterHistory<EffectAPI extends DefaultEffectAPI>({
  * @internal
  */
 export function configureRouter<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(options: ConfigureRouterOptions<EffectAPI>) {
   const {
     effectAPIRef = createMutableRef<EffectAPI>(EFFECT_API_REF_MESSAGE),
@@ -99,13 +99,13 @@ export function configureRouter<
   const routerSlice = createRouterSlice(historyContext.routerReducer);
   const routerReducersMap = createReducersMapObject(
     routerSlice,
-    routeTransitionSlice
+    routeTransitionSlice,
   );
   const { routesCollection, routeTransitionMiddleware } =
     createRouteTransitionMiddleware({ effectAPIRef, onError });
   const routerMiddleware = composeMiddleware(
     routeTransitionMiddleware,
-    historyContext.routerMiddleware
+    historyContext.routerMiddleware,
   );
 
   initRouter.dependsUpon(routerSlice);

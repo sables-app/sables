@@ -18,7 +18,7 @@ const dogsEntityAdapter = createEntityAdapter<Dog>({
 
 export const dogsSlice = createSlice(
   "dogs",
-  dogsEntityAdapter.getInitialState()
+  dogsEntityAdapter.getInitialState(),
 ).setReducer((builder) =>
-  builder.addCases(distinctEntityReducers(dogsEntityAdapter, "dog"))
+  builder.addCases(distinctEntityReducers(dogsEntityAdapter, "dog")),
 );

@@ -48,7 +48,7 @@ export const locationChange = Object.freeze({
    * and the change was a `HistoryAction.Pop`.
    */
   isPopAction(
-    action: Redux.AnyAction
+    action: Redux.AnyAction,
   ): action is LocationChangeAction<HistoryAction.Pop> {
     return (
       locationChange.match(action) &&
@@ -60,7 +60,7 @@ export const locationChange = Object.freeze({
    * and the change was a `HistoryAction.Push`.
    */
   isPushAction(
-    action: Redux.AnyAction
+    action: Redux.AnyAction,
   ): action is LocationChangeAction<HistoryAction.Push> {
     return (
       locationChange.match(action) &&
@@ -72,7 +72,7 @@ export const locationChange = Object.freeze({
    * and the change was a `HistoryAction.Replace`.
    */
   isReplaceAction(
-    action: Redux.AnyAction
+    action: Redux.AnyAction,
   ): action is LocationChangeAction<HistoryAction.Replace> {
     return (
       locationChange.match(action) &&
@@ -101,7 +101,7 @@ export const chooseLocation = enhanceAction(go, CALL_HISTORY_METHOD);
 export const retreatLocation = enhanceAction(
   // The type for the `goBack` action is incorrect.
   goBack as () => CallHistoryMethodAction<Parameters<History["back"]>>,
-  CALL_HISTORY_METHOD
+  CALL_HISTORY_METHOD,
 );
 
 /**
@@ -113,7 +113,7 @@ export const retreatLocation = enhanceAction(
 export const advanceLocation = enhanceAction(
   // The type for the `goForward` action is incorrect.
   goForward as () => CallHistoryMethodAction<Parameters<History["forward"]>>,
-  CALL_HISTORY_METHOD
+  CALL_HISTORY_METHOD,
 );
 
 /**
@@ -148,7 +148,7 @@ type EnsureLocation = EnhancedStandardActionCreator<
   DecoratedBasicActionCreator<
     EnsureLocationType,
     <Route extends BuildHrefInput>(
-      payload: NavigationDestination<Route>
+      payload: NavigationDestination<Route>,
     ) => PayloadAction<NavigationDestination<Route>, EnsureLocationType>
   >
 >;

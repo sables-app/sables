@@ -29,7 +29,7 @@ import { Link } from "./Link.js";
 import { PreformattedText } from "./PreformattedText.js";
 
 function useCodeBlockPropsFromChild(
-  children: ReactNode
+  children: ReactNode,
 ): ComponentProps<typeof CodeBlock> | undefined {
   return useMemo(() => {
     const childNodes = Children.toArray(children);

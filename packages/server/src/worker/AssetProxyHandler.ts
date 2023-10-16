@@ -37,14 +37,14 @@ export function getAssetProxyBucket(env: WorkerEnv): R2Bucket | undefined {
   }
 
   throw new Error(
-    `The "ASSET_PROXY_R2_BUCKET" env var was set to "${bucketEnvKey}", but the value it points to isn't a R2 Bucket instance.`
+    `The "ASSET_PROXY_R2_BUCKET" env var was set to "${bucketEnvKey}", but the value it points to isn't a R2 Bucket instance.`,
   );
 }
 
 export function createAssetProxyHandler(
   options: {
     sablesBuildMeta?: SablesBuildMeta;
-  } = {}
+  } = {},
 ) {
   const buildMeta = getBuildMeta(options?.sablesBuildMeta);
   const { assetManifest } = buildMeta;
@@ -55,7 +55,7 @@ export function createAssetProxyHandler(
 
   async function proxyToURL(
     request: FetchEvent["request"],
-    assetProxyURL: string | undefined
+    assetProxyURL: string | undefined,
   ) {
     if (!assetProxyURL) return undefined;
 
@@ -73,7 +73,7 @@ export function createAssetProxyHandler(
 
   async function proxyToBucket(
     request: FetchEvent["request"],
-    assetProxyBucket?: R2Bucket
+    assetProxyBucket?: R2Bucket,
   ) {
     if (!assetProxyBucket) return undefined;
 
@@ -86,7 +86,7 @@ export function createAssetProxyHandler(
 
   return async function assetProxyHandler(
     request: FetchEvent["request"],
-    env: WorkerEnv
+    env: WorkerEnv,
   ) {
     const assetProxyURL = getAssetProxyURL(env);
     const assetProxyBucket = getAssetProxyBucket(env);

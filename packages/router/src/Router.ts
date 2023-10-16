@@ -14,11 +14,11 @@ import { Routes } from "./Routes.js";
 import type { InitialLocation } from "./types.js";
 
 type EffectApiCreator<EffectAPI extends DefaultEffectAPI = DefaultEffectAPI> = (
-  defaults: DefaultEffectAPI
+  defaults: DefaultEffectAPI,
 ) => EffectAPI;
 
 export interface CreateRouterOptions<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 > {
   effectAPI?: EffectApiCreator<EffectAPI>;
   initialLocation?: InitialLocation;
@@ -47,7 +47,7 @@ export interface CreateRouterOptions<
  */
 // Shouldn't be used internally, use `configureRouter` instead.
 export function createRouter<
-  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI
+  EffectAPI extends DefaultEffectAPI = DefaultEffectAPI,
 >(options: CreateRouterOptions<EffectAPI> = {}) {
   function defaultGetEffectAPI(defaults: DefaultEffectAPI) {
     return defaults as EffectAPI;
@@ -78,7 +78,7 @@ export function createRouter<
 
     const routesCollectionRef = createMutableRef(
       ROUTES_COLLECTION_REF_MESSAGE,
-      routesCollection
+      routesCollection,
     );
 
     effectAPIRef.current = getEffectAPI(
@@ -87,7 +87,7 @@ export function createRouter<
         dispatch,
         getState,
         routesCollectionRef,
-      })
+      }),
     );
 
     return initializeRouter(store);

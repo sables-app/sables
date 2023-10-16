@@ -140,7 +140,7 @@ export function useActionCallback<AC extends PayloadActionCreator<any>>(
  * @public
  */
 export function useSideEffect<T extends SideEffectActions<any, any>>(
-  input: T | { actions: T }
+  input: T | { actions: T },
 ) {
   function isActions(input: T | { actions: T }): input is T {
     return !Object.hasOwn(input, "actions");
@@ -161,7 +161,7 @@ export function useSideEffect<T extends SideEffectActions<any, any>>(
         onAwaitingChange,
         onEndAction,
       }),
-    [actions, dispatch]
+    [actions, dispatch],
   );
 
   useObservable(observableCreator);

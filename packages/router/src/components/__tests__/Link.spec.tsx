@@ -22,18 +22,18 @@ describe("Link", () => {
       >[0]["params"];
 
       function getLinkParamsProp<Route extends AnyRouteReference>(
-        route: Route
+        route: Route,
       ): LinkParamsProp<Route> {
         return 1 as any;
       }
 
       // An undefined path without params results in unknown params
       assertType<Record<string, unknown> | undefined>(
-        getLinkParamsProp(routes.AppRoot)
+        getLinkParamsProp(routes.AppRoot),
       );
       // An undefined path with params results in unknown params
       assertType<Record<string, unknown> | undefined>(
-        getLinkParamsProp(routes.Dogs)
+        getLinkParamsProp(routes.Dogs),
       );
       // An defined path with params results in defined params
       assertType<{ name: unknown }>(getLinkParamsProp(routes.Cats));

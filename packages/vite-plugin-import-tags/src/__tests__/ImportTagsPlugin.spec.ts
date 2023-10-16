@@ -83,7 +83,7 @@ describe("ImportTagsPlugin", () => {
         const [manifestPath, manifest] = fsWriteMock.mock.calls[0];
         const expectedManifestPathSuffix = path.resolve(
           process.cwd(),
-          "importTagsManifest.json"
+          "importTagsManifest.json",
         );
 
         expect(path.isAbsolute(manifestPath)).toBe(true);
