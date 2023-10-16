@@ -24,7 +24,7 @@
     "react-redux": "^8.0.5",
     "redux": "^4.2.1",
     "reselect": "^4.1.7",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.1"
   },
   "peerDependencies": {
     "@types/react": "^18.0.0",
