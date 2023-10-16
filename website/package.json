@@ -32,7 +32,7 @@
     "@sables/framework": "~0.15.1",
     "@sables/server": "~0.2.17",
     "@sables/ssr": "~0.1.16",
-    "@types/connect": "^3.4.35",
+    "@types/connect": "^3.4.36",
     "@types/cors": "^2.8.12",
     "@types/errorhandler": "^1.5.0",
     "@types/lodash.get": "^4.4.7",
