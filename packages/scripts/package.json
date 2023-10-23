@@ -16,7 +16,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "^4.1.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
     "@types/jake": "^0.0.33",
     "@types/node": "^18.11.18",
     "@types/react-test-renderer": "^18.0.0",
