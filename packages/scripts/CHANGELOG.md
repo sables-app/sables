@@ -1,5 +1,11 @@
 # @sables-app/scripts
 
+## 1.0.1
+
+### Patch Changes
+
+- c2fd876: Update ESLint config to allow for TypeScript namespaces
+
 ## 1.0.0
 
 ### Major Changes
