@@ -21,7 +21,6 @@ type ExtractEntityFromSelector<T> = T extends ReduxToolkit.EntitySelectors<
   : never;
 
 /** @internal */
-// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace EntityReducers {
   // prettier-ignore
   export type ReducerName<
@@ -55,7 +54,6 @@ export namespace EntityReducers {
 }
 
 /** @internal */
-// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace EntitySelectors {
   // prettier-ignore
   export type SelectorName<
@@ -197,7 +195,6 @@ export function distinctEntitySelectors<
 }
 
 /** @internal */
-// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace NotableEntities {
   type AdjectiveEntityIDGetter<Payload> = {
     (actionPayload: Payload): ReduxToolkit.EntityId | undefined;

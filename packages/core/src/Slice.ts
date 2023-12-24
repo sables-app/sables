@@ -139,7 +139,6 @@ export function enhanceSlice<S extends ReduxToolkit.Slice>(
   }) as EnhancedSlice<S>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
 namespace SliceBuilder {
   export type ActionTypeCase = [
     actionType: string,
