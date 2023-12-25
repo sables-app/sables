@@ -1,5 +1,11 @@
 # @sables-app/scripts
 
+## 1.0.2
+
+### Patch Changes
+
+- c77292e: Allow non-null assertions and unban `{}`
+
 ## 1.0.1
 
 ### Patch Changes
