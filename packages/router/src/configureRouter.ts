@@ -25,7 +25,6 @@ import { attachRoutesCollectionToStore } from "./StoreEnhancer.js";
 import { CombinedRouterState, InitialLocation } from "./types.js";
 
 function createRouterSlice(routerReducer: Redux.Reducer<RouterState>) {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   const slice: ReduxToolkit.Slice<RouterState, {}, typeof ROUTER_REDUCER_KEY> =
     {
       name: ROUTER_REDUCER_KEY,

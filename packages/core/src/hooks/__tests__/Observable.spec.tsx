@@ -55,7 +55,6 @@ describe("Action", () => {
       });
 
       function getButton() {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return render!.root.findByType("button");
       }
 

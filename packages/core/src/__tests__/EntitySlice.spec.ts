@@ -98,7 +98,6 @@ describe("EntitySlice", () => {
       createEntitySlice<Foo2>().setReducer(["foo", "foos"]);
 
       // The correct plural name is derived when only the singular name is provided
-      // eslint-disable-next-line @typescript-eslint/ban-types
       assertType<EntitySlice<Foo2, {}, "foo", "foos">>(
         createEntitySlice<Foo2>().setReducer("foo"),
       );

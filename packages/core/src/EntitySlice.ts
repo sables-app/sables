@@ -96,10 +96,7 @@ export type EntitySlice<
   EntitySliceMixin<Entity, Adjectives, SingularName, PluralName>;
 
 type NormalizeAdjectives<Adjectives> =
-  Adjectives extends NotableEntities.Adjectives
-    ? Adjectives
-    : // eslint-disable-next-line @typescript-eslint/ban-types
-      {};
+  Adjectives extends NotableEntities.Adjectives ? Adjectives : {};
 
 type ReduxToolkitReducer<State> = ReturnType<
   typeof ReduxToolkit.createReducer<State>

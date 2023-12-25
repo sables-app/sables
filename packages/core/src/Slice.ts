@@ -449,10 +449,7 @@ type DraftSlice<State, Name extends string = string> = {
       Name
     >,
   >(
-    buildReducerFn: (
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      builder: SliceReducerBuilder<State, {}, Name>,
-    ) => B,
+    buildReducerFn: (builder: SliceReducerBuilder<State, {}, Name>) => B,
   ): EnhancedSlice<
     ReduxToolkit.Slice<State, CaseReducersFromSliceReducerBuilder<B>, Name>
   >;
@@ -505,7 +502,6 @@ export function createSlice<State, Name extends string = string>(
 ): DraftSlice<State, Name> {
   return {
     setReducer(buildReducerFn) {
-      // eslint-disable-next-line @typescript-eslint/ban-types
       const initialBuilder = createSliceReducerBuilder<State, {}, Name>(
         name,
         initialState,

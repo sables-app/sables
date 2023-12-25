@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import {
   ActionSubject,
   SYMBOL_EFFECT_API_LIFECYCLE,
