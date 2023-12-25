@@ -19,7 +19,7 @@
   },
   "peerDependencies": {
     "@vitejs/plugin-react-swc": "^3.0.1",
-    "vite": "^4.0.4"
+    "vite": "^4.4.12"
   },
   "dependencies": {
     "@humanwhocodes/module-importer": "^1.0.1",
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@types/node": "^18.11.18",
     "typescript": "^5.3.3",
-    "vite": "^4.0.4"
+    "vite": "^4.4.12"
   },
   "files": [
     "bin",
