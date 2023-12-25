@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
-    "patch-package": "^6.5.0"
+    "patch-package": "^8.0.0"
   },
   "scripts": {
     "postinstall": "patch-package",
