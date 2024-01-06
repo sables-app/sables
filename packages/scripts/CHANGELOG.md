@@ -1,5 +1,11 @@
 # @sables-app/scripts
 
+## 1.0.3
+
+### Patch Changes
+
+- 7743bfc: Manually specify prettier plugin.
+
 ## 1.0.2
 
 ### Patch Changes
