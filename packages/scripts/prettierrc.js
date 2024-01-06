@@ -6,6 +6,7 @@ module.exports = {
       options: { printWidth: 60 },
     },
   ],
+  plugins: ['@ianvs/prettier-plugin-sort-imports'],
   importOrder: [
     // Organization packages
     "^@sables",
