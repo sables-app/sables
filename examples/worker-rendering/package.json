@@ -25,7 +25,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230404.0",
     "sables": "~0.1.6",
-    "vite": "^4.0.4",
+    "vite": "^4.5.2",
     "wrangler": "^3.13.1"
   },
   "exports": {
