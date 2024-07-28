@@ -23,8 +23,11 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     // Namespaces are be useful for grouping things within a module without exposing private functionality.
     // They can also be used as a more readable alternative to a plain object.
+    // Lastly, they allow for static class members without ingheritence.
     // They should NOT be used as a replacement for a module.
     "@typescript-eslint/no-namespace": "off",
+    // Allow private declarations in namespaces.
+    "no-inner-declarations": "off",
     // Non-null assertions are useful. It's not like `any` where you're saying "I don't know what this is".
     // You're saying "I know what this is, and it's not null or undefined".
     "@typescript-eslint/no-non-null-assertion": "off",
