@@ -1,5 +1,11 @@
 # @sables-app/scripts
 
+## 1.0.4
+
+### Patch Changes
+
+- 382d21e: Update ESLint config to allow inner declarations
+
 ## 1.0.3
 
 ### Patch Changes
