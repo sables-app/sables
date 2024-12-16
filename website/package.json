@@ -76,7 +76,7 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.3.3",
     "vite": "^4.0.4",
-    "wrangler": "^3.13.1"
+    "wrangler": "^3.19.0"
   },
   "exports": {
     "./index.html": "./dist/client/index.html",
