@@ -23,14 +23,29 @@ jobs:
       - name: Clean, build, and test
         run: npx jake prepare:packages
 
-      - name: Creating .npmrc
+      - name: Configure NPM for publishing to NPM registry
         run: |
           echo "//npm.pkg.github.com/:_authToken=\${GITHUB_TOKEN}" >> $HOME/.npmrc
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc
 
-      - name: Publish packages to GitHub and NPM registries
+      - name: Publish packages to NPM registry
         uses: changesets/action@v1
         with:
+          publish: npx changeset publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Configure NPM for publishing to GitHub Packages registry
+        run: |
+          echo "@sables-app:registry=https://npm.pkg.github.com/" >> $HOME/.npmrc
+
+      - name: Publish packages to GitHub Packages registry
+        uses: changesets/action@v1
+        with:
+          # Run the same command as before, but this time packages that
+          # are scoped to `@sables-app` will be published to the
+          # GitHub Packages registry.
           publish: npx changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
